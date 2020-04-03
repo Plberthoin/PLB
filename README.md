@@ -1,6 +1,10 @@
 # PLB
-Publication PLB
+
 
 listes d'outils pour les Utilisateurs de l'IBMi
 
-Premier outil pour créer des dépendances entre des jobs  
+Dépendances,
+------------
+ C'est un outil pour créer des déoendances entre des jobs  
+
+ grace à une méthode et des copys préparés pour vous
