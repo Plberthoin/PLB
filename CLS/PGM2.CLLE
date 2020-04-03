@@ -1,0 +1,17 @@
+/*-------------------------------------------------------------------*/
+/* Squelette pour programme  dépendant                               */
+/*-------------------------------------------------------------------*/
+PGM
+include dep001
+/*-------------- Déclaration des variables --------------------------*/
+/* dcl, dclf et monmsg général                                       */
+/*-------------- fin de déclaration ---------------------------------*/
+include dep002
+include dep004
+/*-------------- Début de traitement --------------------------------*/
+             SNDUSRMSG  MSG('Fin pgm' *BCAT &PGM) +
+                            MSGTYPE(*INFO)
+/*-------------- Fin de traitement ----------------------------------*/
+/* test si fin de traitement ok                                      */
+include dep005
+ENDPGM

@@ -1,0 +1,15 @@
+**FREE
+   // <-- recuperation Pgm dépendant
+   //                                    -->
+      dcl-pi *n ;
+        P_pgm      char(10) ;
+        P_pgmdep   char(10) ;
+      end-pi;
+     exec sql
+        SELECT PGMdep         into :P_pgmdep
+        FROM LSTDEPPGM
+          where PGM = :P_pgm ;
+       if sqlcode <> 0 ;
+       P_pgm = '*NODEP' ;
+       endif;
+     *inlr = *on  ;

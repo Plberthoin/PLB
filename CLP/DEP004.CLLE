@@ -1,0 +1,12 @@
+/*-------------------------------------------------------------------*/
+/* Vérification si dépendance                                        */
+/*-------------------------------------------------------------------*/
+call rtvdeppgm (&pgm &pgmdep)
+if cond(&pgmdep = '*NODEP')
+chkobj &lib/&pgmdep *dtaara
+monmsg cpf9801 exec(do)
+             SNDUSRMSG  MSG('Pour que le programme' *BCAT &PGM *BCAT +
+                          'tourne, il faut que le programme ' *BCAT +
+                          &PGMDEP *BCAT 'est tourné.') MSGTYPE(*INFO)
+return
+enddo

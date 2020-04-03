@@ -1,0 +1,8 @@
+/*-------------------------------------------------------------------*/
+/* Supression dtaara témoin                                          */
+/*-------------------------------------------------------------------*/
+             dltDTAARA  DTAARA(&LIB/&PGMdep)
+             monmsg CPF1025 exec(do)
+             SNDUSRMSG  MSG('Dtaara non trouvée' *BCAT &PGMDEP) +
+                            MSGTYPE(*INFO)
+             enddo
