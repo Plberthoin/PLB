@@ -1,9 +1,0 @@
-/*-------------------------------------------------------------------*/
-/* Création dtaara témoin                                            */
-/*-------------------------------------------------------------------*/
-             CRTDTAARA  DTAARA(&LIB/&PGM) TYPE(*CHAR) LEN(40) +
-                          TEXT('Témoin pour' *BCAT &PGM)
-             monmsg CPF1023 exec(do)
-             SNDUSRMSG  MSG('Témoin pour' *BCAT &PGM *BCAT 'déjà +
-                          existant') MSGTYPE(*INFO)
-             enddo

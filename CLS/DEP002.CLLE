@@ -1,9 +1,0 @@
-/*-------------------------------------------------------------------*/
-/* Récupération nom du programme                                     */
-/*-------------------------------------------------------------------*/
-chgvar var(&caller) value(' ')
-/* name of the current program */
-sndpgmmsg msg('who am i ?') topgmq(*same) keyvar(&msgkey)
-             RCVMSG     MSGTYPE(*INFO) MSGKEY(&MSGKEY) RMV(*YES) +
-                                       SENDER(&SENDER)
-chgvar var(&pgm) value(%sst(&sender 56 10))

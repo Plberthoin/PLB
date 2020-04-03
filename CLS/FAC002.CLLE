@@ -1,9 +1,0 @@
-/*-------------------------------------------------------------------*/
-/* Ecriture info dans la dtaara                                      */
-/*-------------------------------------------------------------------*/
-             RTVJOBA    JOB(&JOB) USER(&USR) NBR(&NBR)
-             rtvsysval qdate &dat
-             rtvsysval qtime &tim
-/* */
-             CHGDTAARA  DTAARA(&LIB/&PGM *ALL) VALUE(&JOB *CAT &USR +
-                          *CAT &NBR *CAT &DAT *CAT &TIM)
