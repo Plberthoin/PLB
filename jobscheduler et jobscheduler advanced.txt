@@ -1,4 +1,3 @@
-JS
 Sur l’ibmi il existe un scheduler standard celui qui se cache derrière la commande WRKJOBSCDE.
 Il est très rudimentaire, vous n’avez pas d’historique ni de dépendance travaux.
 C’est un unique objet, QDFTJOBSCD de type *JOBSCD qui est stocké dans la bibliothèque QUSRSYS. 
