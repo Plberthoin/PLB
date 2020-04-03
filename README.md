@@ -3,4 +3,4 @@ Publication PLB
 
 listes d'outils pour les Utilisateurs de l'IBMi
 
-premier outil pour créer des dépendnaces entre des jobs  
+Premier outil pour créer des dépendances entre des jobs  
