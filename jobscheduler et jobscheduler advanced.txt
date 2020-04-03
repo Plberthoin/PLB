@@ -1,0 +1,55 @@
+JS
+Sur l’ibmi il existe un scheduler standard celui qui se cache derrière la commande WRKJOBSCDE.
+Il est très rudimentaire, vous n’avez pas d’historique ni de dépendance travaux.
+C’est un unique objet, QDFTJOBSCD de type *JOBSCD qui est stocké dans la bibliothèque QUSRSYS. 
+C’est le travail QSYSSCD qui tourne dans QCTL
+QCTL          QSYS        SBS     0,0                
+  QSYSSCD     QPGMR       BCH     0,0  PGM-QEZSCNEP  
+Attention vous devez le sauvegarder par SAVOBJ , vous pouvez également l’envoyer sur une autre machine et le restaurer par un RSTOBJ 
+
+IBM propose un autre produit qui s’appelle job scheduler advanced c’est le produit 5770JS1 il est payant, et qui permet de faire beaucoup plus de chose !  
+Pour y accéder en mode 5250 go JS, sinon vous pouvez y accéder par l’interface web de navigator for i
+Sont paramétrage est composés de fichiers qui sont stockés dans la bibliothèque QUSRIJS
+ 
+Voici , comment reprendre les travaux de job scheduler vers advanced job scheduler , si vous choisissez de passer du premier vers le deuxième   
+
+La première méthode si vous avez peu de commandes dans le scheduler !
+
+5770JS1   *COMPATIBLE  IBM Advanced Job Scheduler for i
+Go cmdjs
+
+ 
+Option 5
+ 
+Option 7
+ 
+8 en face de chaque job à récupérer 
+Ça fait une commande de ce type
+ADDJOBJS JOB(A_SNDESIEG)               
+         SCDCDE(*DAILY)                
+         TIME(1815)                    
+         DAY(*MON *TUE *WED *THU)      
+         TEXT('Verif file ESIEGE')     
+         CMD(CALL PGM(PCELLE/SNDESIEG))
+         RCYACN(*SBMRLS)               
+         JOBD(*USRPRF)                 
+         JOBQ(QGPL/QS36EVOKE)          
+         USER(SYSTEM)                  
+         MSGQ(*USRPRF)      
+
+Si vous désirez automatiser, attention le job scheduler standard n’est pas composé de fichiers contrairement à job scheduler qui est composé de fichiers par exemple
+Job planifiés select * from QUSRIJS/QAIJSMST where JMSTS <> '*HELD'
+Historique  select * from QUSRIJS/QAIJSHST
+Mais heureusement sql as a service a résolu ce problème en créant une vue qui vous permet d’y accéder 
+select * from QSYS2.SCHEDULED_JOB_INFO  
+pour limiter au job actifs 
+SELECT *         FROM QSYS2.SCHEDULED_JOB_INFO
+where status <> 'HELD'                        
+il vous suffit donc de lire cette vue et pour chaque ligne de faire un   
+ADDJOBJS en adaptant les paramètres 
+
+Conseil commencer par une ou 2 commandes n’écrivez pas directement dans les fichiers 
+
+            
+
+
