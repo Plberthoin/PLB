@@ -1,0 +1,89 @@
+PGM parm(&app &libsrc &rep &rac)
+/* paramètres  */
+dcl &app *char 10
+dcl &libsrc *char 10
+DCL &rep    *cHAR 03
+dcl &rac    *char 20
+/* variable de travail */
+dcl &cmdsh *char 300
+dcl &typ   *char 8
+dcl &mbr   *char 10
+dcl &cpt   *int
+dcl &cpt1  *int
+dcl &cpt2  *int
+dcl &file *char 10
+dcl &ffile *char 40
+dcl &tfile *char 50
+dcl &wrep   *char 1
+dclf lstdir
+/* Avertissement si Bibliothèque identique */
+if cond(&app = &libsrc) then(do)
+             SNDUSRMSG  MSG('Bibliothèque de restauration identique +
+                          voulez vous continuer (O/N)') VALUES(O N) +
+                          DFT(N) MSGRPY(&wREP)
+if cond(&wrep = 'N') then(do)
+return
+enddo
+enddo
+/* Création fichier intermédiaire */
+             CRTPF      FILE(QTEMP/LSTDIR) RCDLEN(132)
+             monmsg cpf0000
+CHGVAR VAR(&CMDSH) VALUE('ls /git/gdep/' *tcat &rep *bcat '>  +
+                          lstdir.txt')
+/* création liste fichier d'un répertoire */
+             STRQSH     CMD(&CMDSH)
+             CPYFRMSTMF FROMSTMF('lstdir.txt') +
+                          TOMBR('/qsys.lib/qtemp.lib/lstdir.file/ls+
+                          tdir.mbr') MBROPT(*REPLACE)
+/* Création du fichier source   */
+                  SELECT
+   /* mise en place du fichier à partir du répertoire  */
+                     WHEN       COND(&rep  *EQ 'CLP') then(do)
+                     chgvar &file ('QCLSRC')
+                     enddo
+                     WHEN       COND(&rep  *EQ 'CMD') then(do)
+                     chgvar &file ('QCMDSRC')
+                     enddo
+                     WHEN       COND(&rep  *EQ 'RPG') then(do)
+                     chgvar &file ('QRPGLESRC')
+                     enddo
+                     WHEN       COND(&rep  *EQ 'SQL') then(do)
+                     chgvar &file ('QSQLSRC')
+                     enddo
+                     WHEN       COND(&rep  *EQ 'TXT') then(do)
+                     chgvar &file ('QTXTSRC')
+                     enddo
+             OTHERWISE  CMD(DO)
+                     chgvar &file ('QRPGLESRC')
+                     enddo
+                  ENDSELECT
+             CRTSRCPF   FILE(&LIBSRC/&FILE) RCDLEN(112)
+             monmsg CPF7300
+ovrdbf lstdir qtemp/lstdir
+boucle:
+             RCVF
+             MONMSG     MSGID(CPF0864) EXEC(GOTO CMDLBL(SUITE))
+/* découpage membre et type                                        */
+         DOFOR   VAR(&cpt)  FROM(1)  TO(20)
+                 if cond(%sst(&lstdir &cpt 1)  = '.') then(do)
+                 chgvar &cpt1 (&cpt + 1)
+                   chgvar  &typ %sst(&lstdir  &cpt1 8)
+                 chgvar &cpt2 (&cpt - 1)
+                   chgvar  &mbr %sst(&lstdir  1 &cpt2)
+                 enddo
+         ENDDO
+ /* formatage from file */
+             CHGVAR     VAR(&FFILE) VALUE(&RAC *TCAT &APP *TCAT '/' +
+                          *TCAT &rep *TCAT '/' *TCAT &MBR *TCAT '.' +
+                          *TCAT &TYP)
+ /* formatage to file */
+             CHGVAR     VAR(&TFILE) VALUE('/qsys.lib/' *TCAT &LIBsrc +
+                          *TCAT '.lib/' *TCAT &FILE *TCAT '.file/' +
+                          *TCAT &MBR *TCAT '.mbr')
+             CPYFRMSTMF FROMSTMF(&FFILE) TOMBR(&TFILE) MBROPT(*REPLACE)
+/* Ajout du membre source                                          */
+             CHGPFM FILE(&libsrc/&file) MBR(&mbr) SRCTYPE(&typ)
+goto boucle
+suite:
+dltovr lstdir
+ENDPGM
