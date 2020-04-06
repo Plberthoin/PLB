@@ -1,0 +1,44 @@
+pgm &lib /*----------------------------------------------------------*/
+/* ce programme génère le readme pour les publications git           */
+/* il utlise le membre qtxtsrc readme de la bibliothèque             */
+/* il génère une liste des objets à publier                          */
+/*-------------------------------------------------------------------*/
+dcl &lib *char 10
+dcl &nbr *dec  10
+dcl &sql *char 512
+dclf LSTGIT
+include erreur1
+/* Création fichier source intermediaire */
+             CHKOBJ     OBJ(QTEMP/readme) OBJTYPE(*FILE)
+             MONMSG CPF9801 EXEC(DO)
+             CRTPF      FILE(QTEMP/readme) RCDLEN(112)
+             goto suite
+             ENDDO
+clrpfm QTEMP/readme
+suite:
+/* test si readme présent dans qtxt src */
+             RTVMBRD    FILE(&LIB/QTXTSRC) MBR(README) NBRCURRCD(&NBR)
+             monmsg cpf0000 exec(do)
+             chgvar &nbr 0
+             enddo
+             if cond(&nbr > 0) then(do)
+             CPYF       FROMFILE(&LIB/QTXTSRC) TOFILE(QTEMP/README) +
+                          FROMMBR(README) MBROPT(*REPLACE) +
+                          FMTOPT(*CVTSRC)
+             enddo
+/* génération de liste des objets publiés */
+boucle:
+rcvf
+monmsg cpf0864 exec(goto fin)
+chgvar &sql (+
+'insert into QTEMP/README values(''' *tcat +
+&GITREP *cat  &GITSRC *cat    &GITTYP *cat  &GITTXT *tcat ''')')
+             RUNSQL     SQL(&SQL) COMMIT(*NONE)
+goto boucle
+fin:
+/* message de fin de liste */
+chgvar &sql (+
+'insert into QTEMP/README values(''*** Fin listes des sources'')')
+             RUNSQL     SQL(&SQL) COMMIT(*NONE)
+include erreur2
+endpgm
