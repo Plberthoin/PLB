@@ -1,4 +1,7 @@
-pgm parm(&repert &usr &mail)
+pgm parm(&repert &usr &mail) /*--------------------------------------*/
+/* ce programme génère un repository GIT                             */
+/* le répertoire doit exister                                        */
+/*-------------------------------------------------------------------*/
 /* Paramètres */
 dcl &repert *char 30
 dcl &usr *char 10

@@ -10,21 +10,21 @@
   ...
 
 *** Listes  des sources
-CLPCMTREPGIT CLLE    Commit   Repository git
-CLPCRTREPGIT CLLE    Création Repository git
-CLPCVTIFS    CLLE    Convertion un fichier source vers IFS
-CLPCVTIFSALL CLLE    Convertion de tous les sources d une biblio.
-CLPERREUR1   INC     *INC gestion des erreurs
-CLPERREUR2   INC     *INC Gestion des erreurs
-CLPGENLSTGIT CLLE    Génération readme
-CLPRSTIFS    CLLE    Restauration depuis l IFS
-CMDCMTREPGIT CMD     Commit   repository GIT
-CMDCRTREPGIT CMD     Création repository GIT
-CMDCVTIFS    CMD     Conversion fichier source
-CMDCVTIFSALL CMD     Conversion fichiers sources d une biblio
-CMDGENLSTGIT CMD     Génération du readme
-CMDRTVIFS    CMD     Restauration IFS
-SQLLSTDIR    SQL     liste des fichiers d un repertoire
-SQLLSTGIT    SQL     liste pour git
-TXTREADME    TXT     readme do logiciel Ggit
+! CLP ! CMTREPGIT  ! CLLE     ! Commit   Repository git                            !
+! CLP ! CRTREPGIT  ! CLLE     ! Création Repository git                            !
+! CLP ! CVTIFS     ! CLLE     ! Convertion un fichier source vers IFS              !
+! CLP ! CVTIFSALL  ! CLLE     ! Convertion de tous les sources d une biblio.       !
+! CLP ! ERREUR1    ! CLLE     ! *INCLUDE gestion des erreurs 1                     !
+! CLP ! ERREUR2    ! CLLE     ! *INCLUDE Gestion des erreurs 2                     !
+! CLP ! GENLSTGIT  ! CLLE     ! Génération readme                                  !
+! CLP ! RSTIFS     ! CLLE     ! Restauration depuis l IFS                          !
+! CMD ! CMTREPGIT  ! CMD      ! Commit   repository GIT                            !
+! CMD ! CRTREPGIT  ! CMD      ! Création repository GIT                            !
+! CMD ! CVTIFS     ! CMD      ! Conversion fichier source                          !
+! CMD ! CVTIFSALL  ! CMD      ! Conversion fichiers sources d une biblio           !
+! CMD ! GENLSTGIT  ! CMD      ! Génération du readme                               !
+! CMD ! RTVIFS     ! CMD      ! Restauration IFS                                   !
+! SQL ! LSTDIR     ! SQL      ! Liste des fichiers d un repertoire                 !
+! SQL ! LSTGIT     ! SQL      ! Liste pour git                                     !
+! TXT ! README     ! TXT      ! readme do logiciel Ggit                            !
 *** Fin listes des sources

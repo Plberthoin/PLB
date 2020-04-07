@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------*/
-/* Création d'un répertoire avec un répertoire par fichier source    */
+/* Cconvertion de tous les fichiers sources d'une bibliothèque       */
 /*-------------------------------------------------------------------*/
 pgm (&lib &rac &readme)
 dcl &lib *char 10

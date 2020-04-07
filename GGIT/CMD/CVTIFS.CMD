@@ -6,4 +6,4 @@
              PARM       KWD(REPERT) TYPE(*NAME) LEN(03) DFT(CLP) +
                           MIN(0) PROMPT('Sous répertoire')
              PARM       KWD(RAC) TYPE(*CHAR) LEN(20) DFT('/git/') +
-                          MIN(0) PROMPT('Racine')
+                          MIN(0) PROMPT('Racine avec /')

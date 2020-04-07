@@ -1,4 +1,6 @@
-pgm parm(&repert &text)
+pgm parm(&repert &text) /*-------------------------------------------*/
+/* Ce programme commit les modifications d'un repository GIT         */
+/*-------------------------------------------------------------------*/
 /* Paramètres */
 dcl &repert *char 30
 dcl &text *char 50

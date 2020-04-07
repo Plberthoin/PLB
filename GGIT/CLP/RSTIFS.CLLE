@@ -1,4 +1,7 @@
-PGM parm(&app &libsrc &rep &rac)
+PGM parm(&app &libsrc &rep &rac) /*----------------------------------*/
+/* Ce programme recopie les fichers d'une repertoire vers un fichier */
+/* source                                                            */
+/*-------------------------------------------------------------------*/
 /* paramètres  */
 dcl &app *char 10
 dcl &libsrc *char 10
@@ -28,9 +31,9 @@ enddo
 /* Création fichier intermédiaire */
              CRTPF      FILE(QTEMP/LSTDIR) RCDLEN(132)
              monmsg cpf0000
+/* création liste des fichiers d'un répertoire */
 CHGVAR VAR(&CMDSH) VALUE('ls /git/gdep/' *tcat &rep *bcat '>  +
                           lstdir.txt')
-/* création liste fichier d'un répertoire */
              STRQSH     CMD(&CMDSH)
              CPYFRMSTMF FROMSTMF('lstdir.txt') +
                           TOMBR('/qsys.lib/qtemp.lib/lstdir.file/ls+

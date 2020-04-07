@@ -2,6 +2,7 @@ pgm &lib /*----------------------------------------------------------*/
 /* ce programme génère le readme pour les publications git           */
 /* il utlise le membre qtxtsrc readme de la bibliothèque             */
 /* il génère une liste des objets à publier                          */
+/* il utilise le membre &lib/qtxtsrc readme comme entete             */
 /*-------------------------------------------------------------------*/
 dcl &lib *char 10
 dcl &nbr *dec  10
@@ -11,7 +12,8 @@ include erreur1
 /* Création fichier source intermediaire */
              CHKOBJ     OBJ(QTEMP/readme) OBJTYPE(*FILE)
              MONMSG CPF9801 EXEC(DO)
-             CRTPF      FILE(QTEMP/readme) RCDLEN(112)
+             CRTPF      FILE(QTEMP/README) RCDLEN(112) +
+                          TEXT('Génération du fichier d''informations')
              goto suite
              ENDDO
 clrpfm QTEMP/readme
@@ -30,9 +32,10 @@ suite:
 boucle:
 rcvf
 monmsg cpf0864 exec(goto fin)
-chgvar &sql (+
-'insert into QTEMP/README values(''' *tcat +
-&GITREP *cat  &GITSRC *cat    &GITTYP *cat  &GITTXT *tcat ''')')
+             CHGVAR     VAR(&SQL) VALUE('insert into QTEMP/README +
+                          values(''' *TCAT '! ' *CAT &GITREP *CAT ' +
+                          ! ' *CAT &GITSRC *CAT ' ! ' *CAT &GITTYP +
+                          *CAT ' ! ' *CAT &GITTXT *CAT ' !'')')
              RUNSQL     SQL(&SQL) COMMIT(*NONE)
 goto boucle
 fin:
@@ -40,5 +43,7 @@ fin:
 chgvar &sql (+
 'insert into QTEMP/README values(''*** Fin listes des sources'')')
              RUNSQL     SQL(&SQL) COMMIT(*NONE)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('Fichier +
+                          README généré dans QTEMP') MSGTYPE(*COMP)
 include erreur2
 endpgm
