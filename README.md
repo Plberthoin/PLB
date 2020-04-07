@@ -1,10 +1,30 @@
 # PLB
 
+But:
+----
 
-listes d'outils pour les Utilisateurs de l'IBMi
+C'est de placer en open source quelques outils IBMi qui peuvent vous aider dans votre utilisation quotidienne.
+Les outils sont livrés à titre d'exemple sans garanti.
 
-Dépendances,
+
+Voici la liste des d'outils disponibles.
+
+Dépendances:
 ------------
  C'est un outil pour créer des déoendances entre des jobs  
 
  grace à une méthode et des copys préparés pour vous
+ 
+jobscheduler et jobscheduler advanced.txt:
+------------------------------------------
+
+ C'est une méthode pour vous aider a récupérer vos jobs quand vous installez AJS.
+
+GGIT:
+-----
+
+ C'est des commandes qui vous permettent de "giter" simplement une développement IBMi 
+ d'abord en copiant dans un répertoire IFS, en créant le repository et en le comitant.
+
+
+
