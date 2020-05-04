@@ -1,0 +1,73 @@
+     A*%%TS  SD  20200503  105939  QSECOFR     REL-V7R4M0  5770-WDS
+     A*%%EC
+     A                                      DSPSIZ(24 80 *DS3)
+     A                                      REF(*LIBL/QATOCSTART)
+     A                                      CA03(03)
+     A                                      CF05(05)
+     A          R SFL01                     SFL
+     A*%%TS  SD  20200503  104530  QSECOFR     REL-V7R4M0  5770-WDS
+     A            OPT01          1A  B  8  2
+     A                                      VALUES(' ' '1' '4' '5' 'S' 'E')
+     A            SERVERTYPER        O  8  5REFFLD(QTOCSTRT/SERVERTYPE *LIBL/QA-
+     A                                      TOCSTART)
+     A  71                                  DSPATR(RI)
+     A            SERVER    R        O  8  7REFFLD(QTOCSTRT/SERVER *LIBL/QATOCS-
+     A                                      TART)
+     A  71                                  DSPATR(RI)
+     A            AUTOSTART R        O  8 38REFFLD(QTOCSTRT/AUTOSTART *LIBL/QAT-
+     A                                      OCSTART)
+     A  71                                  DSPATR(RI)
+     A            LIBRARY   R        O  8 43REFFLD(QTOCSTRT/LIBRARY *LIBL/QATOC-
+     A                                      START)
+     A  71                                  DSPATR(RI)
+     A            PROGRAM   R        O  8 54REFFLD(QTOCSTRT/PROGRAM *LIBL/QATOC-
+     A                                      START)
+     A  71                                  DSPATR(RI)
+     A            EXTSTRCMD R        H      REFFLD(QTOCSTRT/EXTSTRCMD *LIBL/QAT-
+     A                                      OCSTART)
+     A          R CTL01                     SFLCTL(SFL01)
+     A*%%TS  SD  20200503  105939  QSECOFR     REL-V7R4M0  5770-WDS
+     A                                      SFLSIZ(0014)
+     A                                      SFLPAG(0013)
+     A                                      CF06(06)
+     A                                      OVERLAY
+     A  42                                  SFLDSP
+     A  41                                  SFLDSPCTL
+     A  40                                  SFLCLR
+     A            NUM01          4S 0H      SFLRCDNBR(CURSOR *TOP)
+     A                                  2  4DATE
+     A                                      EDTCDE(Y)
+     A                                  3  4TIME
+     A                                  2 70USER
+     A                                  3 70SYSNAME
+     A                                  2 21'Gestion des démarrages des serveur-
+     A                                      s FTP'
+     A                                      DSPATR(HI)
+     A                                  7  2'  Typ Nom du Service              -
+     A                                        Auto Programme  Bibliothèque'
+     A                                      DSPATR(UL)
+     A  73                              5  2'1 Démarrage Auto YES'
+     A                                      DSPATR(HI)
+     A  73                              5 25'4 Démarrage Auto NO'
+     A                                      DSPATR(HI)
+     A                                  5 48'5 Commande'
+     A                                      DSPATR(HI)
+     A  73                              6  2'S Démarrer'
+     A                                      DSPATR(HI)
+     A  73                              6 25'E Arrêter'
+     A                                      DSPATR(HI)
+     A          R FMT01
+     A*%%TS  SD  20200503  104530  QSECOFR     REL-V7R4M0  5770-WDS
+     A                                 22  3'F3=Exit'
+     A                                 22 12'F5=Recharger'
+     A          R FMT02
+     A*%%TS  SD  20200503  105525  QSECOFR     REL-V7R4M0  5770-WDS
+     A                                 22  3'F3=Exit'
+     A                                  3 13'Détail service :'
+     A                                      DSPATR(HI)
+     A            SERVER    R        O  3 30REFFLD(QTOCSTRT/SERVER *LIBL/QATOCS-
+     A                                      TART)
+     A                                  7  2'Commande :'
+     A                                      DSPATR(HI)
+     A            EXTSTRCMD R        O  7 13REFFLD(QTOCSTRT/EXTSTRCMD *LIBL/QAT-
+     A                                      OCSTART)
