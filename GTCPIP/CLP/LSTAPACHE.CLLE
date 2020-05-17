@@ -1,0 +1,87 @@
+pgm (&file &lib ) /*-------------------------------------------------*/
+/* Liste des instances apaches de votre IBM i                        */
+/* écrit dans le fichier lstapache                                   */
+/*-------------------------------------------------------------------*/
+dcl &file *char 10
+dcl &lib *char 10
+dcl &nbr    *dec  10
+             dcl        &pos *dec 4
+             dcl        &sts *char 4
+ /* paramétrage */
+             DCL        VAR(&OK) TYPE(*LGL)  VALUE('0')
+
+             DCLF       FILE(QSYS/QAFDMBRL)
+             INCLUDE    SRCMBR(ERREUR1) SRCFILE(GCOMPILE/QCLSRC)
+ /*---------------------------------------------------------------------*/
+ /*  Parametrage                                                        */
+ /*---------------------------------------------------------------------*/
+ /*---------------------------------------------------------------------*/
+ /*  Contrôle                                                           */
+ /*---------------------------------------------------------------------*/
+         chkobj &lib *lib
+         dltf   &lib/&file
+         monmsg cpf0000
+             RUNSQL     SQL('CREATE TABLE ' *BCAT &LIB *TCAT '/' +
+                          *TCAT &FILE *BCAT '(SERVICE CHAR(10) +
+                          CCSID 1147 NOT NULL DEFAULT '''' , +
+                          STRAUTO CHAR(4) CCSID 1147 NOT NULL +
+                          DEFAULT '''' , SERVTXT CHAR(50) CCSID +
+                          1147 NOT NULL DEFAULT '''' )') COMMIT(*NONE)
+             DSPFD      FILE(QUSRSYS/QATMHINSTA) TYPE(*MBRLIST) +
+                          OUTPUT(*OUTFILE) FILEATR(*PF) +
+                          OUTFILE(QTEMP/WAFDMBRL)
+             DSPFD      FILE(QUSRSYS/QATMHINSTC) TYPE(*MBRLIST) +
+                          OUTPUT(*OUTFILE) FILEATR(*PF) +
+                          OUTFILE(QTEMP/WAFDMBRL) OUTMBR(*FIRST *ADD)
+              OVRDBF     FILE(QAFDMBRL) TOFILE(QTEMP/WAFDMBRL) +
+                           LVLCHK(*NO)
+   /* mise à blanc du fichier resultat */
+              RUNSQL     SQL('drop   ALIAS QTEMP/MBR') +
+                            COMMIT(*NONE)
+                            monmsg SQL0000
+              dltf qtemp/result
+              monmsg cpf0000
+              clrpfm lstapache
+ boucle:
+ rcvf
+ monmsg cpf0864 exec(goto suite)
+             RUNSQL     SQL('CREATE ALIAS QTEMP/MBR FOR ' *BCAT +
+                          &MLLIB *TCAT '/' *TCAT &MLFILE *TCAT '(' +
+                          *TCAT &MLNAME *TCAT ')') COMMIT(*NONE)
+             RUNSQL     SQL('create table qtemp/result as(select * +
+                    from QTEMP/MBR where       CHARFIELD  like +
+                          (''%-AutoStartY%'')) with data') +
+                          COMMIT(*NONE)
+              RTVMBRD    FILE(QTEMP/RESULT) NBRCURRCD(&NBR)
+  /* au moins une occurence on ecrit dans scnmbr */
+  /* ajouter un traitement pour remplacer les ' par des "  */
+              if cond(&nbr > 0) then(do)
+              chgvar &sts '*YES'
+             enddo
+             else do
+              chgvar &sts '*NO'
+             enddo
+                       chgvar &pos (1)
+  trait:
+                  if         ( &pos *le 50)  do
+
+             IF         COND(%SST(&MLMTXT &POS 1) = '''') THEN(DO)
+                        chgvar     (%sst(&MLMTXT &pos 1))  ('"')
+             enddo
+                     chgvar     &pos (&pos +1)
+                     goto trait
+                  enddo
+             RUNSQL     SQL('INSERT INTO ' *BCAT &LIB *TCAT '/' +
+                          *TCAT &FILE *BCAT ' VALUES(''' *TCAT +
+                          &MLNAME *TCAT ''', ''' *TCAT &STS *TCAT +
+                          ''', ''' *TCAT &MLMTXT *TCAT ''')') +
+                          COMMIT(*NONE)
+             dltf qtemp/result
+             monmsg cpf0000
+             RUNSQL     SQL('drop   ALIAS QTEMP/MBR') +
+                           COMMIT(*NONE)
+goto boucle
+suite:
+             dltovr     FILE(QAFDMBRL)
+             INCLUDE    SRCMBR(ERREUR2) SRCFILE(GCOMPILE/QCLSRC)
+ ENDPGM:     ENDPGM

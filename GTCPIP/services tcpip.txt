@@ -1,0 +1,42 @@
+Comment administrer le démarrage des services TCP/IP
+
+Il faut d'abord comprendre comment TCPIP démarre sur votre partition
+
+Quand votre machine démarre vous avez les attributs de l'ipl qui sont lus
+Vous pouvez les voir par commande 
+DSPIPLA 
+dans cette commande vous avez un paramètre STRTCP(*YES)
+il va donc démarrer TCP/IP c'est la commande STRTCP qui a un paramètre STRSVR(*YES)
+oui mais quels serveurs va t il démarrer ?
+
+La réponse est dans Le fichier QATOCSTART  de QUSRSYS vous avez en gros une ligne par service et la zone AUTOSTART peut prendre comme valeur *YES ou *NO  
+le plus souvent vous pouvez changer le paramétre par la commande de paramétrage du logiciel spécifique , exemple  CHGFTPA AUTOSTART(*YES ou *NO) pour FTP
+Vous pouvez également modifier le fichier  
+QATOCSTART exemple UPDATE QUSRSYS/QATOCSTART SET AUTOSTART = '*NO' ou '*YES' WHERE
+server = '*FTP'  ;                                  
+
+A ce moment la on connait tous les services qui vont démarrer .
+
+Mais ca ne suffit pas pour la partie WEB / HTTP il faut connaitre les instances qui sont démarées.
+rappel le serveur HTTP sur votre IBM i est une APACHE.
+La aussi il va falloir aller regarder dans la bibliothèque QUSRSYS.
+Il y a 2 fichiers
+QATMHINSTA  x  pour l'instance apache admin
+QATMHINSTC  x  pour les instances apache customer
+dans ce fichier, vous avez un membre par service
+dans chaque fichier vous avez des informations
+Le nom, le répertoire racine des fichier, le fichier de conf et un paramètre -AutoStart  
+-AutoStartY pour démarrage automatique
+-AutoStartN pour démarrage manuel 
+
+Pour modifier cette valeur, vous pouvez modifier par l'interface d'adminitration web, ou par SQL, attention à cause des membres, il vous faudra utliser des Alias.
+
+Conclusion :
+Voila comment démarre TCP/IP et les services qu'il lance.
+Le principe est le suivant pour des questions de ressources et surtout de sécurité ne démarrer que les services que vous utilisez.
+Pour vous aidez dans cette administration vous retrouverez une commande à compiler à l'adresse suivante : https://github.com/Plberthoin/PLB/tree/master/GTCPIP
+ 
+MLFILE
+MLLIB 
+MLNAME   
+  

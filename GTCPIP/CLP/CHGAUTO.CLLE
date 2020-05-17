@@ -1,0 +1,22 @@
+pgm parm(&instance &auto)
+dcl &instance *char 10
+dcl &auto     *char 4
+              RUNSQL     SQL('drop   ALIAS QTEMP/MBR') +
+                            COMMIT(*NONE)
+                            monmsg SQL0000
+             RUNSQL     SQL('CREATE ALIAS QTEMP/MBR FOR +
+                          QUSRSYS/QATMHINSTC(' *TCAT &INSTANCE +
+                          *TCAT ')') COMMIT(*NONE)
+                          if cond(&auto = '*YES') then(do)
+             RUNSQL     SQL('update QTEMP/MBR  a  set CHARFIELD  = +
+                          replace(CHARFIELD,  ''-AutoStartN'' , +
+                          ''-AutoStartY'')  where rrn(a) = 1') +
+                          COMMIT(*NONE)
+ enddo
+ else do
+             RUNSQL     SQL('update QTEMP/MBR  a  set CHARFIELD  = +
+                          replace(CHARFIELD,  ''-AutoStartY'' , +
+                          ''-AutoStartN'')  where rrn(a) = 1') +
+                          COMMIT(*NONE)
+ enddo
+endpgm

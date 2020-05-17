@@ -1,0 +1,46 @@
+     A*%%TS  SD  20200517  132612  QSECOFR     REL-V7R4M0  5770-WDS
+     A*%%EC
+     A                                      DSPSIZ(24 80 *DS3)
+     A                                      CA03(03)
+     A                                      CF05(05)
+     A          R SFL01                     SFL
+     A*%%TS  SD  20200517  124425  QSECOFR     REL-V7R4M0  5770-WDS
+     A            OPT01          1A  B  8  2VALUES(' ' '1' '2' '4')
+     A            RMTUSR        10   O  8  4
+     A            DBNAME        50   O  8 15
+     A            LCLUSR        10   O  8 66
+     A            PASTO          3   O  8 77
+     A          R CTL01                     SFLCTL(SFL01)
+     A*%%TS  SD  20200517  132612  QSECOFR     REL-V7R4M0  5770-WDS
+     A                                      SFLSIZ(0014)
+     A                                      SFLPAG(0013)
+     A                                      CF06(06)
+     A                                      OVERLAY
+     A  42                                  SFLDSP
+     A  41                                  SFLDSPCTL
+     A  40                                  SFLCLR
+     A            NUM01          4S 0H      SFLRCDNBR(CURSOR *TOP)
+     A                                  2  4DATE
+     A                                      EDTCDE(Y)
+     A                                  3  4TIME
+     A                                  2 70USER
+     A                                  3 70SYSNAME
+     A                                  2 22'Gestion des postes AUTSVRE'
+     A                                      DSPATR(HI)
+     A                                  7  2'  Rmt User   Base de donnée       -
+     A                                                                    Loc u-
+     A                                      ser   Stk'
+     A                                      DSPATR(UL)
+     A                                  6  2'2 Modifier          '
+     A                                      DSPATR(HI)
+     A                                  5 25'4 Supprimer        '
+     A                                      DSPATR(HI)
+     A                                  3 22'Consignation des mots de passe'
+     A                                      DSPATR(HI)
+     A            CONSIGN        1A  O  3 53DSPATR(HI)
+     A                                  5  2'1 Créer'
+     A                                      DSPATR(HI)
+     A          R FMT01
+     A*%%TS  SD  20200503  104530  QSECOFR     REL-V7R4M0  5770-WDS
+     A                                 22  3'F3=Exit'
+     A                                 22 12'F5=Recharger'
