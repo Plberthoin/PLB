@@ -1,0 +1,7 @@
+*
+*  Historique des versions
+*
+0100
+Version de base
+0110
+Ajoute du détachement des recepteurs

@@ -1,0 +1,47 @@
+PGM PARM(&POSTE &LIB &DAT) /*---------------------------------------*/
+/* ce programme convertit le journal qaudjrn en fichier de TYPE5    */
+/* le format de sortie est adapté au type de journal                */
+/* C'est les fichiers 'QASY**J5'                                    */
+/* travaille sur la période de 1 jour                               */
+/*                                                                  */
+/*------------------------------------------------------------------*/
+/**/
+ /* PARAMETRES */
+DCL &POSTE *CHAR 2
+DCL &LIB *CHAR 10
+DCL &DAT *CHAR 08
+ /* WORK   */
+DCL &AA    *CHAR 2
+DCL &MM    *CHAR 2
+DCL &JJ    *CHAR 2
+DCL &NBR   *DEC (10 0)
+   MONMSG CPF0000
+RTVSYSVAL QYEAR &AA
+RTVSYSVAL QMONTH &MM
+RTVSYSVAL QDAY   &JJ
+/* CONTROLES */
+             CHKOBJ     OBJ(&LIB) OBJTYPE(*LIB)
+             CHKOBJ     OBJ(('QASY' *TCAT &POSTE *TCAT 'J5')) +
+                          OBJTYPE(*FILE)
+        CRTDUPOBJ  OBJ('QASY' *TCAT &POSTE *TCAT 'J5') +
+                           FROMLIB(QSYS) OBJTYPE(*FILE) TOLIB(&LIB) +
+                           NEWOBJ(&POSTE *TCAT &AA *TCAT &MM *TCAT &JJ)
+                           MONMSG CPF2130
+              CHGOBJD    OBJ(&LIB/(&POSTE *TCAT &AA *TCAT &MM *TCAT +
+                           &JJ)) OBJTYPE(*FILE) TEXT('FORMAT : ' +
+                           *TCAT 'DATE :' *BCAT &POSTE *BCAT &AA +
+                           *TCAT &MM *TCAT &JJ)
+              DSPJRN     JRN(QAUDJRN) FROMTIME(&DAT 000001) +
+                           TOTIME(&DAT 235959) ENTTYP(&POSTE) +
+                           OUTPUT(*OUTFILE) OUTFILFMT(*TYPE5) +
+                           OUTFILE(&LIB/(&POSTE *TCAT &AA *TCAT &MM +
+                           *TCAT &JJ))
+                           MONMSG CPF7062
+  /* SUPPRESSION SI FICHIER VIDE */
+              RTVMBRD    FILE(&LIB/(&POSTE *TCAT &AA *TCAT &MM *TCAT +
+                           &JJ)) NBRCURRCD(&NBR)
+              IF         COND(&NBR *EQ 0) THEN(DO)
+             DLTF       FILE(&LIB/(&POSTE *TCAT &AA *TCAT &MM *TCAT +
+                          &JJ))
+                           ENDDO
+                           ENDPGM

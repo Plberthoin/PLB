@@ -1,0 +1,25 @@
+pgm parm(&lib)
+dcl &lib *char 10
+dclf qadspobj
+chkobj &lib  *lib
+monmsg cpf9801 exec(do)
+             SNDUSRMSG  MSG('bibliothèque , ' *bcat &lib *bcat +
+                          'inexistante') msgtype(*info)
+             return
+             enddo
+             DSPOBJD    OBJ(&LIB/*ALL) OBJTYPE(*JRN) +
+                          OUTPUT(*OUTFILE) OUTFILE(QTEMP/WADSPOBJ)
+             OVRDBF     FILE(QADSPOBJ) TOFILE(QTEMP/WADSPOBJ) +
+                          LVLCHK(*NO)
+boucle:
+rcvf
+monmsg cpf0864 exec(goto suite)
+/* détachement du récepteur */
+             CHGJRN     JRN(&LIB/&ODOBNM) JRNRCV(*GEN)
+             monmsg cpf0000 exec(do)
+             SNDUSRMSG  MSG('Changement récepteur impossible pour , +
+                          ' *BCAT &ODOBNM)  msgtype(*info)
+             enddo
+goto boucle
+suite:
+             endpgm

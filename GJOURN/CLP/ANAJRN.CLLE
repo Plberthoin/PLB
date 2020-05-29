@@ -1,0 +1,118 @@
+/*                                                                 */
+/* ANALYSE DES DONN√ES D'UN JOURNAL                                */
+/* FICHIER √         ANALYSE DANS QTEMP                            */
+/*                                                                 */
+/* REMARQUE :                                                      */
+/*                                                                 */
+/* LE PROGRAMME √ BESOIN COMPILATEUR RGPILE POUR CR√ER LE FICHIER  */
+/* ZON√S                                                           */
+/* LE SOURCE DU PROGRAMME EST DANS SOURCES DE DBJRN MEMBRE ANAJRNR2*/
+/*                                                                 */
+/*-----------------------------------------------------------------*/
+PGM PARM(&FIC &LIB &JRN &LIBJ &FICO &BIBO &FDAT &FHRE  &TDAT &THRE )
+DCL &FIC *CHAR 10 /* FICHIER BASE DE DONN√ES                       */
+DCL &LIB *CHAR 10 /* BIBLIOTHEQUE BASE DE DONN√ES                  */
+DCL &JRN *CHAR 10 /* JOURNAL                                       */
+DCL &LIBJ *CHAR 10 /* BIBLIOTHEQUE JOURNAL                         */
+DCL &FICO *CHAR 10 /* FICHIER RESULTAT                              */
+DCL &BIBO *CHAR 10 /* BIBLIOTHEQUE RESULTAT                         */
+DCL &NBR *DEC  10 /* NOMBRE D'ENREG A TRAITER                      */
+DCL &NBA *CHAR 10 /* NOMBRE D'ENREG A TRAITER   ALPHA              */
+DCL &FDAT *CHAR 6
+DCL &FHRE *CHAR 6
+DCL &TDAT *CHAR 6
+DCL &THRE *CHAR 6
+DCL &USER *CHAR 10
+DCL &DATE *CHAR 6
+DCL &TIME *CHAR 6
+/* ADDLIBLE BERTHOIN           */
+/* MONMSG CPF0000              */
+/* SUPPRESSION DES FICHIERS DE TRAVAIL */
+DLTF QTEMP/ANALYSE
+MONMSG CPF0000
+DLTF QTEMP/MODELE
+MONMSG CPF0000
+DLTF QTEMP/SORTIE
+MONMSG CPF0000
+/*--------------------------------------*/
+/* GENERATION DU FICHIER ANALYSE ZON√ES */
+/*--------------------------------------*/
+CALL ANAJRNR1 (&FIC &LIB)
+/* GENERATION DU FICHIER MODELE POUR GENERATION MODELE DS */
+             CRTDUPOBJ  OBJ(&FIC) FROMLIB(&LIB) OBJTYPE(*FILE) +
+                          TOLIB(QTEMP) NEWOBJ(MODELE) CST(*NO) TRG(*NO)
+/* GENERATION DU FICHIER DES SORTIES DE JRN */
+/* SANS DATE DEBUT/FIN                      */
+             IF         COND(&FDAT *EQ '*ALL') THEN(DO)
+             DSPJRN     JRN(&LIBJ/&JRN) FILE((&LIB/&FIC *FIRST)) +
+                          RCVRNG(*CURCHAIN) ENTTYP(*RCD) +
+                          OUTPUT(*OUTFILE) OUTFILE(QTEMP/SORTIE) +
+                          ENTDTALEN(*CALC)
+                          MONMSG CPF0000 EXEC(DO)
+             SNDUSRMSG  MSG('Probl√©me d''acc√®s au journal') +
+                          MSGTYPE(*INFO)
+                          GOTO FIN
+                          ENDDO
+                          ENDDO
+                          ELSE DO
+/* AVEC DATE DEBUT/FIN                      */
+             DSPJRN     JRN(&LIBJ/&JRN) FILE((&LIB/&FIC *FIRST)) +
+                          RCVRNG(*CURCHAIN) FROMTIME(&FDAT &FHRE) +
+                          TOTIME(&TDAT &THRE) ENTTYP(*RCD) +
+                          OUTPUT(*OUTFILE) OUTFILE(QTEMP/SORTIE) +
+                          ENTDTALEN(*CALC)
+                          MONMSG CPF0000 EXEC(DO)
+             SNDUSRMSG  MSG('Probl√©me d''acc√®s au journal')  +
+                          MSGTYPE(*INFO)
+                          GOTO FIN
+                          ENDDO
+                          ENDDO
+             RTVMBRD    FILE(QTEMP/SORTIE) NBRCURRCD(&NBR)
+/* SI AU MOINS UN POSTE √ ANALYSER */
+             IF (&NBR > 0) THEN(DO)
+/* GENERATION DU PROGRAMME D'ALIMENTATION */
+             CRTBNDRPG  PGM(QTEMP/ANAJRNR2) +
+                          SRCFILE(DBJRN/SOURCES) SRCMBR(ANAJRNR2)
+             MONMSG CPF0000 EXEC(DO)
+
+             SNDUSRMSG  MSG('Compile du programme d''analyse en +
+                          erreur') MSGTYPE(*INFO)
+                          GOTO FIN
+ENDDO
+/* APPEL DU PROGRAMME D'ALIMENTATION ANALYSE */
+CLRPFM QTEMP/ANALYSE
+             CHGOBJD    OBJ(QTEMP/ANALYSE) OBJTYPE(*FILE) TEXT(&FIC +
+                          *BCAT &FDAT *CAT '/' *CAT &FHRE *BCAT +
+                          &TDAT *CAT '/' *CAT &THRE)
+
+CALL QTEMP/ANAJRNR2
+             RTVMBRD    FILE(QTEMP/ANALYSE) NBRCURRCD(&NBR)
+             CHGVAR &NBA &NBR
+ IF (&FICO = '*NONE') THEN(DO)
+             SNDUSRMSG  MSG('Fichier Analyse g√©n√©r√© (' *TCAT &NBA +
+                          *TCAT ') enregistrements dans qtemp +
+                          <select * from analyse> ou <select * from +
+                          anajrn> uniquement les infos de +
+         QTEMP/ANALYSE    journalisation') MSGTYPE(*INFO)
+ ENDDO
+ ELSE DO
+ DLTF &BIBO/&FICO
+ MONMSG CPF2100
+             CRTDUPOBJ  OBJ(ANALYSE) FROMLIB(QTEMP) OBJTYPE(*FILE) +
+                          TOLIB(&BIBO) NEWOBJ(&FICO) DATA(*YES)
+                          RTVSYSVAL QDATE &DATE
+                          RTVSYSVAL QTIME &TIME
+                          RTVJOBA USER(&USER)
+             CHGOBJD    OBJ(QTEMP/ANALYSE) OBJTYPE(*FILE) TEXT(&DATE +
+                          *BCAT &TIME *BCAT &USER *BCAT &FICO)
+             SNDUSRMSG  MSG('Fichier' *BCAT &FICO *BCAT &BIBO *BCAT +
+                          'g√©n√©r√© (' *TCAT &NBA *TCAT ') +
+                          enregistrements') MSGTYPE(*INFO)
+ ENDDO
+ENDDO
+ELSE DO
+             SNDUSRMSG  MSG('Pas de poste √† analyser') MSGTYPE(*INFO)
+                          GOTO FIN
+ENDDO
+FIN:
+ENDPGM

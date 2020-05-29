@@ -1,0 +1,12 @@
+pgm  /*-------------------------------------------------------------*/
+/* changement de recepteurs sur une liste de bibliothèque           */
+/*------------------------------------------------------------------*/
+dclf lstlib
+boucle:
+rcvf
+monmsg cpf0864 exec(goto suite)
+/* détachement du récepteur */
+CHGJRNRCV &biblio
+goto boucle
+suite:
+             endpgm

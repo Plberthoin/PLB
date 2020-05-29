@@ -1,0 +1,34 @@
+pgm parm(&mail)
+dcl &mail *char (50)  /* Mail du destinataire */
+dcl &nbr *dec (10 0)
+/*-------------------------------------------------------------------*/
+/* Permet de recevoir un mail pour les controles de validation       */
+/* Indéterminés                                                      */
+/* à remplacer par api QTNRCMTI       */
+/*-------------------------------------------------------------------*/
+             CHGJOB     CCSID(1147)
+WRKCMTDFN JOB(*ALL) STATUS(*UNDECIDED) OUTPUT(*PRINT)
+             CRTPF      FILE(QTEMP/W132) RCDLEN(132)
+             monmsg     CPF7302
+             CPYSPLF    FILE(QPCMTCTL) TOFILE(QTEMP/W132) +
+                          SPLNBR(*LAST) MBROPT(*replace)
+             dltSPLF    FILE(QPCMTCTL)                    SPLNBR(*LAST)
+             RTVMBRD    FILE(QTEMP/W132) NBRCURRCD(&NBR)
+             if cond(&nbr *gt 3 ) then(do)
+             CPYTOSTMF  +
+                          FROMMBR('/qsys.lib/qtemp.lib/w132.file/w132+
+                          .mbr') TOSTMF(commit_undecided.txt) +
+                          STMFOPT(*REPLACE) STMFCCSID(*PCASCII)
+             SNDSMTPEMM RCP((&MAIL)) SUBJECT('Contrôle de validation +
+                          indéterminé') NOTE('ci joint le fichier +
+                          avec les informations') +
+                          ATTACH((COMMIT_UNDECIDED.TXT)) CONTENT(*HTML)
+             enddo
+             else do
+             SNDSMTPEMM RCP((&MAIL)) SUBJECT('Contrôle de validation +
+                          indéterminé') NOTE('Pas de contrôle +
+                          indéterminé') CONTENT(*HTML)
+             SNDUSRMSG  MSG('Pas de Contrôle de validation +
+                          indéterminé') MSGTYPE(*INFO)
+             enddo
+endpgm
