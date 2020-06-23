@@ -1,0 +1,8 @@
+pgm /*--------------------------------------------------------------*/
+/* test de lecture des variables d'environnement                    */
+/*------------------------------------------------------------------*/
+dcl &var *char 50   ('QIBM_SNDSPLF_OPT')
+dcl &value *char 256
+             RTVENVVAR  ENVVAR(&VAR) VALUE(&VALUE)
+             SNDUSRMSG  MSG(&VALUE) MSGTYPE(*INFO)
+endpgm
