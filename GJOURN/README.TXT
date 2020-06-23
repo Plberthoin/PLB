@@ -1,15 +1,15 @@
 *---------------------------------------------------------------------*
-* Ce Logiciel, c'est des outils pour vous aidez à gérer votre         *
+* Ce Logiciel, c'est des outils pour vous aidez Ã  gÃ©rer votre         *
 *    Journalisation                                                   *
 *---------------------------------------------------------------------*
 
-  Il est basé sur la journalisation
+  Il est basÃ© sur la journalisation
   Vous pouvez :
     Voir les postes de journaux en claire pour un fichier
-    Vous pouvez superviser les transcations à l'état indéterminé
-    Vous pouvez détacher les recepteurs de journaux pour éviter les
-        éviter d'avoir des recepteurs à l'état partiel avec des
-        modifications de données
+    Vous pouvez superviser les transcations Ã  l'Ã©tat indÃ©terminÃ©
+    Vous pouvez dÃ©tacher les recepteurs de journaux pour Ã©viter les
+        Ã©viter d'avoir des recepteurs Ã  l'Ã©tat partiel avec des
+        modifications de donnÃ©es
 
 *** Listes  des sources
 CLPANAJRN    CLLE    ANALYSE d un journal
@@ -19,15 +19,13 @@ CLPCHGJRNRCV CLLE    changement de recepteur pour une bib
 CLPCKHCMT    CLLE    test des controles de validation
 CLPDSPAUDIT  CLLE    Affichage journaux d audit en outfile
 CMDANAJRN    CMD     Analyse d un journal
-CMDCHGJRNLST CMD     Détachement récepteur liste de bibliothèques
-CMDCHGJRNRCV CMD     Détachement récepteur d une bibliothèque
+CMDCHGJRNLST CMD     DÃ©tachement rÃ©cepteur liste de bibliothÃ¨ques
+CMDCHGJRNRCV CMD     DÃ©tachement rÃ©cepteur d une bibliothÃ¨que
 CMDCKHCMT    CMD     test controle de validation
 CMDDSPAUDIT  CMD     affichage des postes d audit
 RPGANAJRN1   SQLRPGLEAnalyse d un journal
 RPGANAJRN2   RPGLE   Analyse d un journal
-
-SQLGPARAM    SQL     Paramètres
-SQLLSTLIB    SQL     liste de bibliothèque
+SQLLSTLIB    SQL     liste de bibliothÃ¨que
 TXTREADME    TXT     readme do logiciel Gmonifs
 TXTVERSION   TXT     historiques des versions
 *** Fin listes des sources
