@@ -1,0 +1,51 @@
+pgm parm(&lib &images &dlt) /*------------------------------*/
+/* Converti la dtaara QDFTJRN vers les paramètres STRJRNLIB */
+/* Obligatoire en 7.4                                       */
+/* Amélioration ajouter les types *DTAARA et *DTAQ          */
+/*----------------------------------------------------------*/
+dcl &lib *char 10    /* Bibliothèque de la base de données  */
+dcl &images *char 7  /* *BOTH *AFTER                        */
+dcl &dlt    *char 4  /* *YES *NO                            */
+/* Variables de travail */
+dcl &libj *char 10
+dcl &jrn  *char 10
+dcl &Type *char 20
+dcl &pos  *int  4
+             CHKOBJ     OBJ(&LIB) OBJTYPE(*LIB)
+             monmsg cpf9800 exec(do)
+             SNDUSRMSG  MSG('Bibliothèque ,' *BCAT &LIB *BCAT +
+                          'inexistante') MSGTYPE(*INFO)
+                          return
+             enddo
+             monmsg cpf9800 exec(do)
+             CHKOBJ     OBJ(&LIB/QDFTJRN) OBJTYPE(*DTAARA)
+             SNDUSRMSG  MSG('Dtaara QFDTJRN inexistante dans ,' +
+                          *BCAT &LIB) MSGTYPE(*INFO)
+                          return
+             enddo
+             RTVDTAARA  DTAARA(&LIB/QDFTJRN (1 10)) RTNVAR(&LIBJ)
+             RTVDTAARA  DTAARA(&LIB/QDFTJRN (11 10)) RTNVAR(&jrn)
+             RTVDTAARA  DTAARA(&LIB/QDFTJRN (21 20)) RTNVAR(&type)
+  /* démarrage journalisation sur les fichiers */
+             STRJRNLIB  LIB(&LIB) JRN(&LIBJ/&JRN) INHRULES((*FILE +
+                          *ALLOPR *INCLUDE &IMAGES *OPNCLO))
+  /* démarrage journalisation sur les DTAARAs  */
+            CHGVAR     VAR(&POS) VALUE(%SCAN('*DTAARA' &TYPE))
+             if cond(&pos > 0)  then(do)
+             CHGJRNOBJ  OBJ((&LIB *LIB)) ATR(*INHRULES) +
+                          INHRULES((*DTAARA *ALLOPR *OMIT *AFTER +
+                          *NONE *OBJDFT))
+             enddo
+  /* démarrage journalisation sur les DTAQs    */
+            CHGVAR     VAR(&POS) VALUE(%SCAN('*DTAQ' &TYPE))
+             if cond(&pos > 0)  then(do)
+             CHGJRNOBJ  OBJ((&LIB *LIB)) ATR(*INHRULES) +
+                          INHRULES((*DTAQ   *ALLOPR *OMIT *AFTER +
+                          *NONE *OBJDFT))
+             enddo
+             enddo
+     /* ici journalisation des autres objets */
+             if cond(&dlt = '*YES') then(do)
+             DLTDTAARA  DTAARA(&LIB/QDFTJRN)
+             enddo
+endpgm

@@ -1,0 +1,8 @@
+             CMD        PROMPT('Migration JRN lib')
+             PARM       KWD(LIB) TYPE(*NAME) LEN(10) MIN(1) +
+                          PROMPT('Bibliothèque')
+             PARM       KWD(IMAGES) TYPE(*CHAR) LEN(7) RSTD(*YES) +
+                          DFT(*BOTH) VALUES(*BOTH *AFTER) +
+                          PROMPT('Images')
+             PARM       KWD(DELETE) TYPE(*CHAR) LEN(4) RSTD(*YES) +
+                          DFT(*NO) VALUES(*NO *YES) PROMPT(IMAGES)
