@@ -1,5 +1,5 @@
 *---------------------------------------------------------------------*
-* Ce Logiciel regroupe 5 commandes pour vous aidez sur l'IBM ----------------------------------------------------------------------*
+* Ce Logiciel regroupe 5 commandes pour vous aidez sur l'IBM          * *---------------------------------------------------------------------*
 
   DSPDATQ      Affichage d'une dtaq
   WRKSAVF      Gestion des Savfs
