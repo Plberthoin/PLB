@@ -1,0 +1,12 @@
+PGM        PARM(&USR)
+             DCLPRCOPT  USRPRF(*OWNER)
+dcl &usr    *char 10
+             CHKOBJ     OBJ(&USR) OBJTYPE(*USRPRF)
+             monmsg cpf9801 exec(do)
+             SNDUSRMSG  MSG('Profil,' *BCAT &USR *BCAT 'inexistant') +
+                          MSGTYPE(*INFO)
+             return
+             enddo
+             CHGUSRPRF  USRPRF(&USR   ) PASSWORD(&USR   ) +
+                          PWDEXP(*YES) STATUS(*ENABLED)
+endpgm
