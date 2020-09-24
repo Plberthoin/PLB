@@ -1,4 +1,4 @@
-*---------------------------------------------------------------------*
+﻿*---------------------------------------------------------------------*
 * Ce Logiciel, c'est des outils pour vous aidez à gérer votre         *
 *    Journalisation                                                   *
 *---------------------------------------------------------------------*
@@ -26,6 +26,6 @@ CMDDSPAUDIT  CMD     affichage des postes d audit
 RPGANAJRN1   SQLRPGLEAnalyse d un journal
 RPGANAJRN2   RPGLE   Analyse d un journal
 SQLLSTLIB    SQL     liste de bibliothèque
-TXTREADME    TXT     readme do logiciel Gmonifs
+TXTREADME    TXT     readme do logiciel Gjourn
 TXTVERSION   TXT     historiques des versions
 *** Fin listes des sources
