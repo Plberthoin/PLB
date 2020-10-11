@@ -1,0 +1,50 @@
+pgm parm(&mail &pwd) /*----------------------------------------------*/
+/*                                                                   */
+/* Contrôle des dates de certificats qui expirent dans 1 mois        */
+/*                                                                   */
+/*-------------------------------------------------------------------*/
+dcl &mail  *char 50
+dcl &pwd   *char 50
+dcl &nbr *dec  10
+dcl &sql   *char 1024
+             CHGJOB     CCSID(1147)
+/* suppression du fichier */
+             RUNSQL     SQL('drop   table qtemp/lstcrt') COMMIT(*NONE)
+monmsg SQL9010
+/* formatage de la requête SQL */
+             CHGVAR     VAR(&SQL) VALUE('create table qtemp/lstcrt +
+                          as ( SELECT Substr(CERTIFICATE_LABEL, 1, +
+                          50) as label, VALIDITY_END as date_de_fin +
+                          FROM +
+                          TABLE(QSYS2.CERTIFICATE_INFO(CERTIFICATE_ST+
+                          ORE_PASSWORD=>''' *TCAT &PWD *TCAT ''')) +
+                          WHERE VALIDITY_END < CURRENT DATE + 1 +
+                          MONTH  ) with data ')
+             RUNSQL     SQL(&sql)  +
+                          COMMIT(*NONE)
+      monmsg (sql0000 SQ20000 SQ30000) exec(do)
+/* si impossible de récupérer les informations PTF */
+             SNDUSRMSG  MSG('Impossible de récupérer la  liste  des +
+                          certificats qui vont expirer') MSGTYPE(*INFO)
+return
+enddo
+             RTVMBRD    FILE(QTEMP/lstcrt) NBRCURRCD(&NBR)
+if  cond(&nbr > 0) then(do)
+             CPYTOIMPF  FROMFILE(qtemp/lstcrt) +
+                          TOSTMF(Liste_certificat.csv) +
+                          MBROPT(*REPLACE) STMFCCSID(*PCASCII) +
+                          RCDDLM(*CRLF) STRDLM(*NONE) FLDDLM(';') +
+                          ADDCOLNAM(*SQL)
+/* envoi du mail */
+             SNDSMTPEMM RCP((&MAIL)) SUBJECT('Liste des certificats +
+                          qui vont expirer') NOTE('Ci-joint, le +
+                          fichier qui contient cette liste') +
+                          ATTACH((LISTE_CERTIFICAT.CSV)) CONTENT(*HTML)
+enddo
+else do
+/* si pas de nouveau groupe à appliquer */
+             SNDSMTPEMM RCP((&MAIL)) SUBJECT('Tous vos certificats +
+                          sont à jour') NOTE('Pas de renouvellement +
+                          à faire') CONTENT(*HTML)
+enddo
+endpgm
