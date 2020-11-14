@@ -80,10 +80,6 @@ CLPDLTNODENV CLLE    Suppression environnement nodejs
 CLPENDNODENV CLLE    Arrêt de l environnement NODEJS
 CLPENDNODSES CLLE    Arrêt d une session NODEJS
 CLPGNODE     CLLE    Lancement menu GNODE
-CLPGPARAMC   CLLE    Chargement des paramètres
-CLPINCGPARAM1CLLE    *Paramètres pour gparam
-CLPINCGPARAM2CLLE    *Lecture    de   gparam
-CLPINIT      CLLE    Paramétrage initial
 CLPRMVNODSES CLLE    Suppression  d une session NODEJS
 CLPRTVLIBPGM CLLE    Recupération bibliothèque du programme
 CLPSTRNODENV CLLE    Démarrage de l environnement NODEJS
@@ -95,8 +91,6 @@ CMDDLTNODENV CMD     Supression environnement NODEJS
 CMDENDNODENV CMD     Arrêt environnement NODEJS
 CMDENDNODSES CMD     Arrêt session nodejs
 CMDGNODE     CMD     Lancement console gnode
-CMDGPARAM    CMD     Gestion des paramètres
-CMDINIT      CMD     Initialisation du logiciel
 CMDLSTNODSES CMD     Gestion des dédinitions de sessions NODEJS
 CMDRMVNODSES CMD     Retrait une session nodejs
 CMDSTRNODENV CMD     Démarrage environnement NODEJS
@@ -105,13 +99,10 @@ CMDWRKNODSES CMD     Gestion des sessions NODEJS
 DDSGNODE     MNUD    Console nodeJS
 DDSGNODEE    DSPF    Console nodeJS pour menu en clle
 DDSGNODEQQ   MNUC    Console nodeJS
-DDSGPARAME   DSPF    Gestion des paramètres
 DDSLSTNODSESEDSPF    Gestion des définitions de session
 DDSWRKNODSES DSPF    Gestion des sessions NODESJS
-RPGGPARAM    SQLRPGLEGestion des paramètres
 RPGLSTNODSES SQLRPGLEGestion des définitons de session
 RPGWRKNODSES SQLRPGLEGestion des sessions NODESJS
-SQLGPARAM    SQL     Paramètres
 SQLLSTNODSES SQL     Listes des sessions node JS
 TXTREADME    TXT     readme do logiciel GNODE
 TXTVERSION   TXT     historiques des versions
