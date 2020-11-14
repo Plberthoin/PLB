@@ -1,0 +1,13 @@
+pgm parm(&pgm &lib)
+/*- Avec SQL as a service -----------------------------*/
+/* SELECT OBJLIB into :lib                             */
+/*  FROM TABLE(QSYS2.OBJECT_STATISTICS('*LIBL','PGM')) */
+/*  where objname = :pgm                               */
+/*-----------------------------------------------------*/
+dcl &pgm *char 10
+dcl &lib *char 10
+             RTVOBJD    OBJ(*LIBL/&PGM) OBJTYPE(*PGM) RTNLIB(&LIB)
+             monmsg cpf0000 exec(do)
+             chgvar &lib '*ERREUR'
+             enddo
+endpgm

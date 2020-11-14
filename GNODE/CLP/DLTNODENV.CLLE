@@ -1,0 +1,29 @@
+pgm &lib /*----------------------------------------------------------*/
+/*  Supression d'un environnement pour NODEJS                        */
+/*-------------------------------------------------------------------*/
+dcl &lib *char 10
+dcl &reponse *char 4
+             CHKOBJ     OBJ(&LIB) OBJTYPE(*LIB)
+            monmsg cpf9800 exec(do)
+             SNDUSRMSG  MSG('Environnement pour node JS ' *bcat +
+                          &lib *bcat 'non trouvé') MSGTYPE(*INFO)
+            return
+            enddo
+/* Confirmation   */
+             SNDUSRMSG  MSG('Voulez vous supprimer l''environnement +
+                 nodejs, ' *BCAT &LIB *bcat '?') VALUES(*YES *NO) +
+                          MSGTYPE(*INQ) MSGRPY(&REPONSE)
+             if (&reponse = '*NO') then(do)
+             return
+             enddo
+             ALCOBJ     OBJ((&LIB/NODEJS *SBSD *EXCL))
+            monmsg cpf0000 exec(do)
+             SNDUSRMSG  MSG('Environnement pour node JS ' *BCAT &LIB +
+                          *BCAT 'Vérouillé, vous devez l''arreter') +
+                          MSGTYPE(*INFO)
+            return
+            enddo
+             dltLIB     LIB(&lib  )
+             SNDUSRMSG  MSG('Environnement pour node JS supprimé') +
+                          MSGTYPE(*INFO)
+endpgm

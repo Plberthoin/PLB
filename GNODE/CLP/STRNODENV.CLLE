@@ -1,0 +1,36 @@
+pgm (&lib &session) /*-----------------------------------------------*/
+/* démarrage de l'environnement node JS                              */
+/*-------------------------------------------------------------------*/
+dcl &lib *char 10
+dcl &session *char 4
+dclf lstnodses
+/* Test si exisntant */
+             CHKOBJ     OBJ(&lib/nodejs) OBJTYPE(*JOBQ)
+             monmsg cpf9800 exec(do)
+             SNDUSRMSG  MSG('Evironnement NODEJS' *BCAT &LIB *BCAT +
+                          'non trouvé') MSGTYPE(*INFO)
+             return
+             enddo
+/* démarrage */
+strsbs &lib/nodejs
+monmsg CPF0000 exec(do)
+             SNDUSRMSG  MSG('Démarrage environnement NODEJS' *BCAT +
+                          &LIB *BCAT 'impossible') MSGTYPE(*INFO)
+             return
+enddo
+/* démarrage auto des sessions */
+if (&session = '*YES') then(do)
+addlible &lib
+monmsg cpf2100
+boucle:
+rcvf
+monmsg cpf0864 exec(goto suite)
+if cond(&start = '*YES') then(do)
+             STRNODSES  SCRIPTE(&SCRIPTE) PORT(&PORT) LIB(&LIB)
+enddo
+goto boucle
+enddo
+suite:
+             SNDUSRMSG  MSG('Environnement NODEJS' *BCAT &LIB *BCAT +
+                          'démarré') MSGTYPE(*INFO)
+endpgm

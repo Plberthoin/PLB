@@ -1,0 +1,17 @@
+pgm (&scripte &port &lib)  /*----------------------------------------*/
+/* Ce programme ajoute  une session NODEJS                           */
+/*-------------------------------------------------------------------*/
+dcl &scripte *char 50  /* scripte js à exécuter */
+dcl &port *char 4      /* port d'ecoute du serveur JS */
+dcl &lib  *char 10
+dcl &dta *char 132
+dcl &id  *char 7
+             RUNSQL     SQL('INSERT INTO ' *BCAT &LIB *TCAT +
+                          '/LSTNODSES VALUES(''' *TCAT &PORT *TCAT +
+  ''' , ''' *TCAT &scripte *tcat ''', ''*YES'')') +
+                          COMMIT(*NONE)
+             MONMSG     MSGID(SQL0000 SQ20000 SQ30000) EXEC(DO)
+             SNDUSRMSG  MSG('Ajout session impossible') MSGTYPE(*INFO)
+                RETURN
+             ENDDO
+endpgm

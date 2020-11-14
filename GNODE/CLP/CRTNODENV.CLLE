@@ -1,0 +1,31 @@
+pgm &lib /*----------------------------------------------------------*/
+/*  Création d'un environnement pour NODEJS                          */
+/*-------------------------------------------------------------------*/
+dcl &lib *char 10
+             CRTLIB     LIB(&lib  ) TEXT('Environnement pour node JS')
+monmsg CPF2111
+             CRTSBSD    SBSD(&lib/NODEJS) POOLS((1 *BASE))
+             monmsg CPF1696
+             CRTJOBQ    JOBQ(&LIB/NODEJS)
+monmsg CPF3323
+             ADDJOBQE   SBSD(&lib/NODEJS) JOBQ(&lib/NODEJS) +
+                          MAXACT(10)
+monmsg CPF1697
+ ADDRTGE SBSD(&lib/NODEJS)   +
+         SEQNBR(9999)          +
+         CMPVAL(*ANY)          +
+         PGM(QCMD)             +
+         CLS(QBATCH)
+monmsg CPF1697
+/* Création du fichier des instances nodejs */
+runsql sql('+
+CREATE or replace TABLE' *bcat &lib *tcat '/lstnodses (+
+  port    CHAR ( 4 ) NOT NULL WITH DEFAULT, +
+  scripte CHAR ( 50) NOT NULL WITH DEFAULT, +
+  start   CHAR ( 4 ) NOT NULL WITH DEFAULT, +
+  PRIMARY KEY (port )) +
+ ') commit(*none)
+             MONMSG     MSGID(SQL0000 SQ20000 SQ30000)
+             SNDUSRMSG  MSG('Environnement pour node JS créé') +
+                          MSGTYPE(*INFO)
+endpgm

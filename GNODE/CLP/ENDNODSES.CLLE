@@ -1,0 +1,37 @@
+pgm (&port &lib ) /*----------------------------------------*/
+/* Ce programme arrete  une session NODEJS                           */
+/*-------------------------------------------------------------------*/
+dcl &port *char 4      /* port d'ecoute du serveur JS */
+dcl &qsh *char 132
+dcl &lib  *char 10
+dcl &dta *char 132
+dcl &id  *char 7
+dcl &job *char 10
+dcl &usr *char 10
+dcl &nbr *char 6
+/* controle de l'existence de la dtaara associée */
+             CHKOBJ     OBJ(&LIB/('NODE' *TCAT &PORT)) OBJTYPE(*DTAARA)
+             monmsg cpf9801 exec(do)
+             SNDUSRMSG  MSG('arrêt session nodejs' *BCAT 'NODE' +
+                          *TCAT &PORT *BCAT 'impossible') +
+                          msgtype(*info)
+             Return
+             enddo
+/* lecture du nom du travail */
+             RTVDTAARA  DTAARA(&LIB/('NODE' *TCAT &PORT) (1 10)) +
+                          RTNVAR(&JOB)
+             RTVDTAARA  DTAARA(&LIB/('NODE' *TCAT &PORT) (11 10)) +
+                          RTNVAR(&usr)
+             RTVDTAARA  DTAARA(&LIB/('NODE' *TCAT &PORT) (21 6)) +
+                          RTNVAR(&nbr)
+/* arrêt du travail */
+             ENDJOB     JOB(&NBR/&USR/&JOB) OPTION(*IMMED)
+             monmsg cpf1300 exec(do)
+             SNDUSRMSG  MSG('arrêt session nodejs' *BCAT 'NODE' +
+                          *TCAT &PORT *BCAT 'impossible') +
+                          msgtype(*info)
+             return
+             enddo
+             DLTDTAARA  DTAARA(&LIB/('NODE' *TCAT &PORT))
+             monmsg cpf2100
+endpgm

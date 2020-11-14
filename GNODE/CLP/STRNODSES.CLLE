@@ -1,0 +1,39 @@
+pgm (&scripte &port &node &lib) /*-----------------------------------*/
+/* Ce programme démarre une session NODEJS                           */
+/*-------------------------------------------------------------------*/
+dcl &node *char 50     /* exécutable nodejs */
+dcl &scripte *char 50  /* scripte js à exécuter */
+dcl &port *char 4      /* port d'ecoute du serveur JS */
+dcl &lib  *char 10
+dcl &qsh *char 132
+dcl &dta *char 132
+dcl &id  *char 7
+/* formatage de la chaine à exécuter */
+chgvar &qsh (&node *bcat &scripte *bcat &port)
+             SBMJOB     CMD(STRQSH CMD(&QSH)) JOB('NODE' *TCAT +
+                          &PORT) JOBQ(&LIB/NODEJS) CCSID(1208)
+             monmsg cpf0000 exec(do)
+             SNDUSRMSG  MSG('démarrage session nodejs' *BCAT 'NODE' +
+                          *TCAT &PORT *BCAT 'impossible') +
+                          MSGTYPE(*INFO)
+             enddo
+             RCVMSG     RMV(*NO) MSGDTA(&DTA) MSGID(&ID)
+             if cond(&id = 'CPC1221') then(do)
+             CRTDTAARA  DTAARA(&LIB/('NODE' *TCAT &PORT)) +
+                       TYPE(*CHAR) LEN(100) VALUE(%SST(&DTA 1 +
+                          26)) TEXT('Status pour' *bcat 'NODE' +
+                          *TCAT &PORT )
+             monmsg CPF1023 exec(do)
+             CHGDTAARA  DTAARA(&LIB/('NODE' *TCAT &PORT) *ALL) +
+                          VALUE(%SST(&DTA 1 26))
+             enddo
+             CHGDTAARA  DTAARA(&LIB/('NODE' *TCAT &PORT) (27 50)) +
+                          VALUE(&SCRIPTE)
+             sndusrmsg ('session nodejs' *bcat 'NODE' *TCAT &PORT +
+             *bcat 'démarrée')  msgtype(*info)
+             enddo
+             else do
+             CHGDTAARA  DTAARA(&LIB/('NODE' *TCAT &PORT) *ALL) +
+                          VALUE('*NONE')
+             enddo
+endpgm

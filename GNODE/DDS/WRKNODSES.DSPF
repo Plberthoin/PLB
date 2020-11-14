@@ -1,0 +1,47 @@
+     A*%%TS  SD  20201111  113657  QSECOFR     REL-V7R4M0  5770-WDS
+     A*%%EC
+     A                                      DSPSIZ(24 80 *DS3)
+     A                                      CA03(03)
+     A          R SFL01                     SFL
+     A*%%TS  SD  20201110  225342  QSECOFR     REL-V7R4M0  5770-WDS
+     A            OPT01          1A  B  7  4VALUES('4' ' ')
+     A            JOBNAME       10A  O  7  6
+     A            JOUSER        10A  O  7 17
+     A            JOBNBR         6A  O  7 28
+     A            PORT           4A  O  7 35
+     A            LIBRARY       10A  O  7 40
+     A            SCRIPTE       30   O  7 51
+     A*
+     A          R CTL01                     SFLCTL(SFL01)
+     A*%%TS  SD  20201111  113657  QSECOFR     REL-V7R4M0  5770-WDS
+     A                                      SFLSIZ(0015)
+     A                                      SFLPAG(0014)
+     A                                      CF05(05)
+     A                                      CA06(06)
+     A                                      OVERLAY
+     A  42                                  SFLDSP
+     A  41                                  SFLDSPCTL
+     A  40                                  SFLCLR
+     A            NUM01          4S 0H      SFLRCDNBR(CURSOR)
+     A                                  1  2USER
+     A                                  1 25'Gestion des sessions NODEJS'
+     A                                      DSPATR(HI)
+     A                                  1 71DATE
+     A                                      EDTCDE(Y)
+     A                                  2  2SYSNAME
+     A                                  2 71TIME
+     A                                  5  4'4=Arrêter'
+     A                                      COLOR(BLU)
+     A                                  6  4'  Profil     User       Numéro Por-
+     A                                      t Biblio.    Scripte               -
+     A                                            '
+     A                                      DSPATR(HI)
+     A                                  3 25'Environnement :'
+     A            W_ENV         10A  O  3 41DSPATR(HI)
+     A                                  4 25'Status        :'
+     A            W_STATUS      10A  O  4 41DSPATR(HI)
+     A          R FMT01
+     A*%%TS  SD  20200813  110925  DT          REL-V7R4M0  5770-WDS
+     A                                 23  3'F3=Quitter  F5=Réafficher  F6=Crée-
+     A                                      r'
+     A                                      COLOR(BLU)

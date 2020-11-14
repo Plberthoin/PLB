@@ -1,0 +1,44 @@
+     A*%%TS  SD  20201114  101002  QSECOFR     REL-V7R4M0  5770-WDS
+     A* Menu de format libre : GNODE
+     A*%%EC
+     A                                      DSPSIZ(24 80 *DS3                  -
+     A                                             27 132 *DS4)
+     A                                      CHGINPDFT
+     A                                      INDARA
+     A                                      PRINT(*LIBL/QSYSPRT)
+     A                                      CA03(03)
+     A          R GNODE
+     A*%%TS  SD  20201114  101002  QSECOFR     REL-V7R4M0  5770-WDS
+     A                                      DSPMOD(*DS3)
+     A                                      LOCK
+     A                                      SLNO(01)
+     A                                      CLRL(*ALL)
+     A                                      ALWROL
+     A                                      HELP
+     A                                      HOME
+     A                                      HLPRTN
+     A                                  1  2'GNODE'
+     A                                      COLOR(BLU)
+     A                                  1 34'GNODE Menu'
+     A                                      DSPATR(HI)
+     A                                  3  2'Choisir une des options suivantes -
+     A                                      :'
+     A                                      COLOR(BLU)
+     A                                  5  7'1.'
+     A                                  6  7'2.'
+     A                                  7  7'3.'
+     A                                  8  7'4.'
+     A                                  9  7'5.'
+     A* CMDPROMPT  Ne pas supprimer cette spécification DDS.
+     A                                 19  2'Option ou commande                -
+     A                                          '
+     A                                  5 11'Paramétrage'
+     A                                  6 11'Création d''un environnement'
+     A                                  7 11'Démarrage d''un environnement'
+     A                                  8 11'Gestion des définitions'
+     A                                  9 11'Gestion des instances'
+     A                                 10  7'6.  Démarrage d''une session'
+     A                                 11  7'7.  Arrêt d''une session'
+     A                                 12  7'8.'
+     A                                 12 11'Arrêt d''un environnement'
+     A            OPTION         1N 0B 20  7

@@ -1,0 +1,34 @@
+pgm (&port &scripte &session &lib) /*--------------------------------*/
+/* Ce programme change  une session NODEJS                           */
+/*-------------------------------------------------------------------*/
+dcl &scripte *char 50  /* scripte js à exécuter */
+dcl &port *char 4      /* port d'ecoute du serveur JS */
+dcl &session *char 4   /* Démarrage */
+dcl &lib  *char 10
+dcl &dta *char 132
+dcl &id  *char 7
+if cond(&scripte = '*SAME') then(do)
+             RUNSQL     SQL('UPDATE' *BCAT &LIB *TCAT '/LSTNODSES +
+                          SET START = ''' *TCAT &SESSION *TCAT +
+ ''' WHERE PORT =''' *tcat &port *tcat '''') COMMIT(*NONE)
+             MONMSG     MSGID(SQL0000 SQ20000 SQ30000) EXEC(DO)
+             SNDUSRMSG  MSG('Modification session impossible') +
+                          MSGTYPE(*INFO)
+                RETURN
+enddo
+enddo
+else do
+             RUNSQL     SQL('UPDATE' *BCAT &LIB *TCAT '/LSTNODSES +
+                          SET START = ''' *TCAT &SESSION *TCAT ''', +
+                          SCRIPTE = ''' *TCAT &SCRIPTE *TCAT ''' +
+                          WHERE PORT =''' *TCAT &PORT *TCAT '''') +
+                          COMMIT(*NONE)
+             MONMSG     MSGID(SQL0000 SQ20000 SQ30000) EXEC(DO)
+             SNDUSRMSG  MSG('Modification session impossible') +
+                          MSGTYPE(*INFO)
+                RETURN
+enddo
+enddo
+             SNDUSRMSG  MSG('Modification session effectuée ') +
+                          MSGTYPE(*INFO)
+endpgm

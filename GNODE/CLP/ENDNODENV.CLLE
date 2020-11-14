@@ -1,0 +1,21 @@
+pgm &lib  /*---------------------------------------------------------*/
+/* Arrêt de l'environnement node JS                                  */
+/*-------------------------------------------------------------------*/
+dcl &lib *char 10
+/* Test si exisntant */
+             CHKOBJ     OBJ(&lib/nodejs) OBJTYPE(*JOBQ)
+             monmsg cpf9800 exec(do)
+             SNDUSRMSG  MSG('Evironnement NODEJS' *BCAT &LIB *BCAT +
+                          'non trouvé') MSGTYPE(*INFO)
+             return
+             enddo
+/* Arrêt */
+endsbs      nodejs
+monmsg CPF1054 exec(do)
+enddo
+/* suppression des dtaaras des jobs */
+             DLTDTAARA  DTAARA(&LIB/NODE*)
+             monmsg cpf0000
+             SNDUSRMSG  MSG('Environnement NODEJS' *BCAT +
+                          &LIB *BCAT 'Arrêté') MSGTYPE(*INFO)
+endpgm

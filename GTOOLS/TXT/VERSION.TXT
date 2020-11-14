@@ -1,5 +1,0 @@
-*
-*  Historique des versions
-*
-0100
-Version de base

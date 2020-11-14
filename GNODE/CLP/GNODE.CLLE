@@ -1,0 +1,41 @@
+pgm /* lancer le menu gnode */
+dclf gnodee
+/* test si menu existant */
+chkobj gnode *menu
+monmsg cpf9801 exec(goto affich)
+go gnode
+return
+affich:
+/* affichage du format écran */
+             SNDRCVF    RCDFMT(GNODE)
+             IF         COND(*NOT &IN03) THEN(DO)
+             select
+             WHEN       COND(&OPTION = 1) THEN(DO)
+     gparam
+             enddo
+             WHEN       COND(&OPTION = 2) THEN(DO)
+     ?crtnodenv
+             enddo
+             WHEN       COND(&OPTION = 3) THEN(DO)
+     ?strnodenv
+             enddo
+             WHEN       COND(&OPTION = 4) THEN(DO)
+     ?lstnodses
+             enddo
+             WHEN       COND(&OPTION = 5) THEN(DO)
+     ?wrknodses
+             enddo
+             WHEN       COND(&OPTION = 6) THEN(DO)
+     ?strnodses
+             enddo
+             WHEN       COND(&OPTION = 7) THEN(DO)
+     ?endnodses
+             enddo
+             WHEN       COND(&OPTION = 8) THEN(DO)
+     ?ENDNODENV
+             enddo
+             endselect
+             chgvar &option 0
+             goto affich
+             enddo
+endpgm
