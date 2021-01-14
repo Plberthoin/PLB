@@ -1,0 +1,165 @@
+     A*%%TS  SD  20200909  143334  THIERRY_MO  REL-V7R3M0  5770-WDS
+     A*%%EC
+     A                                      DSPSIZ(27 132 *DS4)
+     A                                      INDARA
+     A          R SFL01                     SFL
+     A*%%TS  SD  20200908  134948  THIERRY_MO  REL-V7R3M0  5770-WDS
+     A            OPT01          1A  B  6  2
+     A            DTA100       100A  O  6 11
+     A            POS           20S 0H
+     A            ETIME          8A  O  6124
+     A            EDATE         10A  O  6113
+     A            CLE01          4Y 0O  6  5EDTCDE(3)
+     A*
+     A          R CTL01                     SFLCTL(SFL01)
+     A*%%TS  SD  20200908  134948  THIERRY_MO  REL-V7R3M0  5770-WDS
+     A                                      SFLSIZ(0019)
+     A                                      SFLPAG(0018)
+     A                                      CA03
+     A                                      CF05
+     A                                      OVERLAY
+     A  42                                  SFLDSP
+     A  41                                  SFLDSPCTL
+     A  40                                  SFLCLR
+     A  42                                  SFLEND(*MORE)
+     A            NUM01          4S 0H      SFLRCDNBR(CURSOR)
+     A                                  1  2USER
+     A                                  1 55'Affichage d''une DTAQ    '
+     A                                      DSPATR(HI)
+     A                                  1115DATE
+     A                                      EDTCDE(Y)
+     A                                  1 14SYSNAME
+     A                                  1124TIME
+     A                                  4  2'5=Détail Message '
+     A                                      COLOR(BLU)
+     A                                  5  2'   Donnée                         -
+     A                                                                         -
+     A                                                                         -
+     A                                                   DTAQ         '
+     A                                      DSPATR(HI)
+     A                                  2  2'Dtaq :'
+     A                                      DSPATR(HI)
+     A                                  2 56'Nombre de poste :'
+     A                                      DSPATR(HI)
+     A            NBPOSTE        5Y 0O  2 74EDTCDE(3)
+     A                                  2 83'Longueur maximun du poste :'
+     A                                      DSPATR(HI)
+     A            LENPOSTE       5Y 0O  2111EDTCDE(3)
+     A            DTQ           21A  O  2  9
+     A                                  2 37'Sequence :'
+     A                                      DSPATR(HI)
+     A            SEQ            6A  O  2 48
+     A                                  4112'   Arrivée dans la  '
+     A                                      DSPATR(HI)
+     A  80                              3 56'Longeur de la clé:'
+     A                                      DSPATR(HI)
+     A  80        KEYLEN         3Y 0O  3 76EDTCDE(3)
+     A  81                              3 83'Id emetteur :'
+     A                                      DSPATR(HI)
+     A  81        IDEM           4   O  3 97
+     A          R FMT01
+     A*%%TS  SD  20200907  140222  THIERRY_MO  REL-V7R3M0  5770-WDS
+     A                                 25  3'F3=Quitter F5=Réafficher'
+     A                                      COLOR(BLU)
+     A          R SFL02                     SFL
+     A*%%TS  SD  20200909  120553  THIERRY_MO  REL-V7R3M0  5770-WDS
+     A            ENTRY          5  0O  9  2EDTCDE(3)
+     A  11                                  DSPATR(ND)
+     A            DTA125       125A  O  9  8
+     A          R CTL02                     SFLCTL(SFL02)
+     A*%%TS  SD  20200909  143334  THIERRY_MO  REL-V7R3M0  5770-WDS
+     A                                      SFLSIZ(0016)
+     A                                      SFLPAG(0015)
+     A                                      CF10
+     A                                      CA12
+     A  80                                  CF11
+     A                                      OVERLAY
+     A  52                                  SFLDSP
+     A  51                                  SFLDSPCTL
+     A  50                                  SFLCLR
+     A  52                                  SFLEND(*MORE)
+     A            NUM02          4S 0H      SFLRCDNBR(CURSOR)
+     A                                  1 56'Détail du poste      '
+     A                                      DSPATR(HI)
+     A                                  1115DATE
+     A                                      EDTCDE(Y)
+     A                                  1124TIME
+     A                                  1  2USER
+     A                                  1 14SYSNAME
+     A                                  2  2'Dtaq :'
+     A                                      DSPATR(HI)
+     A                                  2 56'Nombre de poste :'
+     A                                      DSPATR(HI)
+     A            NBPOSTE        5Y 0O  2 74EDTCDE(3)
+     A                                  2 83'Longueur maximun du poste :'
+     A                                      DSPATR(HI)
+     A            LENPOSTE       5Y 0O  2111EDTCDE(3)
+     A            DTQ           21A  O  2  9
+     A                                  2 37'Sequence :'
+     A                                      DSPATR(HI)
+     A            SEQ            6A  O  2 48
+     A  80                              3 56'Longeur de la clé:'
+     A                                      DSPATR(HI)
+     A  80        KEYLEN         3Y 0O  3 76EDTCDE(3)
+     A  80        KEYVAL       256A  O  5  2
+     A  80                              4  2'Valeur de la clé :'
+     A                                      DSPATR(HI)
+     A                                  7  2'Poste:'
+     A                                      DSPATR(HI)
+     A            POSTE          4Y 0O  7  9EDTCDE(3)
+     A                                  7 23'  Position'
+     A                                      DSPATR(HI)
+     A            POSIT          5Y 0B  7 34EDTCDE(3)
+     A                                      DSPATR(HI)
+     A                                      CHANGE(30)
+     A                                  8  8'....+....1....+....2....+....3....-
+     A                                      +....4....+....5....+....6....+....-
+     A                                      7....+....8....+....9....+....0....-
+     A                                      +....1....+....2....+'
+     A  81                              3 83'Id emetteur :'
+     A                                      DSPATR(HI)
+     A  81        IDEM$         36A  O  3 97
+     A                                  8  2'Post'
+     A                                  3  2'Arrivé le :'
+     A                                      DSPATR(HI)
+     A            EDATE         10   O  3 14
+     A                                  3 25'à'
+     A                                      DSPATR(HI)
+     A            ETIME          8   O  3 27
+     A          R FMT02
+     A*%%TS  SD  20200909  134222  THIERRY_MO  REL-V7R3M0  5770-WDS
+     A                                 26  3'F12=Retour'
+     A                                      COLOR(BLU)
+     A N10                             26 16'F10=Hexa'
+     A                                      COLOR(BLU)
+     A  10                             26 16'F10=Charactères'
+     A                                      COLOR(BLU)
+     A  80                             26 34'F11=Clé en Hexa'
+     A                                      COLOR(BLU)
+     A          R FMT03
+     A*%%TS  SD  20200909  142244  THIERRY_MO  REL-V7R3M0  5770-WDS
+     A                                      WINDOW(5 4 16 120)
+     A                                      CA12
+     A                                  2  1'Dtaq :'
+     A                                      DSPATR(HI)
+     A            DTQ           21A  O  2  8
+     A                                  2 33'Longueur de la clé :'
+     A                                      DSPATR(HI)
+     A            KEYLEN         3Y 0O  2 54EDTCDE(3)
+     A  80                              4  1'Valeur de la clé :'
+     A                                      DSPATR(HI)
+     A            VALCLE1      120A  O  6  1
+     A            VALCLE1HG    120A  O  7  1
+     A            VALCLE1HD    120A  O  8  1
+     A            VALCLE2      120A  O  9  1
+     A            VALCLE2HG    120A  O 10  1
+     A            VALCLE2HD    120A  O 11  1
+     A            VALCLE3       16A  O 12  1
+     A            VALCLE3HG     16A  O 13  1
+     A            VALCLE3HD     16A  O 14  1
+     A                                  5  1'....+....1....+....2....+....3....-
+     A                                      +....4....+....5....+....6....+....-
+     A                                      7....+....8....+....9....+....0....-
+     A                                      +....1....+....2'
+     A                                 15  1'F12=Retour'
+     A                                      COLOR(BLU)
