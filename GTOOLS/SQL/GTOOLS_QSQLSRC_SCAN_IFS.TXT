@@ -1,0 +1,54 @@
+--
+-- Rechercher une chaine de caractère dans l'IFS
+--
+-- Utilisation
+-- select * from table(scan_ifs('Repertoire' , 'Chaine')) as result
+--
+-- Exemple
+-- select * from table(scan_ifs('/HOME/PLB' , 'PRO')) as result
+--
+Create or replace function Scan_IFS
+-- Paramètres en entrée
+(INPUT_IFS_DIRECTORY varchar(100),
+ SCAN_STRING char(50))
+-- Paramètres en sortie result set  de 3 zones
+RETURNS TABLE(STMF_NAME varchar(132),
+              LINE_NUMBER INT,
+              LINE varchar(132))
+-- Options
+LANGUAGE SQL
+MODIFIES SQL DATA
+
+BEGIN
+-- Création de la table temporaire
+CREATE OR REPLACE TABLE QTEMP/RETURN_TABLE
+(STMF_NAME char(132),
+ LINE_NUMBER INT,
+ LINE char(132)) ;
+-- Mise à blanc de la table
+DELETE FROM QTEMP/RETURN_TABLE ;
+-- Boucle de lecture des fichiers ifs sélectionés
+FOR SELECT PATH_NAME AS IFS_PATH_NAME
+FROM TABLE(IFS_OBJECT_STATISTICS(
+  START_PATH_NAME => INPUT_IFS_DIRECTORY,
+  OBJECT_TYPE_LIST => '*ALLSTMF'))
+DO
+INSERT INTO  QTEMP/RETURN_TABLE
+-- Recherche de la chaine dans le fichier IFS
+-- Test en majuscule
+SELECT IFS_PATH_NAME ,
+              LINE_NUMBER ,
+              CAST(SUBSTR(LINE , 1 , 132) AS CHAR(132))
+FROM TABLE(IFS_READ(
+  PATH_NAME => IFS_PATH_NAME))
+WHERE UPPER(LINE) like '%' concat UPPER(TRIM(SCAN_STRING)) concat '%' ;
+-- Fin de boucle
+END FOR ;
+-- Création du résult set à renvoyer
+RETURN
+   SELECT STMF_NAME ,
+          LINE_NUMBER ,
+          LINE
+   FROM QTEMP/RETURN_TABLE ;
+-- Fin du programme
+END;
