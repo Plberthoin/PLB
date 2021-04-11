@@ -1,0 +1,38 @@
+/*------------------------------------------------------------------*/
+/*                                                                  */
+/* Ce programme permet de récupérer une fichier via l'outil         */
+/*    open source wget                                              */
+/*                                                                  */
+/* Vous devez avoir wget installé sur votre machine                 */
+/*                                                                  */
+/*                                                                  */
+/*------------------------------------------------------------------*/
+pgm parm(&url &ctlcert)
+dcl &url *char 132
+dcl &ctlcert *char 4
+dcl &cmd *char 256
+/* vérifier ou est déployé pase  */
+dcl &sh *char 30 ('/QOpenSys/bin/wget')
+dcl &parm1 *char  10 ('-c')
+dcl &parm2 *char  256
+dcl &ctlcert *char 4
+DCL        VAR(&NULL)   TYPE(*CHAR)   LEN(1)     VALUE(X'00')
+/* Génération de la commande */
+if cond(&ctlcert = '*NO') then(do)
+chgvar &parm2 ( &url *bcat '--no-check-certificate')
+/* chgvar &parm2 (&parm2 *bcat '> /temp/logwget.txt') */
+chgvar &parm2 (&parm2 *tcat &null)
+enddo
+else do
+/* chgvar &parm2 (&parm2 *bcat '> /temp/logwget.txt')  */
+chgvar &parm2 (&null)
+enddo
+chgvar &parm1 (&parm1 *tcat &null)
+chgvar &sh  (&sh  *tcat &null)
+            CALL       PGM(QP2SHELL) PARM(&sh  &parm1  &parm2 )
+            monmsg cpf0000 exec(do)
+             SNDUSRMSG  MSG('Fichier,' *BCAT &URL *BCAT 'non +
+                          téléchargé, log dans QTEMP/QWGETLOG') +
+                          MSGTYPE(*INFO)
+            enddo
+endpgm
