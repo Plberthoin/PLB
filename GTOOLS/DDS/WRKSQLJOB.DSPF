@@ -1,0 +1,55 @@
+     A*%%TS  SD  20210716  160125  PLB         REL-V7R4M0  5770-WDS
+     A*%%EC
+     A                                      DSPSIZ(24 80 *DS3)
+     A                                      REF(*LIBL/DUMP_CACHE)
+     A                                      CA03(03)
+     A          R SFL01                     SFL
+     A*%%TS  SD  20210716  160125  PLB         REL-V7R4M0  5770-WDS
+     A            OPT01          1A  B  7  4VALUES('5' '8' ' ')
+     A            QQJOB     R        O  7  6REFFLD(QQQDBMN/QQJOB *LIBL/DUMP_CAC-
+     A                                      HE)
+     A            QVC102    R        O  7 17REFFLD(QQQDBMN/QVC102 *LIBL/DUMP_CA-
+     A                                      CHE)
+     A            QQJNUM    R        O  7 28REFFLD(QQQDBMN/QQJNUM *LIBL/DUMP_CA-
+     A                                      CHE)
+     A            QQI6      R        O  7 35REFFLD(QQQDBMN/QQI6 *LIBL/DUMP_CACH-
+     A                                      E)
+     A                                      EDTCDE(Z)
+     A            REQ30         30A  O  7 51
+     A            REQ1000     1000A  H
+     A            QQUSER        10A  H
+     A*
+     A          R CTL01                     SFLCTL(SFL01)
+     A*%%TS  SD  20210716  140105  PLB         REL-V7R4M0  5770-WDS
+     A                                      SFLSIZ(0015)
+     A                                      SFLPAG(0014)
+     A                                      CF05(05)
+     A                                      CA06(06)
+     A                                      OVERLAY
+     A  42                                  SFLDSP
+     A  41                                  SFLDSPCTL
+     A  40                                  SFLCLR
+     A            NUM01          4S 0H      SFLRCDNBR(CURSOR)
+     A                                  1  2USER
+     A                                  1 25'Gestion des requêtes SQL'
+     A                                      DSPATR(HI)
+     A                                  1 71DATE
+     A                                      EDTCDE(Y)
+     A                                  2  2SYSNAME
+     A                                  2 71TIME
+     A                                  5  4'5=Job    8=Requête'
+     A                                      COLOR(BLU)
+     A                                  6  3'Opt  Job        User     Numéro  T-
+     A                                      emps exec     Requête'
+     A                                      DSPATR(HI)
+     A          R FMT01
+     A*%%TS  SD  20200813  110655  DT          REL-V7R4M0  5770-WDS
+     A                                 23  3'F3=Quitter  F5=Réafficher'
+     A                                      COLOR(BLU)
+     A          R FMT02
+     A*%%TS  SD  20210716  154220  PLB         REL-V7R4M0  5770-WDS
+     A                                 23  3'F3=Quitter  F5=Réafficher'
+     A                                      COLOR(BLU)
+     A                                  2 32'La requête SQL '
+     A                                      DSPATR(HI)
+     A            REQ1000     1000   O  5  1

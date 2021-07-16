@@ -11,6 +11,7 @@
   REFJOBSCDE   Listes des PGM utilisés dans le WRKJOBSCDE 
   CHKCRTDAT    Controles des dates de certificat
   SCANSRC      Rechercher une chaine de caractères dans les fichiers IFS
+  WRKSQLJOB    Voir les Requetes en cours  
 
 
 *** Listes  des sources
