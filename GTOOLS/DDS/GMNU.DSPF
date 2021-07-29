@@ -1,0 +1,48 @@
+     A*%%TS  SD  20210722  091101  PLB         REL-V7R4M0  5770-WDS
+     A*%%EC
+     A                                      DSPSIZ(24 80 *DS3)
+     A                                      REF(*LIBL/GHISTO)
+     A                                      CA03(03)
+     A          R SFL01                     SFL
+     A*%%TS  SD  20190605  164528  QSECOFR     REL-V7R3M0  5770-WDS
+     A            OPT01          1   B  8  3
+     A            SECOND        60   O  8  7
+     A            TXTM          60   H
+     A            ID             7   H
+     A*
+     A          R CTL01                     SFLCTL(SFL01)
+     A*%%TS  SD  20210722  090918  PLB         REL-V7R4M0  5770-WDS
+     A                                      SFLSIZ(0013)
+     A                                      SFLPAG(0012)
+     A                                      CF05(05)
+     A                                      CF04(04)
+     A                                      OVERLAY
+     A  42                                  SFLDSP
+     A  41                                  SFLDSPCTL
+     A  40                                  SFLCLR
+     A            NUM01          4S 0H      SFLRCDNBR(CURSOR)
+     A                                  2  4DATE
+     A                                      EDTCDE(Y)
+     A                                  2 26'Gestion d''un Menu'
+     A                                      DSPATR(HI)
+     A                                  2 70USER
+     A                                  3  4TIME
+     A            £PGM          10A  O  3 70
+     A                                  7  2'Option     Texte ou commande à exé-
+     A                                      cuter                              -
+     A                                        '
+     A                                      DSPATR(HI)
+     A                                  4  3'Menu :'
+     A                                      DSPATR(HI)
+     A            MSGF          10A  B  4 10
+     A                                  4 23'Bibliothèque :'
+     A                                      DSPATR(HI)
+     A            LIBM          10A  B  4 38
+     A                                  6  2'1 Exécuter 2 Modifier Texte'
+     A                                      DSPATR(HI)
+     A          R FMT01
+     A*%%TS  SD  20190606  150155  QSECOFR     REL-V7R3M0  5770-WDS
+     A                                 23  3'F3=Exit F4=Invite F5=Réafficher'
+     A                                      COLOR(BLU)
+     A                                 21  3'==>'
+     A            CEXEC         60A  B 21  7
