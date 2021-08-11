@@ -13,6 +13,7 @@
   SCANSRC      Rechercher une chaine de caractères dans les fichiers IFS
   WRKSQLJOB    Voir les Requetes en cours 
   GMNU         Une autre manière de gérer vos menus 
+  CVTQRYQM     Convertisser vos Querys en QM
 
 
 *** Listes  des sources

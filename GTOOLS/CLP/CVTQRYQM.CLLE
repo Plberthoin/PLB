@@ -1,0 +1,105 @@
+PGM PARM(&RQLIB &RQLIBM &FORM &EXE)
+/*-------------------------------------------------------------------*/
+/* Ce programme converti un query en qm                              */
+/* il peut générer les qury                                          */
+/* et les forms (présentation de la requête)                         */
+/*-------------------------------------------------------------------*/
+/* Paramètres */
+DCL VAR(&RQLIB) TYPE(*CHAR) LEN(20)
+DCL VAR(&RQLIBM) TYPE(*CHAR) LEN(20)
+DCL VAR(&FORM) TYPE(*CHAR) LEN(10)
+DCL VAR(&EXE) TYPE(*CHAR) LEN(04)
+/* Variables */
+DCL VAR(&RQ) TYPE(*CHAR) LEN(10)
+DCL VAR(&LIB) TYPE(*CHAR) LEN(10)
+DCL VAR(&RQM) TYPE(*CHAR) LEN(10)
+DCL VAR(&LIBM) TYPE(*CHAR) LEN(10)
+/* Traitement des erreurs     */
+DCL VAR(&ERRORSW) TYPE(*LGL)
+DCL VAR(&MSGID) TYPE(*CHAR) LEN(7)
+DCL VAR(&MSGDTA) TYPE(*CHAR) LEN(100)
+DCL VAR(&MSGF) TYPE(*CHAR) LEN(10)
+DCL VAR(&MSGFLIB) TYPE(*CHAR) LEN(10)
+MONMSG MSGID(CPF0000) EXEC(GOTO CMDLBL(STDERR1))
+/* Formattage des variables avec les paramètres recus */
+CHGVAR VAR(&RQ) VALUE(%SUBSTRING(&RQLIB 1 10))
+CHGVAR VAR(&LIB) VALUE(%SUBSTRING(&RQLIB 11 10))
+CHGVAR VAR(&RQM) VALUE(%SUBSTRING(&RQLIBM 1 10))
+CHGVAR VAR(&LIBM) VALUE(%SUBSTRING(&RQLIBM 11 10))
+/* Traitement des valeurs spéciales */
+IF COND(&LIBM *EQ '*CURLIB') THEN(DO)
+             RTVJOBA    CURLIB(&LIBM)
+ENDDO
+/* controle disponibilité des objets */
+CHKOBJ OBJ(&LIBM) OBJTYPE(*LIB)
+CHKOBJ OBJ(&LIB/&RQ) OBJTYPE(*QRYDFN)
+IF COND(&RQM *EQ '*QRYDFN') THEN(DO)
+             CHGVAR     VAR(&RQM) VALUE(&RQ)
+ENDDO
+IF COND(&FORM *EQ '*QRY') THEN(DO)
+             CHGVAR     VAR(&FORM) VALUE(&RQM)
+ENDDO
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+                          MSGDTA('Extraction de la requête') +
+                          TOPGMQ(*EXT) MSGTYPE(*STATUS)
+             CHKOBJ     OBJ(QTEMP/QQMQRYSRC) OBJTYPE(*FILE)
+             MONMSG     MSGID(CPF9801) EXEC(DO)
+             CRTSRCPF   FILE(QTEMP/QQMQRYSRC) RCDLEN(91) +
+                          TEXT('Extraction requêtes QM,' *BCAT &RQM)
+ENDDO
+/*------------------------------*/
+/* Extraction de la requête     */
+/*------------------------------*/
+             RTVQMQRY   QMQRY(&LIB/&RQ) SRCFILE(QTEMP/QQMQRYSRC) +
+                          ALWQRYDFN(*ONLY)
+             CRTQMQRY   QMQRY(&LIBM/&RQM) SRCFILE(QTEMP/QQMQRYSRC) +
+                          SRCMBR(&RQ)
+IF COND(&FORM *NE '*NONE') THEN(DO)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+                          MSGDTA('Extraction du format' *BCAT &RQM) +
+                          TOPGMQ(*EXT) MSGTYPE(*STATUS)
+             CHKOBJ     OBJ(QTEMP/QQMFORMSRC) OBJTYPE(*FILE)
+             MONMSG     MSGID(CPF9801) EXEC(DO)
+             CRTSRCPF   FILE(QTEMP/QQMFORMSRC) RCDLEN(162) +
+                          TEXT('Extraction FORMATS QM' *BCAT &RQM)
+ENDDO
+/*------------------------------*/
+/* Extraction de la form        */
+/*------------------------------*/
+             RTVQMFORM  QMFORM(&LIB/&RQ) SRCFILE(QTEMP/QQMFORMSRC) +
+                          ALWQRYDFN(*ONLY)
+             CRTQMFORM  QMFORM(&LIBM/&FORM) +
+                          SRCFILE(QTEMP/QQMFORMSRC) SRCMBR(&RQ)
+ENDDO
+/*--------------------------------*/
+/* exécution si demandé           */
+/*--------------------------------*/
+IF COND(&EXE *EQ '*YES') THEN(DO)
+ IF COND(&FORM *EQ '*NONE') THEN(DO)
+             STRQMQRY   QMQRY(&LIBM/&RQM) OUTPUT(*)
+ ENDDO
+ ELSE CMD(DO)
+             STRQMQRY   QMQRY(&LIBM/&RQM) OUTPUT(*) QMFORM(&LIBM/&FORM)
+ ENDDO
+ ENDDO
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('Travail +
+                          QM  terminé') MSGTYPE(*COMP)
+ RETURN
+ /*----------------------------------------------------------*/
+ /* module de gestion des erreurs                            */
+ /*----------------------------------------------------------*/
+ STDERR1:
+ IF COND(&ERRORSW) THEN(SNDPGMMSG MSGID(CPF9999) MSGF(QCPFMSG) -
+ MSGTYPE(*ESCAPE))
+ CHGVAR VAR(&ERRORSW) VALUE('1')
+ STDERR2:    RCVMSG     MSGTYPE(*DIAG) MSGDTA(&MSGDTA) MSGID(&MSGID) +
+                          MSGF(&MSGF) MSGFLIB(&MSGFLIB)
+ IF COND(&MSGID *EQ '       ') THEN(GOTO CMDLBL(STDERR3))
+ SNDPGMMSG MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) MSGDTA(&MSGDTA) -
+ MSGTYPE(*DIAG)
+ GOTO CMDLBL(STDERR2)
+ STDERR3:    RCVMSG     MSGTYPE(*EXCP) MSGDTA(&MSGDTA) MSGID(&MSGID) +
+                          MSGF(&MSGF) MSGFLIB(&MSGFLIB)
+ SNDPGMMSG MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) MSGDTA(&MSGDTA) -
+ MSGTYPE(*ESCAPE)
+ ENDPGM
