@@ -1,0 +1,20 @@
+pgm  parm(&lib)   /* création du plan de prod quotidien */
+/* ce jod doit être planifié à 00 heures et 03 minutes chaque jour */
+dcl &lib *char 10
+/* supression du fichier du plan de prod du jour */
+runsql sql('+
+drop   table' *bcat &lib *tcat '/plnprdprv     +
+') commit(*none)
+monmsg sql0000
+/* Génération du fichier du plan de prod du jour */
+runsql sql('+
+create table' *bcat &lib *tcat '/plnprdprv as (+
+Select SCHEDULED_JOB_NAME, SCHEDULED_TIME            ,   +
+       ifnull(DESCRIPTION, '' '') as description +
+from QSYS2.SCHEDULED_JOB_INFO +
+where NEXT_SUBMISSION_DATE = current date and +
+substr(SCHEDULED_JOB_NAME, 1, 1) <> ''Q'' +
+and status <> ''HELD'' +
+order by SCHEDULED_TIME ) with data   +
+') commit(*none)
+endpgm
