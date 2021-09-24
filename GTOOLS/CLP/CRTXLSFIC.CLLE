@@ -1,12 +1,12 @@
 pgm (&nomifs &requete &exeacs)
-/*     Création d'un fichier  excel  à partir d'une requete SQL      */
-/* Vous devez avoir ACS installé sur la machine                      */
+/*     CrÃ©ation d'un fichier  excel  Ã  partir d'une requete SQL      */
+/* Vous devez avoir ACS installÃ© sur la machine                      */
 /*                                                                   */
-/* Par défaut acs est installé dans le répertoire                    */
+/* Par dÃ©faut acs est installÃ© dans le rÃ©pertoire                    */
 /*     /QIBM/ProdData/Access/ACS/Base/                               */
-/*  L'exécutable java se nomme acsbundle.jar                         */
+/*  L'exÃ©cutable java se nomme acsbundle.jar                         */
 /*-------------------------------------------------------------------*/
-/* paramètres */
+/* paramÃ¨tres */
 dcl &nomifs *char 80
 dcl &requete *char 1000
 DCL &EXEACS  *CHAR  60
@@ -17,12 +17,12 @@ dcl &job *char 10
 dcl &usr *char 10
 dcl &fil *char 100
 /*---------------------------------*/
-/* Traitement des paramètres recus */
+/* Traitement des paramÃ¨tres recus */
 /*---------------------------------*/
 /* bornage des zones */
 chgvar &nomifs (&guille *tcat &nomifs *tcat &guille)
 chgvar &requete (&guille *tcat &requete  *tcat &guille)
-/* si Exeacs par défaut */
+/* si Exeacs par dÃ©faut */
 if (&exeacs *eq '*DFT') then(do)
              CHGVAR     VAR(&EXEACS) +
                           VALUE('/QIBM/ProdData/Access/ACS/Base/acsbu+
@@ -35,17 +35,27 @@ if (&exeacs *eq '*DFT') then(do)
              CHGVAR     VAR(&FIL) VALUE('/tmp/' *TCAT &JOB +
                           *TCAT '_' *TCAT &USR *TCAT '_lsout.txt')
              CHGVAR     VAR(&FIL) VALUE('FILE=' *tcat &fil)
-/* extraction nom du systéme */
+/* extraction nom du systÃ©me */
              RTVNETA    SYSNAME(&SYSNAME)
 /* Formatage de la variable avec le plugin  */
-/* On a choisit de mettre les entêtes de colonne SQL */
+             if         (&entete *eq '*YES') then(do)
+
+/* On a choisit de mettre les entÃªtes de colonne SQL */
 /* /colheadings=1 et /usecollabels                   */
-             CHGVAR     VAR(&CMD) VALUE('java -jar' *BCAT &EXEACS +
-                          *BCAT '/plugin=cldownload /colheadings=1 +
-                          /usecollabels /system=' *TCAT &SYSNAME +
-                          *BCAT '/clientfile=' *CAT &NOMIFS *BCAT ' +
-                          /sql=' *CAT &REQUETE)
- /* Ajout variables d'environnement sur le job   */
+                CHGVAR     VAR(&CMD) VALUE('java -jar' *BCAT &EXEACS *BCAT +
+                             '/plugin=cldownload /colheadings=1 +
+                             /usecollabels /system=' *TCAT &SYSNAME *BCAT +
+                             '/clientfile=' *CAT &NOMIFS *BCAT ' /sql=' +
+                             *CAT &REQUETE)
+             enddo
+             ELSE       CMD(DO)
+
+                CHGVAR     VAR(&CMD) VALUE('java -jar' *BCAT &EXEACS *BCAT +
+                             '/plugin=cldownload  /system=' *TCAT &SYSNAME +
+                             *BCAT '/clientfile=' *CAT &NOMIFS *BCAT ' +
+                             /sql=' *CAT &REQUETE)
+             enddo /* Ajout variables d'environnement sur le job   */
+             
  /* Pour traiter l'erreur dans le Programme           */
              ADDENVVAR  ENVVAR(QIBM_QSH_CMD_ESCAPE_MSG) VALUE('Y')
              MONMSG     MSGID(CPFA980) exec(DO)
