@@ -66,11 +66,11 @@ if (&exeacs *eq '*DFT') then(do)
              MONMSG     MSGID(CPFA980) exec(DO)
              CHGENVVAR  ENVVAR(QIBM_QSH_CMD_OUTPUT) VALUE(&FIL)
              enddo
-/* exeution de la requete */
+/* execution de la requete */
              STRQSH     CMD(&CMD)
              monmsg QSH0000  exec(do)
              SNDUSRMSG  MSG('Erreur CRTFICXLS,' *BCAT %SST(&CMD 1 +
-                          500)) MSGTYPE(*INFO)
+                          490)) MSGTYPE(*INFO)
              enddo
 /* suppression variables d'environnement  */
              RMVENVVAR  ENVVAR(QIBM_QSH_CMD_ESCAPE_MSG)
