@@ -5,6 +5,12 @@ pgm (&nomifs &requete &exeacs)
 /* Par défaut acs est installé dans le répertoire                    */
 /*     /QIBM/ProdData/Access/ACS/Base/                               */
 /*  L'exécutable java se nomme acsbundle.jar                         */
+/*                                                                   */
+/* Pour mettre fin au travail après exécution                        */
+/* Dans AcsConfig.properties, ajouter la ligne                       */
+/*   com.ibm.iaccess.ResetForMaintenanceOnExit=true                  */
+/* ou en fin de commande                                             */
+/* " ;java -jar' *BCAT &EXEACS *BCAT '/PLUGIN=maint /killdaemon' "   */
 /*-------------------------------------------------------------------*/
 /* paramètres */
 dcl &nomifs *char 80
