@@ -14,6 +14,7 @@
   WRKSQLJOB    Voir les Requetes en cours 
   GMNU         Une autre manière de gérer vos menus 
   CVTQRYQM     Convertisser vos Querys en QM
+  GENCMDUIM    Génération de l'aide d'une commande
 
 
 *** Listes  des sources

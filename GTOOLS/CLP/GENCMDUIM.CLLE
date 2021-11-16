@@ -1,0 +1,51 @@
+             PGM        PARM(&CMDlib &ficlib)
+ /*------------------------------------------------------*/
+ /* Génération de l'aide d'une commande en UIM           */
+ /*------------------------------------------------------*/
+ /* Paramètres ---------------*/
+             dcl &cmdlib *char 20
+             dcl &ficlib *char 20
+ /* Variables ----------------*/
+             DCL        VAR(&CMD) TYPE(*CHAR) STG(*DEFINED) LEN(10) +
+                          DEFVAR(&CMDlib  1) /* 10 */
+             DCL        VAR(&LIBC) TYPE(*CHAR) LEN(10)  +
+                           DEFVAR(&CMDlib 11) STG(*DEFINED)
+             DCL        VAR(&FIC) TYPE(*CHAR) LEN(10)   +
+                           DEFVAR(&ficlib 1) STG(*DEFINED)
+             DCL        VAR(&LIBF) TYPE(*CHAR) LEN(10)  +
+                           DEFVAR(&ficlib 11) STG(*DEFINED)
+             dcl &cur  *char 9999
+             dcl &curl *dec 7
+             dcl &text *char 50
+include erreur1   SRCFILE(GCOMPILE/QCLSRC)
+ /* Contrôle des paramaètres   */
+             chkobj &libc/&cmd  *cmd
+             chkobj &libf/&fic  *file
+             CHKOBJ     OBJ(&LIBF/&FIC) OBJTYPE(*FILE) MBR(&cmd)
+             monmsg cpf9815 exec(do)
+             ADDPFM     FILE(&LIBC/&FIC) MBR(&CMD)
+             enddo
+             chgjob ccsid(1147)
+ /* Extraction  bibliothèque si *LIBL */
+             if cond(&libc = '*LIBL') then(do)
+             RTVOBJD    OBJ(&cmd) OBJTYPE(*FILE) RTNLIB(&libc)
+             enddo
+             if cond(&libf = '*LIBL') then(do)
+             RTVOBJD    OBJ(&FIC) OBJTYPE(*FILE) RTNLIB(&libf)
+             enddo
+ /* Génération du source */
+             RTVCURDIR  RTNDIR(&CUR) DIRNAMLEN(&CURL)
+             GENCMDDOC  CMD(&LIBC/&CMD) TODIR(&CUR) TOSTMF(&CMD +
+                          *TCAT '.UIM') GENOPT(*UIM)
+ /* Copie dans un fichier source */
+             CPYFRMSTMF FROMSTMF(&CMD *TCAT '.UIM') +
+                          TOMBR('/QSYS.LIB/' *TCAT &LIBF *TCAT +
+                          '.LIB/' *TCAT &FIC *TCAT '.FILE/'   +
+                          *tcat &cmd *tcat '.mbr')   +
+                          MBROPT(*REPLACE)
+ /* mise du texte sur le panneau d'aide */
+             RTVOBJD    OBJ(&LIBC/&CMD) OBJTYPE(*FILE) TEXT(&TEXT)
+             CHGPFM     FILE(&LIBF/&FIC) MBR(&CMD) SRCTYPE(UIM) +
+                          TEXT(&TEXT)
+include erreur2   SRCFILE(GCOMPILE/QCLSRC)
+             endpgm
