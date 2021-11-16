@@ -15,6 +15,6 @@
   GMNU         Une autre manière de gérer vos menus 
   CVTQRYQM     Convertisser vos Querys en QM
   GENCMDUIM    Génération de l'aide d'une commande
-
+  CVTMNUUIM    Convertion menu en UIM
 
 *** Listes  des sources

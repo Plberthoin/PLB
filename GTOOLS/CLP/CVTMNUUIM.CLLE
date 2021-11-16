@@ -1,0 +1,35 @@
+pgm parm(&msglib &ficlib &soc)
+             dcl &msglib *char 20
+             dcl &ficlib *char 20
+             dcl &soc    *char 30
+ /* Variables ----------------*/
+             DCL        VAR(&msg) TYPE(*CHAR) STG(*DEFINED) LEN(10) +
+                          DEFVAR(&msglib  1) /* 10 */
+             DCL        VAR(&LIBm) TYPE(*CHAR) LEN(10)  +
+                           DEFVAR(&msglib 11) STG(*DEFINED)
+             DCL        VAR(&FIC) TYPE(*CHAR) LEN(10)   +
+                           DEFVAR(&ficlib 1) STG(*DEFINED)
+             DCL        VAR(&LIBF) TYPE(*CHAR) LEN(10)  +
+                           DEFVAR(&ficlib 11) STG(*DEFINED)
+include erreur1   SRCFILE(GCOMPILE/QCLSRC)
+ /* Contrôle des paramètres   */
+             chkobj &libm/&msg  *msgf
+             chkobj &libf/&fic  *file
+             CHKOBJ     OBJ(&LIBF/&FIC) OBJTYPE(*FILE) MBR(&msg)
+             monmsg cpf9815 exec(do)
+             ADDPFM     FILE(&LIBf/&fic) MBR(&msg)
+             enddo
+             chgjob ccsid(1147)
+ /* Extraction  bibliothèque si *LIBL */
+             if cond(&libm = '*LIBL') then(do)
+             RTVOBJD    OBJ(&msg) OBJTYPE(*msgf) RTNLIB(&libm)
+             enddo
+             if cond(&libf = '*LIBL') then(do)
+             RTVOBJD    OBJ(&FIC) OBJTYPE(*FILE) RTNLIB(&libf)
+             enddo
+             CLRPFM     FILE(&LIBF/&FIC) MBR(&MSG)
+             OVRDBF     FILE(QMNUSRC) TOFILE(&LIBf/&fic) MBR(&msg)
+             call CVTMNUUIMr (&libm &msg &soc)
+             dltovr     FILE(QMNUSRC)
+include erreur2   SRCFILE(GCOMPILE/QCLSRC)
+ endpgm
