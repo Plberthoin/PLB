@@ -1,0 +1,98 @@
+             PGM        PARM(&MSGLIB &FICLIB &SOC &TIT &OPT1 &CMD1 +
+                          &OPT2 &CMD2 &OPT3 &CMD3 &OPT4 &CMD4 &OPT5 +
+                          &CMD5 &OPT6 &CMD6 &OPT7 &CMD7 &OPT8 &CMD8 +
+                          &OPT9 &CMD9 &OPT10 &CMD10)
+             dcl &msglib *char 20
+             dcl &ficlib *char 20
+             dcl &soc    *char 30
+             dcl &tit    *char 30
+             dcl &opt1   *char 50
+             dcl &cmd1   *char 132
+             dcl &opt2   *char 50
+             dcl &cmd2   *char 132
+             dcl &opt3   *char 50
+             dcl &cmd3   *char 132
+             dcl &opt4   *char 50
+             dcl &cmd4   *char 132
+             dcl &opt5   *char 50
+             dcl &cmd5   *char 132
+             dcl &opt6   *char 50
+             dcl &cmd6   *char 132
+             dcl &opt7   *char 50
+             dcl &cmd7   *char 132
+             dcl &opt8   *char 50
+             dcl &cmd8   *char 132
+             dcl &opt9   *char 50
+             dcl &cmd9   *char 132
+             dcl &opt10  *char 50
+             dcl &cmd10  *char 132
+ /* Variables ----------------*/
+             DCL        VAR(&msg) TYPE(*CHAR) STG(*DEFINED) LEN(10) +
+                          DEFVAR(&msglib  1) /* 10 */
+             DCL        VAR(&LIBm) TYPE(*CHAR) LEN(10)  +
+                           DEFVAR(&msglib 11) STG(*DEFINED)
+             DCL        VAR(&FIC) TYPE(*CHAR) LEN(10)   +
+                           DEFVAR(&ficlib 1) STG(*DEFINED)
+             DCL        VAR(&LIBF) TYPE(*CHAR) LEN(10)  +
+                           DEFVAR(&ficlib 11) STG(*DEFINED)
+include erreur1   SRCFILE(GCOMPILE/QCLSRC)
+ /* Contrôle des paramètres   */
+             DLTMSGF    MSGF(qgpl/&MSG)
+             monmsg CPF2105
+             CRTMSGF    MSGF(qgpl/&MSG) TEXT(&TIT)
+             chkobj &libf/&fic  *file
+             CHKOBJ     OBJ(&LIBF/&FIC) OBJTYPE(*FILE) MBR(&msg)
+             monmsg cpf9815 exec(do)
+             ADDPFM     FILE(&LIBf/&fic) MBR(&msg)
+             enddo
+             chgjob ccsid(1147)
+             ADDMSGD    MSGID(USR0001) MSGF(QGPL/&MSG) MSG(&OPT1) +
+                          SECLVL(&CMD1)
+             if cond(&opt2 *ne '*NONE') then(do)
+             ADDMSGD    MSGID(USR0002) MSGF(QGPL/&MSG) MSG(&OPT2) +
+                          SECLVL(&CMD2)
+             enddo
+             if cond(&opt3 *ne '*NONE') then(do)
+             ADDMSGD    MSGID(USR0003) MSGF(QGPL/&MSG) MSG(&OPT3) +
+                          SECLVL(&CMD3)
+             enddo
+             if cond(&opt4 *ne '*NONE') then(do)
+             ADDMSGD    MSGID(USR0004) MSGF(QGPL/&MSG) MSG(&OPT4) +
+                          SECLVL(&CMD4)
+             enddo
+             if cond(&opt5 *ne '*NONE') then(do)
+             ADDMSGD    MSGID(USR0005) MSGF(QGPL/&MSG) MSG(&OPT5) +
+                          SECLVL(&CMD5)
+             enddo
+             if cond(&opt6 *ne '*NONE') then(do)
+             ADDMSGD    MSGID(USR0006) MSGF(QGPL/&MSG) MSG(&OPT6) +
+                          SECLVL(&CMD6)
+             enddo
+             if cond(&opt7 *ne '*NONE') then(do)
+             ADDMSGD    MSGID(USR0007) MSGF(QGPL/&MSG) MSG(&OPT7) +
+                          SECLVL(&CMD7)
+             enddo
+             if cond(&opt8 *ne '*NONE') then(do)
+             ADDMSGD    MSGID(USR0008) MSGF(QGPL/&MSG) MSG(&OPT8) +
+                          SECLVL(&CMD8)
+             enddo
+             if cond(&opt9 *ne '*NONE') then(do)
+             ADDMSGD    MSGID(USR0009) MSGF(QGPL/&MSG) MSG(&OPT9) +
+                          SECLVL(&CMD9)
+             enddo
+             if cond(&opt10 *ne '*NONE') then(do)
+             ADDMSGD    MSGID(USR0010) MSGF(QGPL/&MSG) MSG(&OPT10) +
+                          SECLVL(&CMD10)
+             enddo
+ /* Extraction  bibliothèque si *LIBL */
+             if cond(&libf = '*LIBL') then(do)
+             RTVOBJD    OBJ(&FIC) OBJTYPE(*FILE) RTNLIB(&libf)
+             enddo
+             CLRPFM     FILE(&LIBF/&FIC) MBR(&MSG)
+             OVRDBF     FILE(QMNUSRC) TOFILE(&LIBf/&fic) MBR(&msg)
+             call CRTMNUUIMR (&libm &msg &soc)
+             dltovr     FILE(QMNUSRC)
+/*           dltMSGF    MSGF(qgpl/&MSG)    */
+             chkobj &libf/&fic  *file
+include erreur2   SRCFILE(GCOMPILE/QCLSRC)
+ endpgm
