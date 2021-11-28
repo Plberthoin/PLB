@@ -1,12 +1,35 @@
-PGM        PARM(&USR)
-             DCLPRCOPT  USRPRF(*OWNER)
-dcl &usr    *char 10
-             CHKOBJ     OBJ(&USR) OBJTYPE(*USRPRF)
-             monmsg cpf9801 exec(do)
-             SNDUSRMSG  MSG('Profil,' *BCAT &USR *BCAT 'inexistant') +
-                          MSGTYPE(*INFO)
-             return
+             PGM        PARM(&PASSWORD) /*----------------*/
+             /*  Changement du mot de passe               */
+             /*  à partir du Hash                         */
+             /*-------------------------------------------*/
+             DCL        VAR(&PASSWORD) TYPE(*CHAR) LEN(2000)
+             DCL        VAR(&ERR_BYT) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&ERR_AVA) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&ERR_ID) TYPE(*CHAR) LEN(7)
+             DCL        VAR(&ERR_RSV) TYPE(*CHAR) LEN(1)
+             DCL        VAR(&ERR_MSG) TYPE(*CHAR) LEN(100)
+             DCL        VAR(&ERRDTA) TYPE(*CHAR) LEN(116)
+             DCL        VAR(&LIBPWD) TYPE(*CHAR) LEN(10) VALUE('QGPL')
+  /* Si *DTAARA  */
+             IF         COND(&PASSWORD = '*DTAARA') THEN(DO)
+             RTVDTAARA  DTAARA(&LIBPWD/PASSWORD *ALL) RTNVAR(&PASSWORD)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('Dtaara +
+                          ' *BCAT 'PASSWORD' *BCAT 'non trouvé +
+                          dans' *BCAT &LIBPWD) MSGTYPE(*ESCAPE)
              enddo
-             CHGUSRPRF  USRPRF(&USR   ) PASSWORD(&USR   ) +
-                          PWDEXP(*YES) STATUS(*ENABLED)
-endpgm
+  /* */
+             CALL       PGM(QSYSUPWD) PARM(&PASSWORD 'UPWD0100' +
+                          &ERRDTA)
+  /* */
+             IF         COND(%BIN(&ERRDTA 5 4) *NE 0) THEN(DO)
+             CHGVAR     VAR(&ERR_BYT) VALUE(%SST(&ERRDTA 1 4))
+             CHGVAR     VAR(&ERR_ID) VALUE(%SST(&ERRDTA 9 7))
+             CHGVAR     VAR(&ERR_MSG) VALUE(%SST(&ERRDTA 17 100))
+             SNDPGMMSG  MSGID(&ERR_ID) MSGF(QCPFMSG) +
+                          MSGDTA(&ERR_MSG) MSGTYPE(*ESCAPE)
+             MONMSG     MSGID(CPF0000)
+             GOTO       CMDLBL(FIN)
+             ENDDO
+FIN:
+             RETURN
+             ENDPGM

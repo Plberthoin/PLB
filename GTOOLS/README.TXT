@@ -16,5 +16,7 @@
   CVTQRYQM     Convertisser vos Querys en QM
   GENCMDUIM    Génération de l'aide d'une commande
   CVTMNUUIM    Convertion menu en UIM
+  CRTMNUUIM    Assistant de création d'un menu UIM 
+  DSPPNLGRP    Affichage d'un panneau d'aide 
 
 *** Listes  des sources

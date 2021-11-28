@@ -1,0 +1,40 @@
+             PGM        PARM(&USER) /*--------------------------*/
+             /* Extraction du mot de passe                      */
+             /* et ecriture dans une dtaara                     */
+             /*-------------------------------------------------*/
+             DCL        VAR(&USER) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&PASSWORD) TYPE(*CHAR) LEN(2000)
+             DCL        VAR(&PASSWORDL) TYPE(*INT) LEN(4) VALUE(2000)
+             DCL        VAR(&ERR_BYT) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&ERR_AVA) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&ERR_ID) TYPE(*CHAR) LEN(7)
+             DCL        VAR(&ERR_RSV) TYPE(*CHAR) LEN(1)
+             DCL        VAR(&ERR_MSG) TYPE(*CHAR) LEN(100)
+             DCL        VAR(&ERRDTA) TYPE(*CHAR) LEN(116)
+             DCL        VAR(&LIBPWD) TYPE(*CHAR) LEN(10) +
+             VALUE('QGPL')
+             CHGVAR     VAR(&PASSWORD) VALUE(' ')
+             CALL       PGM(QSYRUPWD) PARM(&PASSWORD &PASSWORDL +
+                          'UPWD0100' &USER &ERRDTA)
+  /* Si erreur  */
+             IF         COND(%BIN(&ERRDTA 5 4) *NE 0) THEN(DO)
+             CHGVAR     VAR(&ERR_BYT) VALUE(%SST(&ERRDTA 1 4))
+             CHGVAR     VAR(&ERR_ID) VALUE(%SST(&ERRDTA 9 7))
+             CHGVAR     VAR(&ERR_MSG) VALUE(%SST(&ERRDTA 17 100))
+             SNDPGMMSG  MSGID(&ERR_ID) MSGF(QCPFMSG) +
+                          MSGDTA(&ERR_MSG) MSGTYPE(*ESCAPE)
+             MONMSG     MSGID(CPF0000)
+             GOTO       CMDLBL(FIN)
+             ENDDO
+             ELSE       CMD(DO)
+  /* Si OK      */
+             CHKOBJ     OBJ(PASSWORD) OBJTYPE(*DTAARA)
+             monmsg cpf9801 exec(do)
+             CRTDTAARA  DTAARA(&LIBPWD/PASSWORD) TYPE(*CHAR) +
+                          LEN(2000) TEXT('Extraction de mot de passe')
+             ENDDO
+             CHGDTAARA  DTAARA(PASSWORD *ALL) VALUE(&PASSWORD)
+             ENDDO
+FIN:
+RETURN
+ENDPGM
