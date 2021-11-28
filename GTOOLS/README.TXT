@@ -4,7 +4,7 @@
 
   DSPDATQ      Affichage d'une dtaq
   WRKSAVF      Gestion des Savfs
-  CHGUSRPWD    Changer un mot de passe utilisateur
+  UPDUSRPWD    Changer un mot de passe utilisateur
   INIUSRNET    Initiation d'un mot de passe réseau
   CHGNETBIOS   Changement d'un nom Netbios
   CRTXLSFIC    Création d'un fichier XLS à partir d'une requête SQL
@@ -18,5 +18,7 @@
   CVTMNUUIM    Convertion menu en UIM
   CRTMNUUIM    Assistant de création d'un menu UIM 
   DSPPNLGRP    Affichage d'un panneau d'aide 
-
+  CHGUSRPWD    Modification du profil 
+  RTVUSRPWD    Récupération du PWD d'un Profil
+ 
 *** Listes  des sources
