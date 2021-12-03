@@ -6,6 +6,10 @@
                           PROMPT('Société')
              PARM       KWD(TITRE) TYPE(*CHAR) LEN(30) MIN(1) +
                           PROMPT('Titre du menu')
+
+             PARM       KWD(COMPILE) TYPE(*CHAR) LEN(4) RSTD(*YES) +  
+                         DFT(*NO) VALUES(*YES *NO) MIN(0) +          
+                          PROMPT('Compilation menu')                  
  /* option 1 */
              PARM       KWD(OPTION1) TYPE(*CHAR) LEN(50) MIN(1) +
                           PROMPT('Texte option 1')
