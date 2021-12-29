@@ -1,0 +1,39 @@
+pgm parm(&cmd &lib) /*-----------------------------------------*/
+/* Liste des messages SQL d'un JOB                             */
+/*-------------------------------------------------------------*/
+dcl &cmd *char 512
+dcl &lib *char 10
+             INCLUDE    SRCMBR(ERREUR1) 
+if cond(&lib = '*CURLIB') then(do)
+rtvjoba curlib(&lib)
+enddo
+             CHGJOB     LOG(4 0 *SECLVL) LOGCLPGM(*YES) CCSID(1147)
+             CHKOBJ     OBJ(&LIB) OBJTYPE(*LIB)
+/* passage en mode debug */
+             STRDBG     UPDPROD(*YES)
+             monmsg cpf0000
+runsql sql('call qcmdexc(''' *bcat &cmd *bcat ''')')  +
+   commit(*none)
+ monmsg sql0000  exec(do)
+             SNDUSRMSG  MSG('Exécution commande impossible') +
+                          MSGTYPE(*INFO)
+runsql sql('+
+drop   table' *bcat &lib *tcat '/dbgsql    ')
+ monmsg sql0000
+runsql sql('+
+create table' *bcat &lib *tcat '/dbgsql as ( +
+   SELECT A.MESSAGE_ID, A.MESSAGE_TEXT, A.MESSAGE_SECOND_LEVEL_TEXT +
+   FROM TABLE(QSYS2.JOBLOG_INFO(''*'')) A +
+   where substr(MESSAGE_ID , 1 , 5) = ''CPI43'' ) with data') +
+   commit(*none)
+ monmsg sql0000  exec(do)
+             SNDUSRMSG  MSG('Extraction log SQL impossible') +
+                          MSGTYPE(*INFO)
+ return
+ enddo
+/* Passage en mode debug */
+             ENDDBG
+             monmsg cpf0000
+             INCLUDE    SRCMBR(ERREUR2) 
+
+endpgm
