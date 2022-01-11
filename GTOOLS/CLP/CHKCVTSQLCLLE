@@ -1,0 +1,75 @@
+pgm parm(&file &lib) /*----------------------------------------------*/
+/*  Ce programme permet de tester si pf peut passer en table sans    */
+/*  changement de niveau de format et cle nom unique                 */
+/*-------------------------------------------------------------------*/
+dcl &file *char 10
+dcl &lib *char 10
+dcl &libt *char 10
+dcl &wRFID *char 13
+dcl &xRFID *char 13
+dcl &nbr   *dec  10
+             DCL        VAR(&EOF) TYPE(*LGL)
+dclf qsys/QAFDRFMT
+include ERREUR1
+chgvar &libt   'WTEMP'
+             CHKOBJ     OBJ(&LIBT) OBJTYPE(*LIB)
+             monmsg cpf9801 exec(do)
+             crtlib &libt
+             enddo
+clrlib &libt
+/* Controle si clé pas unique dans le fichier */
+             DSPFD      FILE(&LIB/&FILE) TYPE(*ACCPTH) +
+                          OUTPUT(*OUTFILE) OUTFILE(&libt/LSTPF)
+             RUNSQL     SQL('create table' *BCAT &LIBT *TCAT +
+                          '/clenonu as (SELECT * FROM ' *BCAT +
+                          &libt  *TCAT '/lstpf WHERE APUNIQ = ''N'') +
+                          with data') COMMIT(*NONE)
+             RTVMBRD    FILE(&libt/CLENOnU) NBRCURRCD(&nBR)
+             if cond(&nbr > 0) then(do)
+             SNDUSRMSG  MSG('Clé non unique sur le fichier,' +
+                          *bcat &file) MSGTYPE(*INFO)
+             return
+             enddo
+/*  controle de niveau de format */
+             CRTDUPOBJ  OBJ(&FILE) FROMLIB(&LIB) OBJTYPE(*FILE) +
+                          TOLIB(&LIBT) CST(*NO) TRG(*NO)
+             CRTSRCPF   FILE(&libt/WWQSQLSRC) RCDLEN(112)
+             RTVSQLSRC  FILE(&libt/&FILE) SRCFILE(&libt/WWQSQLSRC)
+             RNMOBJ     OBJ(&libt/&FILE) OBJTYPE(*FILE) NEWOBJ('W' +
+                          *TCAT %SST(&FILE 2 9))
+ /* execution sur la bse de test */
+             RUNSQLSTM  SRCFILE(&libt/WWQSQLSRC) SRCMBR(&FILE) +
+                          COMMIT(*NONE) DFTRDBCOL(&LIBT)
+             DSPFD      FILE(&libt/*ALL) TYPE(*RCDFMT) +
+                          OUTPUT(*OUTFILE) OUTFILE(&libt/WAFDRFMT)
+             OVRDBF     FILE(QAFDRFMT) TOFILE(&LIBT/WAFDRFMT) +
+                          LVLCHK(*NO) SHARE(*YES)
+ /* lecture des formats */
+ /*                     */
+             DOUNTIL    COND(&EOF)
+rcvf
+monmsg cpf0864 exec(do)
+             leave
+             enddo
+ if cond(&RFFILE = &file) then(do)
+             chgvar &xRFID &RFID
+enddo
+ if cond(&RFFILE = 'W' *TCAT %SST(&FILE 2 9)) then(do)
+             chgvar &wRFID &RFID
+enddo
+             enddo
+ /*  comparaison de rfid lus */
+ /*                          */
+     if cond(&xrfid = &wrfid) then(do)
+ /* tout va bien */
+             SNDUSRMSG  MSG('Niveau de format indentique,' *BCAT +
+                          &WRFID *BCAT ',tout est ok') MSGTYPE(*INFO)
+     enddo
+     else do
+ /* ca se complique  */
+             SNDUSRMSG  MSG('Niveau de Format différent,' *BCAT +
+                          &WRFID *BCAT '/' *BCAT &XRFID) MSGTYPE(*INFO)
+     enddo
+     dltovr     FILE(QAFDRFMT)
+include ERREUR2
+endpgm

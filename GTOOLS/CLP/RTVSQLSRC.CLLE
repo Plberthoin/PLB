@@ -1,0 +1,78 @@
+/*-------------------------------------------------------------*/
+/* extraction source d'un objet sql                            */
+/*-------------------------------------------------------------*/
+ PGM        PARM(&DBFILE &SRCFILE &SRCMBR &typsql)
+/* */
+             DCL &DBFILE *CHAR 138
+             DCL &SRCFILE *CHAR 20
+             DCL &SRCMBR *CHAR 10
+             DCL &typsql *CHAR 10
+/* */
+             DCL &PFNAME *CHAR 10
+             DCL &PFLIB *CHAR 10
+             DCL &DATA *CHAR 583
+             DCL &DATALG *CHAR 4
+             DCL &CODERR *CHAR 8 VALUE(X'0000000000000000')
+             DCL &txt    *CHAR 50
+             INCLUDE    SRCMBR(ERREUR1)
+
+   /* CORPS DU PROGRAMME */
+
+               CHGVAR &PFLIB %SST(&DBFILE 11 10)
+               CHGVAR &PFNAME  %SST(&DBFILE 1 10)
+               select
+               when (&typsql = 'TABLE') then(do)
+               CHKOBJ     OBJ(&PFLIB/&PFNAME) OBJTYPE(*FILE) AUT(*USE)
+             RTVOBJD    OBJ(&PFLIB/&PFNAME) OBJTYPE(*FILE) TEXT(&TXT)
+               enddo
+               when (&typsql = 'VIEW') then(do)
+               CHKOBJ     OBJ(&PFLIB/&PFNAME) OBJTYPE(*FILE) AUT(*USE)
+             RTVOBJD    OBJ(&PFLIB/&PFNAME) OBJTYPE(*FILE) TEXT(&TXT)
+               enddo
+               when (&typsql = 'INDEX') then(do)
+               CHKOBJ     OBJ(&PFLIB/&PFNAME) OBJTYPE(*FILE) AUT(*USE)
+             RTVOBJD    OBJ(&PFLIB/&PFNAME) OBJTYPE(*FILE) TEXT(&TXT)
+               enddo
+               when (&typsql = 'SCHEMA') then(do)
+               CHKOBJ     OBJ(QSYS/&PFNAME) OBJTYPE(*LIB) AUT(*USE)
+             RTVOBJD    OBJ(QSYS/&PFNAME) OBJTYPE(*LIB) TEXT(&TXT)
+               enddo
+               endselect
+  /* création du membre source si inexistant */
+               CHKOBJ     OBJ(%SST(&SRCFILE 11 10)/%SST(&SRCFILE 1 +
+                            10)) OBJTYPE(*FILE) AUT(*CHANGE)
+               IF         COND(&SRCMBR *EQ '*OBJ') THEN(CHGVAR +
+                            VAR(&SRCMBR) VALUE(&PFNAME))
+             CHKOBJ     OBJ(%SST(&SRCFILE 11 10)/%SST(&SRCFILE 1 +
+                          10)) OBJTYPE(*FILE) MBR(&SRCMBR) AUT(*CHANGE)
+                          monmsg CPF9815  exec(do)
+             ADDPFM     FILE(%SST(&SRCFILE 11 10)/%SST(&SRCFILE 1 +
+                          10)) MBR(&SRCMBR) TEXT(&TXT) SRCTYPE(SQL)
+                          enddo
+             CHGVAR %BIN(&DATALG) 583
+             CHGVAR %SST(&DATA   1 258) &PFNAME
+             CHGVAR %SST(&DATA 259 258) &PFLIB
+             CHGVAR %SST(&DATA 517  10) &typsql
+             CHGVAR %SST(&DATA 527  10) %SST(&SRCFILE 1 10)
+             CHGVAR %SST(&DATA 537  10) %SST(&SRCFILE 11 10)
+             CHGVAR %SST(&DATA 547  10) &SRCMBR
+             CHGVAR %BIN(&DATA 557   4) 30    /* GRAVITÉ */
+             CHGVAR %SST(&DATA 561   1) '0'   /* REMPLACEMENT DU SOURCE*/
+             CHGVAR %SST(&DATA 562   1) '0'   /* STMF ?  */
+             CHGVAR %SST(&DATA 563   3) 'ISO' /* DATFMT */
+             CHGVAR %SST(&DATA 566   1) '-'   /* DATSEP */
+             CHGVAR %SST(&DATA 567   3) 'ISO' /* TIMFMT */
+             CHGVAR %SST(&DATA 570   1) ':'   /* TIMSEP */
+             CHGVAR %SST(&DATA 571   3) 'SYS' /* APPELLATION */
+             CHGVAR %SST(&DATA 574   1) ','   /* DÉCIMALE */
+             CHGVAR %SST(&DATA 575   1) '0'   /* STD OPT */
+             CHGVAR %SST(&DATA 576   1) '0'   /* DROP OPT */
+             CHGVAR %BIN(&DATA 577   4) 0     /* MSG LEVEL */
+             CHGVAR %SST(&DATA 581   1) '1'   /* COMMENTAIRES */
+             CHGVAR %SST(&DATA 582   1) '1'   /* LABEL ON     */
+             CHGVAR %SST(&DATA 583   1) '1'   /* ENTÊTE       */
+ /* appel du programme API SQL   Format SQLR0100  */
+     CALL QSQGNDDL PARM(&DATA &DATALG 'SQLR0100' &CODERR)
+ /*   */
+             INCLUDE    SRCMBR(ERREUR2)
+                ENDPGM
