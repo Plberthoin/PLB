@@ -19,6 +19,7 @@
   CRTMNUUIM    Assistant de création d'un menu UIM 
   DSPPNLGRP    Affichage d'un panneau d'aide 
   CHGUSRPWD    Modification du profil 
+  RGZPFM2      Pour réorganiser un très gros PF
   RTVUSRPWD    Récupération du PWD d'un Profil
  
 *** Listes  des sources
