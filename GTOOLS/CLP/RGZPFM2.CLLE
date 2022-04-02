@@ -1,0 +1,80 @@
+pgm   parm(&fil &lib &rmv   ) /*------------------------------*/
+/*                                                            */
+/* Ce programme permet de réorganiser un gros fichier         */
+/*                                                            */
+/*------------------------------------------------------------*/
+dcl &fil *char 10    /* Fichier      */
+dcl &lib *char 10    /* Bibliothèque */
+dcl &rmv *char 04    /* recréation des indexs */
+             DCLF       FILE(QADSPDBR) OPNID(QADSPDBR)
+             DCL        VAR(&FINFIC) TYPE(*LGL)
+dcl &atr *char 10
+/*------------------------------------------------------------*/
+/* Les contrôles                                              */
+/*------------------------------------------------------------*/
+chkobj &lib/&fil *file
+monmsg cpf9800 exec(do)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+                          MSGDTA('Fichier' *BCAT &FIL *TCAT '/' +
+                          *TCAT &LIB *BCAT 'inexistant') +
+                          MSGTYPE(*ESCAPE)
+enddo
+             ALCOBJ     OBJ((&LIB/&FIL *FILE *EXCL)) WAIT(1)
+monmsg cpf1002 exec(do)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+                          MSGDTA('Fichier' *BCAT &FIL *TCAT '/' +
+                          *TCAT &LIB *BCAT 'non disponible') +
+                          MSGTYPE(*ESCAPE)
+enddo
+             CHGJOB     RUNPTY(40) TIMESLICE(50000)
+/* réorganiser le fichier sans faire un rgzpfm */
+             OVRDBF     FILE(&FIL) OVRSCOPE(*CALLLVL) SEQONLY(*YES +
+                          *BUF256KB)
+             OVRDBF     FILE(Wrgzpfm) OVRSCOPE(*CALLLVL) SEQONLY(*YES +
+                          *BUF256KB)
+             DSPDBR     FILE(&LIB/&FIL) OUTPUT(*OUTFILE) +
+                          OUTFILE(QTEMP/WADSPDBR)
+     if cond(&rmv = '*YES') then(do)
+             OVRDBF     FILE(QADSPDBR) TOFILE(QTEMP/WADSPDBR) +
+                          LVLCHK(*NO) SHARE(*YES)
+             DOUNTIL    COND(&FINFIC)
+             RCVF   OPNID(QADSPDBR)
+             monmsg cpf0864 exec(do)
+             leave
+             enddo
+             RTVOBJD    OBJ(&QADSPDBR_WHRELI/&QADSPDBR_WHREFI) +
+                          OBJTYPE(*FILE) OBJATR(&ATR)
+             if cond(&atr = 'LF') then(do)
+             RMVM       FILE(&QADSPDBR_WHRELI/&QADSPDBR_WHREFI) +
+                          MBR(&QADSPDBR_WHREFI)
+             monmsg (cpf3200 cpf7300)
+             enddo
+             enddo
+             CLOSE      OPNID(QADSPDBR)
+    enddo
+/* Supprimer les indexs                                              */
+             CPYF       FROMFILE(&LIB/&FIL) TOFILE(QTEMP/WRGZPFM) +
+                          MBROPT(*ADD) CRTFILE(*YES) FROMRCD(1)
+             CLRPFM     FILE(&LIB/&FIL)
+             CPYF       FROMFILE(QTEMP/WRGZPFM) TOFILE(&LIB/&FIL) +
+                          MBROPT(*ADD) FROMRCD(1)
+/* recreation des indexs                                             */
+   if cond(&rmv = '*YES') then(do)
+             DOUNTIL    COND(&FINFIC)
+             RCVF       OPNID(QADSPDBR)
+             monmsg cpf0864 exec(do)
+             leave
+             enddo
+             RTVOBJD    OBJ(&QADSPDBR_WHRELI/&QADSPDBR_WHREFI) +
+                          OBJTYPE(*FILE) OBJATR(&ATR)
+             if cond(&atr = 'LF') then(do)
+             ADDLFM     FILE(&QADSPDBR_WHRELI/&QADSPDBR_WHREFI) +
+                          MBR(&QADSPDBR_WHREFI)
+             monmsg (cpf3200 cpf7300)
+             enddo
+             enddo
+             dltovr     FILE(QADSPDBR)
+   Enddo
+/* Libération du fichier                                             */
+             DLCOBJ     OBJ((&LIB/&FIL *FILE *EXCL))
+endpgm
