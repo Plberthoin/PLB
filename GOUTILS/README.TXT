@@ -5,21 +5,21 @@
   DSPDATQ      Affichage d'une dtaq
   WRKSAVF      Gestion des Savfs
   UPDUSRPWD    Changer un mot de passe utilisateur
-  INIUSRNET    Initiation d'un mot de passe réseau
+  INIUSRNET    Initiation d'un mot de passe rÃ©seau
   CHGNETBIOS   Changement d'un nom Netbios
-  CRTXLSFIC    Création d'un fichier XLS à partir d'une requête SQL
-  REFJOBSCDE   Listes des PGM utilisés dans le WRKJOBSCDE 
+  CRTXLSFIC    CrÃ©ation d'un fichier XLS Ã  partir d'une requÃªte SQL
+  REFJOBSCDE   Listes des PGM utilisÃ©s dans le WRKJOBSCDE 
   CHKCRTDAT    Controles des dates de certificat
-  SCANSRC      Rechercher une chaine de caractères dans les fichiers IFS
+  SCANSRC      Rechercher une chaine de caractÃ¨res dans les fichiers IFS
   WRKSQLJOB    Voir les Requetes en cours 
-  GMNU         Une autre manière de gérer vos menus 
+  GMNU         Une autre maniÃ¨re de gÃ©rer vos menus 
   CVTQRYQM     Convertisser vos Querys en QM
-  GENCMDUIM    Génération de l'aide d'une commande
+  GENCMDUIM    GÃ©nÃ©ration de l'aide d'une commande
   CVTMNUUIM    Convertion menu en UIM
-  CRTMNUUIM    Assistant de création d'un menu UIM 
+  CRTMNUUIM    Assistant de crÃ©ation d'un menu UIM 
   DSPPNLGRP    Affichage d'un panneau d'aide 
   CHGUSRPWD    Modification du profil 
-  RGZPFM2      Pour réorganiser un très gros PF
-  RTVUSRPWD    Récupération du PWD d'un Profil
- 
+  RGZPFM2      Pour rÃ©organiser un trÃ¨s gros PF
+  RTVUSRPWD    RÃ©cupÃ©ration du PWD d'un Profil
+  RTVSQLSRC      
 *** Listes  des sources
