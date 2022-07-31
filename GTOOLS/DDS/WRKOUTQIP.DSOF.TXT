@@ -1,0 +1,43 @@
+     A*%%TS  SD  20220727  154026  QSECOFR     REL-V7R4M0  5770-WDS
+     A*%%EC
+     A                                      DSPSIZ(27 132 *DS4)
+     A                                      CA03(03)
+     A          R SFL01                     SFL
+     A*%%TS  SD  20220727  144834  QSECOFR     REL-V7R4M0  5770-WDS
+     A            OPT01          1A  B  7  4VALUES('6' '4' '2' ' ')
+     A            OUTQ          10A  O  7  7
+     A            LIB           10A  O  7 18
+     A            TEXT          50   O  7 29
+     A            IP            16   O  7 80
+     A            JOB           32   O  7 97
+     A*
+     A          R CTL01                     SFLCTL(SFL01)
+     A*%%TS  SD  20220727  154026  QSECOFR     REL-V7R4M0  5770-WDS
+     A                                      SFLSIZ(0015)
+     A                                      SFLPAG(0014)
+     A                                      CF05(05)
+     A                                      CA06(06)
+     A                                      OVERLAY
+     A  42                                  SFLDSP
+     A  41                                  SFLDSPCTL
+     A  40                                  SFLCLR
+     A            NUM01          4S 0H      SFLRCDNBR(CURSOR)
+     A                                  1  2USER
+     A                                  1 46'Gestion des Outq distantes'
+     A                                      DSPATR(HI)
+     A                                  1106DATE
+     A                                      EDTCDE(Y)
+     A                                  2  2SYSNAME
+     A                                  2106TIME
+     A                                  5  4'4=Supprimer 2=Modifier 6=Arrêter l-
+     A                                      e writer'
+     A                                      COLOR(BLU)
+     A                                  6  4'   Outq       Biblio     Texte    -
+     A                                                                         -
+     A                                             Ip               job '
+     A                                      DSPATR(HI)
+     A          R FMT01
+     A*%%TS  SD  20200813  110925  DT          REL-V7R4M0  5770-WDS
+     A                                 23  3'F3=Quitter  F5=Réafficher  F6=Crée-
+     A                                      r'
+     A                                      COLOR(BLU)
