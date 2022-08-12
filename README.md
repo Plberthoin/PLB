@@ -26,5 +26,8 @@ GGIT:
  C'est des commandes qui vous permettent de "giter" simplement une développement IBMi 
  d'abord en copiant dans un répertoire IFS, en créant le repository et en le comitant.
 
+ GTOOLS:
+Qui contient tous les autres exemples de code dans des répertoires par langages ? /RPG sources en RPGLE et SQLRPGLE /SQL Sources SQL /DDS Sources PRTF , DSPF /CMD Sources des commandes /TXT Sources d'explication /CLP Sources en langage de contrôle
+
 
 
