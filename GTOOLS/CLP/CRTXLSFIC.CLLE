@@ -1,4 +1,4 @@
-pgm (&nomifs &requete &exeacs)
+pgm (&nomifs &requete &exeacs &entete)
 /*     Création d'un fichier  excel  à partir d'une requete SQL      */
 /* Vous devez avoir ACS installé sur la machine                      */
 /*                                                                   */
@@ -22,7 +22,7 @@ dcl &guille *char 1 '"'
 dcl &job *char 10
 dcl &usr *char 10
 dcl &fil *char 100
-dcl &entete *char 4 VALUE('*YES')
+dcl &entete *char 4 
 /*---------------------------------*/
 /* Traitement des paramètres recus */
 /*---------------------------------*/
