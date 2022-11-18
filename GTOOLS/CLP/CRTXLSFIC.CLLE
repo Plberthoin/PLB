@@ -22,6 +22,7 @@ dcl &guille *char 1 '"'
 dcl &job *char 10
 dcl &usr *char 10
 dcl &fil *char 100
+dcl &entete *char 4 VALUE('*YES')
 /*---------------------------------*/
 /* Traitement des paramètres recus */
 /*---------------------------------*/
