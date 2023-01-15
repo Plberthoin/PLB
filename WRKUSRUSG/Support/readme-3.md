@@ -1,3 +1,9 @@
+---
+title: readme
+updated: 2023-01-15 14:20:44Z
+created: 2023-01-15 14:18:49Z
+---
+
 # Gestion des Fonctions usages
 
 *---------------------------------------------------------------------*
@@ -17,7 +23,7 @@ Compiler l'écran puis le programme et la commande avec les commandes standards
 ==>WRKUSRUSG (nom de la fonction)    
 ### Exemple 
 WRKUSRUSG FCNID(QIBM_DB_ZDA) 
-![fonctions.png](:/c11f3e1c54db42078be97f5969dbe487)
+![919742caaaa667a29280eaec79a63e28.png](../_resources/919742caaaa667a29280eaec79a63e28-7.png)
 - <F6> Pour ajouter un utilisateur
 - <F10> pour changer le paramétrage général
 - 4 pour retirer un utilisateur
