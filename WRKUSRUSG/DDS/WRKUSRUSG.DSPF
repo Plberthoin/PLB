@@ -1,4 +1,4 @@
-     A*%%TS  SD  20230110  064253  QSECOFR     REL-V7R4M0  5770-WDS
+     A*%%TS  SD  20230117  183410  QSECOFR     REL-V7R4M0  5770-WDS
      A*%%EC
      A                                      DSPSIZ(24 80 *DS3)
      A                                      CA03(03)
@@ -35,13 +35,19 @@
      A                                      DSPATR(HI)
      A            FUNCT         50   O  2 17
      A                                  3  2'Usage  :'
-     A                                  4  2'ALLOBJ :'
-     A            USAGE          7   O  3 12 DSPATR(RI)
-     A            ALLOBJ         8   O  4 12 DSPATR(RI)
+     A                                  4  2'Allobj :'
+     A            USAGE          7   O  3 12 DSPATR(HI)
+     A            ALLOBJ         8   O  4 12 DSPATR(HI)
      A          R FMT01
      A*%%TS  SD  20230110  064253  QSECOFR     REL-V7R4M0  5770-WDS
      A                                 23  3'F3=Quitter  F5=Réafficher  F6=Crée-
      A                                      r'
      A                                      COLOR(BLU)
-     A                                 23 40'F10=Paramètre de la fonction'
+     A                                 23 40'F10=Paramètres de la fonction'
      A                                      COLOR(BLU)
+     A          R FMT03
+     A*%%TS  SD  20230117  183410  QSECOFR     REL-V7R4M0  5770-WDS
+     A                                      WINDOW(4 4 03 60)
+     A                                      RMVWDW
+     A            RESULT        55   O  2  2DSPATR(HI)
+     A  64                                  DSPATR(RI)
