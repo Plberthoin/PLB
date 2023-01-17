@@ -149,9 +149,13 @@ dcl-proc Display_SFL     ;
       exec sql
        call qcmdexc(:w_sql) ;
        if sqlcode = 0 ;
-       dsply ('Utilisateur ajouté')   ;
+         *in64 = *off ;
+         result = 'Utilisateur ajouté'    ;
+         exfmt fmt03 ;
        else ;
-       dsply ('Impossible d''ajouter ''utilisateur')  ;
+         *in64 = *on  ;
+         result = 'Impossible d''ajouter l''utilisateur'  ;
+         exfmt fmt03 ;
        ENDIF;
    // Réglage de la fonction
    // à ajouter cacher la zone profil + usage
@@ -164,9 +168,13 @@ dcl-proc Display_SFL     ;
       exec sql
        call qcmdexc(:w_sql) ;
        if sqlcode = 0 ;
-       dsply ('Fonction modifiée')   ;
+         *in64 = *off ;
+         result  = 'Fonction modifiée'   ;
+         exfmt fmt03 ;
        else ;
-       dsply ('Impossible de modifier la focntion')  ;
+         *in64 = *on  ;
+         result = 'Impossible de modifier la fonction'  ;
+         exfmt fmt03 ;
        ENDIF;
     other ;
       if cle01 > 0 ;
@@ -182,9 +190,13 @@ dcl-proc Display_SFL     ;
             exec sql
              call qcmdexc(:w_sql) ;
        if sqlcode = 0 ;
-       dsply ('Utilisateur retiré')   ;
+       *in64 = *off ;
+       result  = 'Utilisateur retiré'   ;
+       exfmt fmt03;
        else ;
-       dsply ('Impossible de retirer l''utilisateur')  ;
+       *in64 = *on  ;
+       result = 'Impossible de retirer l''utilisateur'  ;
+       exfmt fmt03;
        ENDIF;
             opt01  = ' ' ;
             update sfL01 ;
