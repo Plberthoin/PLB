@@ -1,6 +1,6 @@
 **free
 // Gestion des utilisateurs d'une fonction ID
-//
+// n
 ctl-opt
 DFTACTGRP(*NO) ;
 dcl-f
