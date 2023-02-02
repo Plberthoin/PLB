@@ -1,0 +1,227 @@
+/*-------------------------------------------------------------------*/
+/*                                                                   */
+             PGM        PARM(&OBJBIB &TYPE &PRF)
+/*                                                                   */
+/*  Ce programme vérifie les droits d'un utilisateur sur un objet    */
+/*  Il doit recevoir les paramètres suivants :                       */
+/*                                                                   */
+             DCL        &OBJBIB   *CHAR LEN(20) /* Biblio/objet     */
+             DCL        &TYPE     *CHAR LEN(10) /* Type de l'objet  */
+             DCL        &PRF      *CHAR LEN(10) /* Profil           */
+/*                                                                   */
+/*  REMARQUES :                                                      */
+/*                                                                   */
+/*  Ce programme doit être compiler en Adoption de droits par        */
+/*  rapport à un profil qui a le droit Spécial *ALLOBJ.              */
+/*                                                                   */
+/*  Il ne verifie pas le droit au niveau de la bibliothèque pour     */
+/*  le vérifier entrer, DSPUSRAUT  OBJET(QSYS/NOMBIB) TYPE(*LIB)     */
+/*                                                                   */
+/*                                                            PLB    */
+/*-------------------------------------------------------------------*/
+/*                                                                   */
+/*  Déclaration du fichier resultat *OUTFILE de DSPOBJAUT et DSPAUTL */
+/*                                                                   */
+             DCLF       FILE(QAOBJAUT)
+/*                                                                   */
+             DCLPRCOPT USRPRF(*OWNER)
+/*                                                                   */
+/*  Déclaration des variables de traitement                          */
+/*                                                                   */
+             DCL        &BIB      *CHAR LEN(10) /* Bibl. de l'objet */
+             DCL        &OBJ      *CHAR LEN(10) /* Nom   de l'objet */
+             DCL        &GRP      *CHAR LEN(10) /* Profil de groupe */
+             DCL        &SPC      *CHAR LEN(100) /* Profil de groupe */
+             DCL        &PRFOBJ   *CHAR LEN(08) /* Profil sur objet */
+             DCL        &PRFLIS   *CHAR LEN(08) /* Profil sur liste */
+             DCL        &GRPOBJ   *CHAR LEN(08) /* Groupe sur objet */
+             DCL        &GRPLIS   *CHAR LEN(08) /* Groupe sur liste */
+             DCL        &PUBOBJ   *CHAR LEN(08) /* Public sur objet */
+             DCL        &PUBLIS   *CHAR LEN(08) /* Public sur liste */
+             DCL        &RESULT   *CHAR LEN(132) /* Message Résultat */
+/*                                                                   */
+/*           Traitement des erreurs d'exeption, style IBM            */
+/*           Variables et appel du sous programme d'erreur           */
+/*                                                                   */
+             DCL        &ERRORSW  *LGL /* Std err */
+             DCL        &MSGID    *CHAR LEN(7) /* Std err */
+             DCL        &MSGDTA   *CHAR LEN(100) /* Std err */
+             DCL        &MSGF     *CHAR LEN(10) /* Std err */
+             DCL        &MSGFLIB  *CHAR LEN(10) /* Std err */
+             MONMSG     MSGID(CPF0000) EXEC(GOTO STDERR1) /* Std err */
+/*                                                                   */
+/*-------------------------------------------------------------------*/
+/*                                                                   */
+/*  Formatages, chargements et controle des paramètres               */
+/*                                                                   */
+/*-------------------------------------------------------------------*/
+/*                                                                   */
+             CHGVAR     VAR(&OBJ) VALUE(%SST(&OBJBIB  1 10))
+             CHGVAR     VAR(&BIB) VALUE(%SST(&OBJBIB 11 10))
+             RTVOBJD    OBJ(&BIB/&OBJ) OBJTYPE(&TYPE) RTNLIB(&BIB)
+             CHKOBJ     OBJ(&BIB/&OBJ) OBJTYPE(&TYPE)
+/*                                                                   */
+             RTVUSRPRF  USRPRF(&PRF) RTNUSRPRF(&PRF) SPCAUT(&SPC) GRPPRF(&GRP)
+             CHKOBJ     OBJ(QSYS/&PRF) OBJTYPE(*USRPRF)
+/*                                                                   */
+             IF         COND((&PRF *EQ &OBJ) *AND (&TYPE *EQ '*USRPRF   ')) THEN(DO)
+                SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('Le nom du profil' *bcat &PRF +
+                             *bcat 'est égal au nom de l''objet') MSGTYPE(*ESCAPE)
+             ENDDO
+/*                                                                   */
+/*  1) Si profil *ALLOBJ                                             */
+/*                                                                   */
+             IF         COND(%SST(&SPC 1 10) *EQ '*ALLOBJ   ') THEN(DO)
+                CHGVAR     VAR(&RESULT) VALUE('Le droit sur l''objet' *BCAT &BIB *TCAT '/' +
+                             *CAT &OBJ *BCAT 'est *ALL il est Déterminé par le profil utilisateur')
+                GOTO       CMDLBL(ENV)
+             ENDDO
+/*                                                                   */
+/*-------------------------------------------------------------------*/
+/*                                                                   */
+/*  Creation du fichier des droits spécifiques                       */
+/*                                                                   */
+/*-------------------------------------------------------------------*/
+/*                                                                   */
+             DSPOBJAUT  OBJ(&BIB/&OBJ) OBJTYPE(&TYPE) OUTPUT(*OUTFILE) OUTFILE(QTEMP/WAOBJAUT)
+/*                                                                   */
+             OVRDBF     FILE(QAOBJAUT) TOFILE(QTEMP/WAOBJAUT)
+/*                                                                   */
+             RCVF
+             IF         COND(&OAANAM *NE '*NONE     ') THEN(DSPAUTL AUTL(&OAANAM) +
+                          OUTPUT(*OUTFILE) OUTFILE(QTEMP/WAOBJAUT) OUTMBR(*FIRST *ADD))
+/*                                                                   */
+/*-------------------------------------------------------------------*/
+/*                                                                   */
+/*  Traitement du fichier des droits spécifiques                     */
+ TRAIT:
+/*-------------------------------------------------------------------*/
+/*                                                                   */
+/*  Si Profil                                                        */
+/*                                                                   */
+             IF         COND(&OAUSR *EQ &PRF) THEN(DO)
+                IF         COND(&OATYPE *NE '*AUTL     ') THEN(CHGVAR VAR(&PRFOBJ) VALUE(&OAOBJA))
+                ELSE       CMD(CHGVAR VAR(&PRFLIS) VALUE(&OAOBJA))
+
+             ENDDO
+/*                                                                   */
+/*  Si Profil de groupe                                              */
+/*                                                                   */
+             IF         COND(&OAUSR *EQ &GRP) THEN(DO)
+                IF         COND(&OATYPE *NE '*AUTL     ') THEN(CHGVAR VAR(&GRPOBJ) VALUE(&OAOBJA))
+                ELSE       CMD(CHGVAR VAR(&GRPLIS) VALUE(&OAOBJA))
+
+             ENDDO
+/*                                                                   */
+/*  Si Public                                                        */
+/*                                                                   */
+             IF         COND(&OAUSR *EQ '*PUBLIC   ') THEN(DO)
+                IF         COND(&OATYPE *NE '*AUTL     ') THEN(CHGVAR VAR(&PUBOBJ) VALUE(&OAOBJA))
+                ELSE       CMD(CHGVAR VAR(&PUBLIS) VALUE(&OAOBJA))
+
+             ENDDO
+             RCVF
+             MONMSG     MSGID(CPF0864) EXEC(GOTO CMDLBL(RES))
+             GOTO       CMDLBL(TRAIT)
+ RES:        DLTOVR     FILE(QAOBJAUT)
+/*                                                                   */
+/*-------------------------------------------------------------------*/
+/*                                                                   */
+/*  Exploitation des renseignements obtenus                          */
+/*                                                                   */
+/*-------------------------------------------------------------------*/
+/*                                                                   */
+/*  2) Si profil mentionné au niveau de l'objet                      */
+/*                                                                   */
+             IF         COND(&PRFOBJ *NE ' ') THEN(DO)
+                CHGVAR     VAR(&RESULT) VALUE('Le droit sur l''objet' *BCAT &BIB *TCAT '/' +
+                             *CAT &OBJ *BCAT 'est' *BCAT &PRFOBJ *BCAT 'il est Déterminé au +
+                             niveau de l''objet par le profil')
+                GOTO       CMDLBL(ENV)
+             ENDDO
+/*                                                                   */
+/*  3) Si profil mentionné au niveau de la liste                     */
+/*                                                                   */
+             IF         COND(&PRFLIS *NE ' ') THEN(DO)
+                CHGVAR     VAR(&RESULT) VALUE('Le droit sur l''objet' *BCAT &BIB *TCAT '/' +
+                             *CAT &OBJ *BCAT 'est' *BCAT &PRFLIS *BCAT 'il est Déterminé au +
+                             niveau de la liste par le profil')
+                GOTO       CMDLBL(ENV)
+             ENDDO
+/*                                                                   */
+/*  4) Si profil de groupe *ALLOBJ                                   */
+/*                                                                   */
+             IF         COND(&GRP *NE '*NONE     ') THEN(DO)
+                RTVUSRPRF  USRPRF(&GRP) SPCAUT(&SPC)
+                IF         COND(%SST(&SPC 1 10) *EQ '*ALLOBJ   ') THEN(DO)
+                   CHGVAR     VAR(&RESULT) VALUE('Le droit sur l''objet' *BCAT &BIB *TCAT '/' +
+                                *CAT &OBJ *BCAT 'est *ALL il est Déterminé par le profil de +
+                                groupe')
+                   GOTO       CMDLBL(ENV)
+                ENDDO
+             ENDDO
+/*                                                                   */
+/*  5) Si Groupe mentionné au niveau de l'objet                      */
+/*                                                                   */
+             IF         COND(&GRPOBJ *NE ' ') THEN(DO)
+                CHGVAR     VAR(&RESULT) VALUE('Le droit sur l''objet' *BCAT &BIB *TCAT '/' +
+                             *CAT &OBJ *BCAT 'est' *BCAT &GRPOBJ *BCAT 'il est Déterminé au +
+                             niveau de l''objet par le groupe')
+                GOTO       CMDLBL(ENV)
+             ENDDO
+/*                                                                   */
+/*  6) Si Groupe mentionné au niveau de la liste                     */
+/*                                                                   */
+             IF         COND(&GRPLIS *NE ' ') THEN(DO)
+                CHGVAR     VAR(&RESULT) VALUE('Le droit sur l''objet' *BCAT &BIB *TCAT '/' +
+                             *CAT &OBJ *BCAT 'est' *BCAT &GRPLIS *BCAT 'il est Déterminé au +
+                             niveau de la liste par le groupe')
+                GOTO       CMDLBL(ENV)
+             ENDDO
+/*                                                                   */
+/*  7) Si Public mentionné au niveau de la liste différent *AUTL     */
+/*                                                                   */
+             IF         COND(&PUBOBJ *NE '*AUTL     ') THEN(DO)
+                CHGVAR     VAR(&RESULT) VALUE('Le droit sur l''objet' *BCAT &BIB *TCAT '/' +
+                             *CAT &OBJ *BCAT 'est' *BCAT &PUBOBJ *BCAT 'il est Déterminé au +
+                             niveau de l''objet par *Public')
+                GOTO       CMDLBL(ENV)
+             ENDDO
+/*                                                                   */
+/*  8) Si Public mentionné au niveau de la liste égal à *AUTL       */
+/*                                                                   */
+             ELSE       CMD(DO)
+                CHGVAR     VAR(&RESULT) VALUE('Le droit sur l''objet' *BCAT &BIB *TCAT '/' +
+                             *CAT &OBJ *BCAT 'est' *BCAT &PUBLIS *BCAT 'il est Déterminé au +
+                             niveau de la liste par *Public')
+                GOTO       CMDLBL(ENV)
+             ENDDO
+/*                                                                   */
+/*-------------------------------------------------------------------*/
+/*                                                                   */
+/*           Sous programme de traitement des erreurs STANDARD IBM   */
+/*                                                                   */
+/*-------------------------------------------------------------------*/
+/*                                                                   */
+ STDERR1:
+             IF         &ERRORSW SNDPGMMSG MSGID(CPF9999) MSGF(QCPFMSG) MSGTYPE(*ESCAPE) /* +
+                          Func chk */
+             CHGVAR     VAR(&ERRORSW) VALUE('1')
+/*                                                                   */
+ STDERR2:    RCVMSG     MSGTYPE(*DIAG) MSGDTA(&MSGDTA) MSGID(&MSGID) MSGF(&MSGF) MSGFLIB(&MSGFLIB)
+             IF         (&MSGID *EQ '       ') GOTO STDERR3
+             SNDPGMMSG  MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) MSGDTA(&MSGDTA) MSGTYPE(*DIAG)
+             GOTO       STDERR2
+/*                                                                   */
+ STDERR3:    RCVMSG     MSGTYPE(*EXCP) MSGDTA(&MSGDTA) MSGID(&MSGID) MSGF(&MSGF) MSGFLIB(&MSGFLIB)
+             SNDPGMMSG  MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) MSGDTA(&MSGDTA) MSGTYPE(*ESCAPE)
+/*                                                                   */
+/*-------------------------------------------------------------------*/
+/*                                                                   */
+/*           Fin de programme avec envoie du résultat                */
+/*                                                                   */
+/*-------------------------------------------------------------------*/
+/*                                                                   */
+ ENV:
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA(&RESULT) MSGTYPE(*INFO)
+             ENDPGM
