@@ -2,6 +2,7 @@
 * Ce Logiciel regroupe quelques commandes pour vous aider sur l'IBM i * 
 *---------------------------------------------------------------------*
 
+ 
   DSPDATQ      Affichage d'une dtaq
   WRKSAVF      Gestion des Savfs
   UPDUSRPWD    Changer un mot de passe utilisateur
@@ -21,5 +22,5 @@
   CHGUSRPWD    Modification du profil 
   RGZPFM2      Pour réorganiser un très gros PF
   RTVUSRPWD    Récupération du PWD d'un Profil
-  RTVSQLSRC      
+  RTVSQLSRC    Extraire le source d'un objet SQL    
 *** Listes  des sources

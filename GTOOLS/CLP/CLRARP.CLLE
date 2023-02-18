@@ -1,0 +1,16 @@
+             PGM        PARM(&LINE)
+/*----------------------------------------------------------------------*/
+/* Ce programme le cache ARP d'une ligne                                */
+/* Rappelle CHGTCPDMN sans paramètre                                    */
+/* cleare tous les caches                                               */
+/*https://www.ibm.com/support/pages/dns-query-returning-old-ip-address  */
+/*----------------------------------------------------------------------*/
+/* Paramètres                                                           */
+             DCL        VAR(&LINE) TYPE(*CHAR) LEN(10)
+             INCLUDE    SRCMBR(ERREUR1) SRCFILE(GCOMPILE/QCLSRC)
+             chkobj &LINE *devd
+             DCL        VAR(&LINE) TYPE(*CHAR) LEN(10)
+             CALLPRC    PRC('QtocRmvARPTblE') PARM(&LINE 0 '*ALL ' X'00000000')
+ end:
+             INCLUDE    SRCMBR(ERREUR2) SRCFILE(GCOMPILE/QCLSRC)
+             endpgm

@@ -1,0 +1,168 @@
+             PGM        parm(&line) /* List Physical Interface ARP Table */
+/*                                                                   */
+/* J'ai honteusement copier ce programme mais je ne sais plus        */
+/* merci à celui qui l'a fait s'il se reconnait                      */
+/*                                                                   */
+/*   API            QtocLstPhyIfcARPTbl                              */
+/*                  Required Parameter Group:                        */
+/*                                                                   */
+/*                1:  Qualified user space name Input Char(20)       */
+/*                2:  Format name Input Char(8)                      */
+/*                3:  Line name Input Char(10)                       */
+/*                4:  Error Code I/O Char(*)                         */
+/*                   Service Program: QTOCNETSTS                     */
+/*   Format        ARPT0100 format                                   */
+/*    Offset Type       Field                                        */
+/*    Dec Hex                                                        */
+/*    0   0  CHAR(15)  Internet address                              */
+/*    15  F  CHAR(1)   Reserved                                      */
+/*    16 10  BINARY(4) Internet address binary                       */
+/*    20 14  BINARY(4) Line type                                     */
+/*    24 18  BINARY(4) Ethernet type                                 */
+/*    28 1C  BINARY(4) Type of entry                                 */
+/*    32 20  BINARY(4) Data link connection identifier (DLCI)        */
+/*    36 24  BINARY(4) Routing information field (RIF) valid mask    */
+/*    40 28  CHAR(18)  Routing information field (RIF)               */
+/*    58 3A  CHAR(17)  Physical address (MAC)                        */
+/*    75 4B  CHAR(1)   Reserved                                      */
+/*                                                                   */
+/*-------------------------------------------------------------------*/
+/* Paramètre */
+             DCL        VAR(&line) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&IPADDRESS)    TYPE(*CHAR) LEN(15)
+             DCL        VAR(&IPADDRBIN)    TYPE(*CHAR) LEN(4)
+             DCL        VAR(&LINETYPBIN)   TYPE(*CHAR) LEN(4)
+             DCL        VAR(&ETHTYPEBIN)   TYPE(*CHAR) LEN(4)
+             DCL        VAR(&TYPEENTBIN)   TYPE(*CHAR) LEN(4)
+             DCL        VAR(&DLCIBIN)      TYPE(*CHAR) LEN(4)
+             DCL        VAR(&RIFBIN)       TYPE(*CHAR) LEN(4)
+             DCL        VAR(&RIF)          TYPE(*CHAR) LEN(18)
+             DCL        VAR(&MACADDRESS)   TYPE(*CHAR) LEN(17)
+             /*  Paramètres pour API QUSCRTUS                     */
+             /*  Creation usrspace                                */
+             DCL        VAR(&USP_NAME)  TYPE(*CHAR)  LEN(10)
+             DCL        VAR(&USP_LIB)   TYPE(*CHAR)  LEN(10)
+             DCL        VAR(&USP_QUAL)  TYPE(*CHAR)  LEN(20)
+             DCL        VAR(&USP_TYPE)  TYPE(*CHAR)  LEN(10)
+             DCL        VAR(&USP_SIZE)  TYPE(*CHAR)  LEN(4)
+             DCL        VAR(&USP_FILL)  TYPE(*CHAR)  LEN(1)
+             DCL        VAR(&USP_AUT)   TYPE(*CHAR)  LEN(10)
+             DCL        VAR(&USP_TEXT)  TYPE(*CHAR)  LEN(50)
+
+             /*  Paramètres pour API QUSRTVUS                     */
+             /*  traitement USRSPACE                              */
+             DCL        VAR(&STARTPOS)  TYPE(*CHAR)  LEN(4)
+             DCL        VAR(&DATALEN)   TYPE(*CHAR)  LEN(4)
+             DCL        VAR(&HEADER)    TYPE(*CHAR)  LEN(150)
+
+             /*  OFFSET TO FIRST DATA                               */
+             DCL        VAR(&LST_OFFSET) TYPE(*DEC)  LEN(9 0)
+             /*  SIZE OF DATA                                       */
+             DCL        VAR(&LST_SIZE)   TYPE(*DEC)  LEN(9 0)
+             /*  LIST DATA ENTRY                                    */
+             DCL        VAR(&LST_DATA)   TYPE(*CHAR) LEN(4096)
+             /*  NUMBER OF ENTRIES IN LIST DATA SECTION             */
+             DCL        VAR(&LST_NBR)    TYPE(*DEC)  LEN(9 0)
+             /*  ENTRY LENGTH IN DECIMAL                            */
+             DCL        VAR(&LST_LEN)    TYPE(*DEC)  LEN(9 0)
+             /*  ENTRY LENGTH IN BINARY                             */
+             DCL        VAR(&LST_LENBIN) TYPE(*CHAR) LEN(4)
+             /*  POSITION OF LIST ENTRY IN BINARY                   */
+             DCL        VAR(&LST_POSBIN) TYPE(*CHAR) LEN(4)
+             /*  COUNTER                                            */
+             DCL        VAR(&LST_COUNT)  TYPE(*DEC)  LEN(9) VALUE(0)
+
+             CHKOBJ     OBJ(&line) OBJTYPE(*LIND)
+             MONMSG     MSGID(CPF9801) EXEC(DO)
+                SNDPGMMSG  MSG('Line ' *bcat &line *BCAT 'was not found')
+                GOTO       CMDLBL(END)
+             ENDDO
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('Récupération Arp Cache pour ligne ' +
+                          *bcat &line) TOPGMQ(*EXT) MSGTYPE(*STATUS)
+
+             /*  -------------------------------------------------  */
+             /*  Création User space                                */
+             /*  -------------------------------------------------  */
+
+             /*  SET USER SPACE NAME                                */
+             CHGVAR     VAR(&USP_NAME) VALUE('ARPUSRSPC ')
+             /*  SET USER SPACE LIBRARY                             */
+             CHGVAR     VAR(&USP_LIB) VALUE('QTEMP')
+             /*  SET USER SPACE QUALIFIED NAME                      */
+             CHGVAR     VAR(&USP_QUAL) VALUE(&USP_NAME *CAT &USP_LIB)
+             /*  SET USER SPACE TYPE                                */
+             CHGVAR     VAR(&USP_TYPE) VALUE('ARP')
+             /*  SET USER SPACE SIZE                                */
+             CHGVAR     VAR(%BIN(&USP_SIZE)) VALUE(64000)
+             /*  SET USER SPACE FILL CHARACTER                      */
+             CHGVAR     VAR(&USP_FILL) VALUE(' ')
+             /*  SET USER SPACE AUTHORITY                           */
+             CHGVAR     VAR(&USP_AUT) VALUE('*USE')
+             /*  SET USER SPACE TEXT                                */
+             CHGVAR     VAR(&USP_TEXT) VALUE('ARP CACHE USER SPACE')
+
+             /*  Création USER SPACE                                */
+             CALL       PGM(QUSCRTUS) PARM(&USP_QUAL &USP_TYPE &USP_SIZE &USP_FILL &USP_AUT +
+                          &USP_TEXT)
+             /*  Remplissge des USRSPACE                            */
+             CALLPRC    PRC('QtocLstPhyIfcARPTbl') Parm(&USP_QUAL 'ARPT0100' &line +
+                          X'00000000'           )
+             /*  -------------------------------------------------  */
+             /*  Lecture entete USRSPACE                            */
+             /*  -------------------------------------------------  */
+             /*  Positionnement au début                            */
+             CHGVAR     VAR(%BIN(&STARTPOS)) VALUE(1)
+             /*  SET DATA LENGTH                                    */
+             CHGVAR     VAR(%BIN(&DATALEN)) VALUE(140)
+             /*  extraction entête                                  */
+             CALL       PGM(QUSRTVUS) PARM(&USP_QUAL &STARTPOS &DATALEN &HEADER)
+
+             /*  Déplacemnt au début des datas                      */
+             /*  -------------------------------------------------  */
+             CHGVAR     VAR(&LST_OFFSET) VALUE(%BIN(&HEADER 125 4))
+             CHGVAR     VAR(&LST_SIZE)   VALUE(%BIN(&HEADER 129 4))
+             CHGVAR     VAR(&LST_NBR)    VALUE(%BIN(&HEADER 133 4))
+             CHGVAR     VAR(&LST_LEN)    VALUE(%BIN(&HEADER 137 4))
+
+             CHGVAR     VAR(%BIN(&LST_POSBIN)) VALUE(&LST_OFFSET + 1)
+             CHGVAR     VAR(&LST_LENBIN) VALUE(%SST(&HEADER 137 4))
+
+             /*  -------------------------------------------------  */
+             /*  Lecture des postes                                 */
+             /*  -------------------------------------------------  */
+
+             CHGVAR     VAR(&LST_COUNT) VALUE(0) /* INITIALIZE NUMBER OF LIST ENTRIES COUNTER */
+
+ LST_LOOP:   IF         COND(&LST_COUNT *EQ &LST_NBR) THEN(GOTO CMDLBL(LST_END))
+
+             CALL       PGM(QUSRTVUS) PARM(&USP_QUAL &LST_POSBIN &LST_LENBIN &LST_DATA)
+
+             /*  EXTRACT FIELDS                                     */
+
+             chgvar     VAR(&IPADDRESS) value(%sst(&LST_DATA 1 15))
+             chgvar     VAR(&IPADDRBIN) value(%sst(&LST_DATA 17 4))
+             chgvar     VAR(&LINETYPBIN) value(%sst(&LST_DATA 21 4))
+             chgvar     VAR(&ETHTYPEBIN) value(%sst(&LST_DATA 25 4))
+             chgvar     VAR(&TYPEENTBIN) value(%sst(&LST_DATA 29 4))
+             chgvar     VAR(&DLCIBIN)    value(%sst(&LST_DATA 33 4))
+             chgvar     VAR(&RIFBIN)     value(%sst(&LST_DATA 37 4))
+             chgvar     VAR(&RIF)        value(%sst(&LST_DATA 41 18))
+             chgvar     VAR(&MACADDRESS) value(%sst(&LST_DATA 59 17))
+
+             /*  -------------------------------------------------  */
+             /*  Affichage des addresses trouvées                   */
+             /*  -------------------------------------------------  */
+
+             SNDPGMMSG  MSGID(CPF9897) MSGF(QCPFMSG) MSGDTA('Adresse +
+                          IP :' *BCAT &IPADDRESS *BCAT 'MAC +
+                          Adresse :' *BCAT &MACADDRESS)
+
+ NEXTLST:    CHGVAR     VAR(&LST_COUNT) VALUE(&LST_COUNT + 1)
+             CHGVAR     VAR(%BIN(&LST_POSBIN)) VALUE(%BIN(&LST_POSBIN) + &LST_LEN)
+             GOTO       CMDLBL(LST_LOOP)
+
+ LST_END:
+             DLTUSRSPC  USRSPC(&USP_LIB/&USP_NAME)
+ END:
+             ENDPGM
+
