@@ -1,0 +1,35 @@
+pgm
+/*-----------------------------------------------------------------*/
+/* Paramétrage de GDDS                                             */
+/* Exemple bibliothèque GDDS                                       */
+/*                                                                 */
+/* Vous devez egalement avoir dans cette bibliothèque              */
+/* le programme GDDS et RTVMBRSRC                                  */
+/*-----------------------------------------------------------------*/
+crtlib GDDS
+monmsg CPF2111
+             CRTDUPOBJ  OBJ(CRTPRTF) FROMLIB(QSYS) OBJTYPE(*CMD) +
+                          TOLIB(GDDS)
+             MONMSG     MSGID(CPF2100 CPF9800)
+/* paramétrage CRTPRTF  */
+ADDEXITPGM EXITPNT(QIBM_QCA_CHG_COMMAND) FORMAT(CHGC0100) PGMNBR(92) +
+             PGM(GDDS/GDDS) TEXT('Paramétrage GDDS') PGMDTA(*JOB 20 +
+             'CRTPRTF   GDDS    ')
+             monmsg CPF3CDF exec(do)
+             SNDUSRMSG  MSG('Numéro déja utilisé pour CRTPRTF') +
+                          MSGTYPE(*INFO)
+             return
+             enddo
+goto suite
+/* paramétrage CRTDSPF  */
+ADDEXITPGM EXITPNT(QIBM_QCA_CHG_COMMAND) FORMAT(CHGC0100) PGMNBR(93) +
+             PGM(GDDS/GDDS) TEXT('Paramétrage GDDS') PGMDTA(*JOB 20 +
+             'CRTDSPF   GDDS    ')
+             monmsg CPF3CDF exec(do)
+             SNDUSRMSG  MSG('Numéro déja utilisé pour CRTDSPF') +
+                          MSGTYPE(*INFO)
+             return
+             enddo
+suite:
+             SNDUSRMSG  MSG('GDDS paramétré') MSGTYPE(*INFO)
+endpgm
