@@ -1,6 +1,7 @@
 **FREE
 //
 // Ce programme récupère dans une commande CRTPRTF
+// CRTPF , CRTLF , CRTDSPF
 //   La bibliothèque, le fichier source et le membre source
 //
 ctl-opt DFTACTGRP(*NO) ;
@@ -55,6 +56,25 @@ if pos1 > 1 ;
       pos1   =  %scan(')' : p_data : pos2) ;
       p_mbr = %subst(p_data : (pos2 +1)  : (pos1 - (pos2 + 1) ));
     endif ;
+  endif ;
+endif ;
+// si membre non indiqué on prend le fichier
+pos1 = %scan('SRCMBR(' : p_data : 1) ;
+if pos1 = 0 ;
+  pos1 = %scan('FILE(' : p_data : 1) ;
+  if pos1 > 1 ;
+    // recherche bibliothèque du fichier prtf
+    pos2   =  %scan('/' : p_data : pos1)  ;
+    if pos2 >  0  ;
+      p_lib  = %subst(p_data : (pos1 + 5) : (pos2 - (pos1 + 5 ) )) ;
+    else ;
+      p_lib = '*LIBL' ;
+      pos2 = pos1 + 7 ;
+    endif ;
+    // recherche fichier prtf
+    // recherche premier )
+    pos1   =  %scan(')' : p_data : pos2) ;
+    p_mbr = %subst(p_data : (pos2 +1)  : (pos1 - (pos2 + 1) ));
   endif ;
 endif ;
 *inlr = *on ;

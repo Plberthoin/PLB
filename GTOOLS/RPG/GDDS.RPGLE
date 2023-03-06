@@ -1,15 +1,21 @@
 **FREE
 // *--------------------------------------------------------------------
-//
+// *
 // * Ce programme est associé au point d'exit et il se déclenche à
-// *    chaque execution de la commande CRTPRTF
-// *
-// *
+// *    Chaque Execution des commandes CRTPRTF, CRTDSPF, CRTPF et CRTLF
+// *  Il utilise un programme RTVMBRSRC qui doit se trouver dans la
+// *  liste des bibliothèques
 // *
 // *
 // *
 // *
 // *--------------------------------------------------------------------
+// déclaration des paramètres recus
+dcl-pi *N ;
+  wparam1           Char(32000);
+  replace_string    Char(32000);
+  replace_length Bindec(9);
+end-pi ;
 // commande à traiter
 Dcl-DS param1 ;
   Exit_point_Name Char(20);
@@ -24,12 +30,8 @@ Dcl-DS param1 ;
   command_string  Char(31000);
 End-DS;
  // chaine de remplacement
-  // longueur de la commande renvoyée
-//decalaration pour les informations du travail
-//InJobName       S             26
-//Outcount        S              5  0
-//declaration pour gparam fichier des paramètres
-//commande à exécuter
+// longueur de la commande renvoyée
+// Variables de travail
 Dcl-S srcdta       Char(80);
 Dcl-S Cmdsql       Char(512);
 Dcl-S P_lib       Char(10);
@@ -42,11 +44,6 @@ DCL-PR  RTVMBRSRC EXTPGM('RTVMBRSRC');
 p_fil   char(10) ;
 p_mbr   char(10) ;
 END-PR;
-dcl-pi *N ;
-  wparam1           Char(32000);
-  replace_string    Char(32000);
-  replace_length Bindec(9);
-end-pi ;
 // initialisation des options de compile sql
 //
   EXEC SQL
@@ -92,10 +89,11 @@ exec sql
 close curs01                         ;
 EXEC SQL
 declare curs01 cursor  for
-select
-SRCDTA
-from INPUT
-where substr(srcdta, 8 , 6) = '<COMP>'  ;
+select substr(srcdta, (locate('<COMP>', srcdta) + 6) ,
+(( locate('</COMP>', srcdta) - 1) -
+ (locate('<COMP>', srcdta) +5) )) as srcdta
+  from QTEMP/INPUT
+  where srcdta like('%<COMP>%') and  srcdta like('%</COMP>%') ;
 exec sql
 open curs01                          ;
 // boucle de lecture des options de compile
@@ -106,7 +104,7 @@ from curs01
 into
 :srcdta  ;,
 if  sqlcode =  0    ;
-format_string = %trim(format_string) + ' ' + %trim(%subst(srcdta : 14 : 65)) ;
+format_string = %trim(format_string) + ' ' + %trim(srcdta ) ;
 endif;
 enddo ;
 // Passage variable transformée
