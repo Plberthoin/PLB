@@ -1,0 +1,92 @@
+PGM PARM(&PARM1 &PARM2)
+  /*--------------------------------------------------------------*/
+  /* Programme  CHOICEPGM                                         */
+  /*                                                              */
+  /* PARM1 :     PREMIER PARAMETRE                                */
+  /*        1   A   10   NOM DE COMMANDE                          */
+  /*       11   A   20   NOM DU PARAMETRE DE LA COMMANDE          */
+  /*       21   A   21   TYPE  (P) LISTE  DE VALEURS    ? ou F4   */
+  /*                           (C) TEXTE  D'INVITE      F11       */
+  /*                                                              */
+  /* PARM2 :     DEUXIEME PARAMETRE                               */
+  /*   ------>si liste                                            */
+  /*        1   A    2   NOMBRE DE PARAMETRES TRANSMIS EN BINAIRE */
+  /*        3   A    4   TAILLE DE LA PREMIERE VALEUR  EN BINAIRE */
+  /*        5   A    N   PREMIERE VALEUR                          */
+  /*      N+1   A    N+2 TAILLE DE LA DEUXIEME VALEUR  EN BINAIRE */
+  /*      N+3   A    M   DEUXIEME VALEUR                          */
+  /*        ETC...   2000                                         */
+  /*                                                              */
+  /*   ------>si texte                                            */
+  /*        1   A   30   TEXTE A AFFICHER                         */
+  /*       31   A 2000   INUTILISE                                */
+  /*                                                              */
+  /*       FCNID  nom de la fonction 30 char                      */
+  /****************************************************************/
+  /*                                                              */
+  /*  Déclaration des zones de travail                            */
+  /*                                                              */
+             DCLF       FILE(FCN_INFO) ALWVARLEN(*YES) ALWNULL(*YES) +
+                          ALWGRAPHIC(*YES)
+  DCL VAR(&PARM1)      TYPE(*CHAR) LEN(21)
+  DCL VAR(&PARM2)      TYPE(*CHAR) LEN(10240)
+  DCL VAR(&FINFICHIER) TYPE(*LGL)
+  DCL VAR(&BIN)        TYPE(*CHAR) LEN(2)
+  DCL VAR(&DEC)        TYPE(*DEC)  LEN(5 0)
+  DCL VAR(&SIGN)       TYPE(*CHAR) LEN(1)
+  DCL VAR(&pos )       TYPE(*DEC)  LEN(5)
+  DCL VAR(&nbr )       TYPE(*DEC)  LEN(10 0)
+   /*                                                              */
+   /* Initialisation de la zone paramètre à retourner              */
+   /* Attention elle peut contenir n'importe quoi a l'arrivée      */
+   /*                                                              */
+  CHGVAR  VAR(&PARM2) VALUE(' ')
+   /*                                                              */
+   /* Test de la demande  P = liste de paramètres                  */
+   /*                                                              */
+  IF  COND(%SST(&PARM1 21 1) *EQ 'P') THEN(DO)
+   /*--------------------------------------------------------------*/
+   /*                                                              */
+   /* 1er cas pos 21 = P demande d'une liste de valeurs            */
+   /*                                                              */
+   /*--------------------------------------------------------------*/
+   /*                                                              */
+   /* Formatage de la variable à retourner                         */
+   /* Position 1 à 2 en binaire nombre de paramètres de retours    */
+   /* conversion longueur du paramètre en binaire                  */
+   /* Position 3  à  4 en binaire longueur de la première valeur   */
+   /* Position 5  à 14 premiére Valeur à afficher                  */
+   /* Position 15 à 16 en binaire longueur de la deuxième valeur   */
+   /* Position 17 à 26 Deuxième Valeur à afficher                  */
+   /* etc ...                                                      */
+   /* xxxxyyyyyyyyyxxyyyyyyyyyxxyyyyyyyyy                          */
+   /*--------------------------------------------------------------*/
+   /* Ecriture nombre de postes */
+    CHGVAR     VAR(&NBR) VALUE(500)
+    CHGVAR     VAR(&POS) VALUE(1)
+    CHGVAR     VAR(%bin(&BIN)) VALUE(&nbr)
+    CHGVAR     VAR(%SST(&PARM2 &pos 2)) VALUE(&BIN)
+    CHGVAR     VAR(&POS) VALUE(3)
+    CHGVAR     VAR(%bin(&BIN)) VALUE(34)
+    /* Traitement des postes      */
+    DOUNTIL    COND((&FINFICHIER) *OR &POS > 10200)
+      RCVF
+      MONMSG     MSGID(CPF0864) EXEC(LEAVE)
+      /* Ecriture de la longueur du poste */
+      CHGVAR     VAR(%SST(&PARM2  &pos  2)) VALUE(&BIN)
+      CHGVAR     VAR(&POS) VALUE(&POS + 2)
+      /* ecriture du poste                */
+      CHGVAR     VAR(%SST(&PARM2 &POS 34)) +
+                 VALUE(%sst(&FCNID 3 30))
+      CHGVAR     VAR(&POS) VALUE(&POS + 34)
+    ENDDO
+  ENDDO
+ /*--------------------------------------------------------------*/
+ /*                                                              */
+ /* 2ème cas pos 21 = C demande d'un texte                       */
+ /*                                                              */
+ /*--------------------------------------------------------------*/
+  IF         COND(%SST(&PARM1 21 1) *EQ 'C') THEN(DO)
+    CHGVAR     VAR(&PARM2) VALUE('F4 : Nom valide d''une fonction')
+  ENDDO
+ENDPGM
