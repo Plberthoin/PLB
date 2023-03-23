@@ -1,21 +1,23 @@
+/*-----------------------------------------------------------------*/
 /*                                                                 */
-/* ANALYSE DES DONNÃES D'UN JOURNAL                                */
-/* FICHIER Ã         ANALYSE DANS QTEMP                            */
+/* ANALYSE DES DONNEES D'UN JOURNAL                                */
+/* FICHIER          ANALYSE DANS QTEMP                            */
 /*                                                                 */
 /* REMARQUE :                                                      */
-/*                                                                 */
-/* LE PROGRAMME Ã BESOIN COMPILATEUR RGPILE POUR CRÃER LE FICHIER  */
-/* ZONÃS                                                           */
+/* Le programma anajrn2 est compile dynamiquement                  */
+/* LE PROGRAMME à BESOIN COMPILATEUR RGPILE POUR CREER LE FICHIER */
+/* ZONES                                                           */
 /* LE SOURCE DU PROGRAMME EST DANS SOURCES DE DBJRN MEMBRE ANAJRNR2*/
+/* de QRPGLESRC de la même bibliothèque anajrn                     */
 /*                                                                 */
 /*-----------------------------------------------------------------*/
 PGM PARM(&FIC &LIB &JRN &LIBJ &FICO &BIBO &FDAT &FHRE  &TDAT &THRE )
-DCL &FIC *CHAR 10 /* FICHIER BASE DE DONNÃES                       */
-DCL &LIB *CHAR 10 /* BIBLIOTHEQUE BASE DE DONNÃES                  */
+DCL &FIC *CHAR 10 /* FICHIER BASE DE DONNEES                       */
+DCL &LIB *CHAR 10 /* BIBLIOTHEQUE BASE DE DONNEES                  */
 DCL &JRN *CHAR 10 /* JOURNAL                                       */
 DCL &LIBJ *CHAR 10 /* BIBLIOTHEQUE JOURNAL                         */
-DCL &FICO *CHAR 10 /* FICHIER RESULTAT                              */
-DCL &BIBO *CHAR 10 /* BIBLIOTHEQUE RESULTAT                         */
+DCL &FICO *CHAR 10 /* FICHIER RESULTAT                             */
+DCL &BIBO *CHAR 10 /* BIBLIOTHEQUE RESULTAT                        */
 DCL &NBR *DEC  10 /* NOMBRE D'ENREG A TRAITER                      */
 DCL &NBA *CHAR 10 /* NOMBRE D'ENREG A TRAITER   ALPHA              */
 DCL &FDAT *CHAR 6
@@ -25,9 +27,10 @@ DCL &THRE *CHAR 6
 DCL &USER *CHAR 10
 DCL &DATE *CHAR 6
 DCL &TIME *CHAR 6
-/* ADDLIBLE BERTHOIN           */
-/* MONMSG CPF0000              */
-/* SUPPRESSION DES FICHIERS DE TRAVAIL */
+dcl &libpgm *char 10
+/*----------------------------------------------------*/
+/* Préparation des fichiers                           */
+/*----------------------------------------------------*/
 DLTF QTEMP/ANALYSE
 MONMSG CPF0000
 DLTF QTEMP/MODELE
@@ -35,9 +38,18 @@ MONMSG CPF0000
 DLTF QTEMP/SORTIE
 MONMSG CPF0000
 /*--------------------------------------*/
-/* GENERATION DU FICHIER ANALYSE ZONÃES */
+/* GENERATION DU FICHIER ANALYSE ZONEES */
 /*--------------------------------------*/
-CALL ANAJRNR1 (&FIC &LIB)
+chkobj &lib/&fic *file
+monmsg cpf9800 exec(do)
+             SNDUSRMSG  MSG('Fichier,' *bcat &fic *bcat ' de ' +
+                          *bcat &lib *bcat 'non trouvé') +
+                          MSGTYPE(*INFO)
+  goto fin
+enddo
+/* recuperation bibliothèque du programme */
+             RTVOBJD    OBJ(ANAJRN) OBJTYPE(*PGM) RTNLIB(&LIBPGM)
+CALL ANAJRN1 (&FIC &LIB)
 /* GENERATION DU FICHIER MODELE POUR GENERATION MODELE DS */
              CRTDUPOBJ  OBJ(&FIC) FROMLIB(&LIB) OBJTYPE(*FILE) +
                           TOLIB(QTEMP) NEWOBJ(MODELE) CST(*NO) TRG(*NO)
@@ -49,12 +61,46 @@ CALL ANAJRNR1 (&FIC &LIB)
                           OUTPUT(*OUTFILE) OUTFILE(QTEMP/SORTIE) +
                           ENTDTALEN(*CALC)
                           MONMSG CPF0000 EXEC(DO)
-             SNDUSRMSG  MSG('ProblÃ©me d''accÃ¨s au journal') +
+             SNDUSRMSG  MSG('Problème d''accés au journal') +
                           MSGTYPE(*INFO)
                           GOTO FIN
                           ENDDO
                           ENDDO
                           ELSE DO
+         /* Contrôle des dates */
+             CVTDAT     DATE(&FDAT) TOVAR(&FDAT) TOSEP(*NONE)
+             monmsg cpf0000 exec(do)
+             SNDUSRMSG  MSG('Date début invalide')  +
+                          MSGTYPE(*INFO)
+             goto fin
+             enddo
+             CVTDAT     DATE(&TDAT) TOVAR(&FDAT) TOSEP(*NONE)
+             monmsg cpf0000 exec(do)
+             SNDUSRMSG  MSG('Date fin   invalide')  +
+                          MSGTYPE(*INFO)
+             goto fin
+             enddo
+         /* controle des heures */
+         if cond(&FHRE *ne '*ALL') then(do)
+         if cond(&FHRE *GT  '235959' *or &FHRE *LT  '000001') then(do)
+             SNDUSRMSG  MSG('heure début invalide')  +
+                          MSGTYPE(*INFO)
+             goto fin
+         enddo
+         enddo
+         else do
+         chgvar &FHRE '000001'
+         enddo
+         if cond(&THRE *ne '*ALL') then(do)
+         if cond(&ThRE *GT  '235959' *or &THRE *LT  '000001') then(do)
+             SNDUSRMSG  MSG('heure fin invalide')  +
+                          MSGTYPE(*INFO)
+             goto fin
+         enddo
+         enddo
+         else do
+         chgvar &THRE '235959'
+         enddo
 /* AVEC DATE DEBUT/FIN                      */
              DSPJRN     JRN(&LIBJ/&JRN) FILE((&LIB/&FIC *FIRST)) +
                           RCVRNG(*CURCHAIN) FROMTIME(&FDAT &FHRE) +
@@ -62,7 +108,7 @@ CALL ANAJRNR1 (&FIC &LIB)
                           OUTPUT(*OUTFILE) OUTFILE(QTEMP/SORTIE) +
                           ENTDTALEN(*CALC)
                           MONMSG CPF0000 EXEC(DO)
-             SNDUSRMSG  MSG('ProblÃ©me d''accÃ¨s au journal')  +
+             SNDUSRMSG  MSG('Problème d''accès au journal')  +
                           MSGTYPE(*INFO)
                           GOTO FIN
                           ENDDO
@@ -70,11 +116,19 @@ CALL ANAJRNR1 (&FIC &LIB)
              RTVMBRD    FILE(QTEMP/SORTIE) NBRCURRCD(&NBR)
 /* SI AU MOINS UN POSTE Ã ANALYSER */
              IF (&NBR > 0) THEN(DO)
+/* Contrôle si source disponible    */
+             CHKOBJ     OBJ(&LIBPGM/QRPGLESRC) OBJTYPE(*FILE) +
+                          MBR(ANAJRN2)
+monmsg cpf9800 exec(do)
+             SNDUSRMSG  MSG('Source ANAJRN2 non trouvé')       +
+                          MSGTYPE(*INFO)
+  goto fin
+enddo
 /* GENERATION DU PROGRAMME D'ALIMENTATION */
-             CRTBNDRPG  PGM(QTEMP/ANAJRNR2) +
-                          SRCFILE(DBJRN/SOURCES) SRCMBR(ANAJRNR2)
+             CRTBNDRPG  PGM(QTEMP/ANAJRN2) +
+                          SRCFILE(&LIBPGM/QRPGLESRC) +
+                          SRCMBR(ANAJRN2) DBGVIEW(*STMT) OUTPUT(*NONE)
              MONMSG CPF0000 EXEC(DO)
-
              SNDUSRMSG  MSG('Compile du programme d''analyse en +
                           erreur') MSGTYPE(*INFO)
                           GOTO FIN
@@ -84,12 +138,11 @@ CLRPFM QTEMP/ANALYSE
              CHGOBJD    OBJ(QTEMP/ANALYSE) OBJTYPE(*FILE) TEXT(&FIC +
                           *BCAT &FDAT *CAT '/' *CAT &FHRE *BCAT +
                           &TDAT *CAT '/' *CAT &THRE)
-
-CALL QTEMP/ANAJRNR2
+CALL QTEMP/ANAJRN2
              RTVMBRD    FILE(QTEMP/ANALYSE) NBRCURRCD(&NBR)
              CHGVAR &NBA &NBR
  IF (&FICO = '*NONE') THEN(DO)
-             SNDUSRMSG  MSG('Fichier Analyse gÃ©nÃ©rÃ© (' *TCAT &NBA +
+             SNDUSRMSG  MSG('Fichier Analyse généré (' *TCAT &NBA +
                           *TCAT ') enregistrements dans qtemp +
                           <select * from analyse> ou <select * from +
                           anajrn> uniquement les infos de +
@@ -106,12 +159,12 @@ CALL QTEMP/ANAJRNR2
              CHGOBJD    OBJ(QTEMP/ANALYSE) OBJTYPE(*FILE) TEXT(&DATE +
                           *BCAT &TIME *BCAT &USER *BCAT &FICO)
              SNDUSRMSG  MSG('Fichier' *BCAT &FICO *BCAT &BIBO *BCAT +
-                          'gÃ©nÃ©rÃ© (' *TCAT &NBA *TCAT ') +
+                          'généré (' *TCAT &NBA *TCAT ') +
                           enregistrements') MSGTYPE(*INFO)
  ENDDO
 ENDDO
 ELSE DO
-             SNDUSRMSG  MSG('Pas de poste Ã  analyser') MSGTYPE(*INFO)
+             SNDUSRMSG  MSG('Pas de poste à analyser') MSGTYPE(*INFO)
                           GOTO FIN
 ENDDO
 FIN:

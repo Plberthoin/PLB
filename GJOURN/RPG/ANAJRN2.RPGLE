@@ -1,81 +1,39 @@
-f*------------------------------------------------------------------*
-
-f*
-
-f* Ce programme recopie un fichier sortie de dspjrn
-
-f* options  ENTTYP(*RCD)
-
-f*          ENTDTALEN(*VARLEN *CALC)
-
-f*
-
-f* dans un fichier de travail qui redecoupe les donn√©es sp√©cifiques
-
-f* dans notre exemple le
-
-f* le fichier analyse  sera accessible par sql
-
-f* dans notre cas de SORTIE vers ANALYSE
-
-f*
-
-f*------------------------------------------------------------------*
-
-f* Fichier sortie du dspjrn
-
-fsortie    if   e             disk
-
-f* Fichier de traitement zone du fichier  + dspjrn
-
-fanalyse   o    e             disk    rename(analyse:analysef)
-
-f* Description du fichier de donn√©es
-
-dds01           e ds                  EXTNAME(modele)
-
- /free
-
-  //  *-------------------------------------------------------------*
-
-  //  * Boucle de lecture du fichier                                *
-
-  //  *-------------------------------------------------------------*
-
-  dou %eof(sortie       )         ;
-
-    read  sortie                  ;
-
-    if %eof(sortie       )        ;
-
-      Leave                       ;
-
-    endif                         ;
-
-  // externalisation des donn√©es
-
+**free
+//------------------------------------------------------------------*
+//
+// Ce programme recopie un fichier sortie de dspjrn
+// options  ENTTYP(*RCD)
+//          ENTDTALEN(*VARLEN *CALC)
+//
+// dans un fichier de travail qui redecoupe les donnÈes spÈcifiques
+// dans notre exemple le
+// le fichier analyse  sera accessible par sql
+// dans notre cas de SORTIE vers ANALYSE
+//
+//------------------------------------------------------------------*
+//Fichier sortie du dspjrn
+Dcl-F sortie Usage(*Input);
+//Fichier de traitement zone du fichier  + dspjrn
+Dcl-F analyse Usage(*Output) rename(analyse:analysef);
+//Description du fichier de donnÈes
+Dcl-DS ds01  EXTNAME('MODELE');
+END-DS;
+//  *-------------------------------------------------------------*
+//  * Boucle de lecture du fichier                                *
+//  *-------------------------------------------------------------*
+dou %eof(sortie       )         ;
+  read  sortie                  ;
+  if %eof(sortie       )        ;
+    Leave                       ;
+  endif                         ;
+  // externalisation des donnÈes
   Monitor ;
-
     ds01 = JOESD                  ;
-
     write analysef                ;
-
-    on-error                      ;
-
-  //  dsply  'Probl√©me sur poste :'     ;
-
-  //  dsply          JOSEQN         ;
-
-    endmon                        ;
-
-  enddo                           ;
-
-  //  *-------------------------------------------------------------*
-
-  //  * Fin du programme                                            *
-
-  //  *-------------------------------------------------------------*
-
-  *inlr = *on                     ;
-
- /end-free
+  on-error                      ;
+  endmon                        ;
+enddo                           ;
+//  *-------------------------------------------------------------*
+//  * Fin du programme                                            *
+//  *-------------------------------------------------------------*
+*inlr = *on                     ;
