@@ -1,0 +1,3 @@
+             CMD        PROMPT('Dump des instr. SQL d''un user')
+             PARM       KWD(USER) TYPE(*NAME) LEN(10) MIN(1) +
+                          PROMPT('Nom du profil')
