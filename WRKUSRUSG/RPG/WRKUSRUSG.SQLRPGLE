@@ -1,6 +1,6 @@
 **free
 // Gestion des utilisateurs d'une fonction ID
-// n
+//
 ctl-opt
 DFTACTGRP(*NO) ;
 dcl-f
@@ -67,6 +67,10 @@ dcl-proc Init_SFL       ;
     usage = 'Inconnu'  ;
     allobj =  'Inconnu'  ;
   else ;
+    // allobj sans le blanc
+    if allobj = 'NOT USED' ;
+      ALLOBJ  = 'NOTUSED' ;
+    endif ;
     // usage utilisateur inverse du groupe
     if usage = 'ALLOWED' ;
       user_usage = '*DENIED' ;
