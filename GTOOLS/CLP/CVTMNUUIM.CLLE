@@ -1,3 +1,13 @@
+/*-----------------------------------------------------------------*/
+/* Ce programme permet de convertir un menu SDA en MNU UIM         */
+/* Il utilise le fichier message                                   */
+/* Il génére un source uim                                         */
+/*                                                                 */
+/*  CRTMNU MENU(BIBLIO/NOMMNU)                                     */
+/*         TYPE(*UIM)                                              */
+/*         SRCFILE(BIBLIOS/QMNUSRC)                                */
+/*                                                                 */
+/*-----------------------------------------------------------------*/
 pgm parm(&msglib &ficlib &soc)
              dcl &msglib *char 20
              dcl &ficlib *char 20
@@ -11,13 +21,16 @@ pgm parm(&msglib &ficlib &soc)
                            DEFVAR(&ficlib 1) STG(*DEFINED)
              DCL        VAR(&LIBF) TYPE(*CHAR) LEN(10)  +
                            DEFVAR(&ficlib 11) STG(*DEFINED)
+             DCL        VAR(&TXT) TYPE(*CHAR) LEN(50)
 include erreur1   SRCFILE(GCOMPILE/QCLSRC)
  /* Contrôle des paramètres   */
              chkobj &libm/&msg  *msgf
              chkobj &libf/&fic  *file
              CHKOBJ     OBJ(&LIBF/&FIC) OBJTYPE(*FILE) MBR(&msg)
              monmsg cpf9815 exec(do)
-             ADDPFM     FILE(&LIBf/&fic) MBR(&msg)
+             RTVOBJD    OBJ(&LIBm/&msg) OBJTYPE(*MSGF) TEXT(&TXT)
+             ADDPFM     FILE(&LIBF/&FIC) MBR(&MSG) TEXT(&TXT) +
+                          SRCTYPE(MENU)
              enddo
              chgjob ccsid(1147)
  /* Extraction  bibliothèque si *LIBL */
