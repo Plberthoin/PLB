@@ -42,7 +42,7 @@ include erreur1   SRCFILE(GCOMPILE/QCLSRC)
              enddo
              CLRPFM     FILE(&LIBF/&FIC) MBR(&MSG)
              OVRDBF     FILE(QMNUSRC) TOFILE(&LIBf/&fic) MBR(&msg)
-             call CVTMNUUIMr (&libm &msg &soc)
+             call CVTMNUUIMr (&MSG  &libm &soc)
              dltovr     FILE(QMNUSRC)
 include erreur2   SRCFILE(GCOMPILE/QCLSRC)
  endpgm
