@@ -1,0 +1,24 @@
+PGM PARM(&LIB ) /*--------------------------------------------------*/
+DCL &LIB   *CHAR 10  /* NOM DE LA BIBLIOTHEQUE                      */
+DCL &IN05  *CHAR 1  /* RÉAFFICHER                                   */
+/* CE PROGRAMME SERT À GÉRER LES TRIGGERS D'UNE BIBLIOTHÈQUE        */
+/*------------------------------------------------------------------*/
+DCLF QSYS/QAFDTRG
+             OVRDBF     FILE(QAFDTRG) TOFILE(QTEMP/WAFDTRG)
+DEBUT:
+CHGVAR &IN05 '0'
+             DSPFD      FILE(&LIB/*ALL) TYPE(*TRG) OUTPUT(*OUTFILE) +
+                          OUTFILE(QTEMP/WAFDTRG)
+             IF         COND((&LIB *EQ 'QSYS') *OR (&LIB *EQ +
+                          'QUSRSYS')) THEN(DO)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+                          MSGDTA('Utilisation de QSYS ou QUSRSYS +
+                          interdite') MSGTYPE(*ESCAPE)
+                          GOTO FIN
+                          ENDDO
+             CALL       PGM(WRKPFTRGR) PARM(&LIB &IN05)
+             SNDMSG     MSG(&IN05) TOUSR(*REQUESTER)
+             IF COND(&IN05 *EQ '1') THEN(GOTO DEBUT)
+FIN:
+DLTOVR QAFDTRG
+ENDPGM

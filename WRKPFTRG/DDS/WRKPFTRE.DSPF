@@ -1,0 +1,67 @@
+     A*%%TS  SD  20050125  111103  PLBERTHOIN  REL-V5R3M0  5722-WDS
+     A*%%EC
+     A*%%FD Extraction Ecran
+     A                                      DSPSIZ(27 132 *DS4)
+     A                                      REF(QSYS/QAFDTRG QWHFDTRG)
+     A                                      CA06(06)
+     A                                      CA03(03)
+     A                                      CA05(05)
+     A          R FMT01
+     A*%%TS  SD  20040316  092217  PLBERTHOIN  REL-V5R2M0  5722-WDS
+     A                                 25  2'F3 = Exit'
+     A                                 25 29'F6 = Créer'
+     A                                 25 13'F5 = Réafficher'
+     A*%%GP SCREEN1    01
+     A          R SFL01
+     A*%%TS  SD  20040317  180725  PLBERTHOIN  REL-V5R2M0  5722-WDS
+     A                                      SFL
+     A            TRTRIG    R        O 10 73
+     A            TRTREV    R        O 10 95
+     A            TRTRCN    R        O 10105
+     A            TRNAM     R        H
+     A            WTRNAM    R -218   O 10 22REFFLD(TRNAM)
+     A            TRTRTM    R        O 10 87
+     A            TRTARC    R        O 10124
+     A            OPT01          1A  B 10  3VALUES('2' '3' '4' ' ')
+     A            TRST      R        O 10113
+     A                                 10115'/'
+     A            TRSTAT    R        O 10117
+     A            TRFILE    R        O 10  9
+     A            TRTYP     R        O 10 67
+     A*%%GP SCREEN1    02
+     A          R CTL01                     SFLCTL(SFL01)
+     A*%%TS  SD  20050125  111103  PLBERTHOIN  REL-V5R3M0  5722-WDS
+     A                                      OVERLAY
+     A  41                                  SFLDSP
+     A  42                                  SFLDSPCTL
+     A  40                                  SFLCLR
+     A N90                                  SFLEND
+     A                                      SFLSIZ(0013)
+     A                                      SFLPAG(0012)
+     A                                  1 53'Gestion des triggers'
+     A                                      DSPATR(HI)
+     A                                  3  2'Bibliothèque indiquée  . . . . :'
+     A                                  6122'Modif'
+     A                                  7 24'             ----------------------
+     A                                      ----------------Déclencheur---------
+     A                                      ----------------------------- répét-
+     A                                      . '
+     A                                  8 13'Fichier'
+     A                                  8 36'Nom'
+     A                                  8 73'Programme'
+     A                                  8 84'Moment'
+     A                                  8101'Condition'
+     A                                  8122'admise'
+     A                                  2101SYSNAME
+     A                                  2112DATE
+     A                                      EDTCDE(Y)
+     A                                  2122TIME
+     A            LIB           10A  O  3 37
+     A                                  5  2'2 Désactiver'
+     A                                  5 15'3 Activer'
+     A                                  5 26'4 Supprimer'
+     A                                  8  1'option'
+     A                                  8 91'Evénement'
+     A                                  8113'Etat'
+     A                                  8 65'Type'
+     A*%%GP SCREEN1    03

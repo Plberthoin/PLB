@@ -1,0 +1,40 @@
+/*-----------------------------------------------------------------*/
+/*Ce programme sert à démarrer tous les triggers d'une bibliothèque*/
+/*-----------------------------------------------------------------*/
+PGM PARM(&LIB)
+DCL &LIB   *CHAR 10 /*Nom de la bibliothèque*/
+DCL        VAR(&NBKO) TYPE(*DEC) LEN(5) /*Nombre de triggers non traités*/
+DCLF FILE(QSYS/QAFDTRG)  /*System outfile for DSPFD TYPE(*TRG)*/
+
+             DLTF       FILE(QTEMP/WSTRTRG)
+             MONMSG     MSGID(CPF2105)
+             OVRDBF     FILE(QAFDTRG) TOFILE(QTEMP/WSTRTRG)
+             DSPFD      FILE(&LIB/*ALL) TYPE(*TRG) OUTPUT(*OUTFILE) +
+                          OUTFILE(QTEMP/WSTRTRG)
+             IF         COND((&LIB *EQ 'QSYS') *OR (&LIB *EQ +
+                          'QUSRSYS')) THEN(DO)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+                          MSGDTA('Utilisation de QSYS ou QUSRSYS +
+                          interdite') MSGTYPE(*ESCAPE)
+                          GOTO FIN
+                          ENDDO
+ LECTURE:    DO
+             RCVF
+             MONMSG     MSGID(CPF0864) EXEC(GOTO CMDLBL(FIN))
+             IF         COND(&TRLIB *NE &TRLB) THEN(DO)
+             CHGVAR     VAR(&NBKO) VALUE(&NBKO + 1)
+             GOTO       CMDLBL(LECTURE)
+             ENDDO
+             CHGPFTRG   FILE(&TRLIB/&TRFILE) TRG(&TRNAM) +
+                          TRGLIB(&TRLB) STATE(*ENABLED)
+             GOTO       CMDLBL(LECTURE)
+             ENDDO
+ FIN:
+             IF         COND(&NBKO > 0) THEN(DO)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('Au +
+                          moins un trigger n''est pas dans la +
+                          bibliothèque de son fichier, cas non +
+                          traités') MSGTYPE(*ESCAPE)
+             ENDDO
+             DLTOVR     FILE(QAFDTRG)
+             ENDPGM
