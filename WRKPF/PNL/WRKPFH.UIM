@@ -1,0 +1,184 @@
+.*=====================================================================
+.*
+.*
+.*
+.*=====================================================================
+:PNLGRP.
+.*=====================================================================
+.* Define clases
+.*=====================================================================
+:CLASS    NAME=optcls
+          BASETYPE=action.
+:ECLASS.
+
+:CLASS    NAME=objcls
+          BASETYPE='OBJNAME 10'.
+:ECLASS.
+
+:CLASS    NAME=txtcls
+          BASETYPE='CHAR 50'.
+:ECLASS.
+
+:CLASS    NAME=prmcls
+          BASETYPE='CHAR 255'.
+:ECLASS.
+.*=====================================================================
+.* Define variables
+.*=====================================================================
+:VAR      NAME=opt
+          CLASS=optcls.
+
+:VAR      NAME=fil
+          CLASS=objcls.
+
+:VAR      NAME=lib
+          CLASS=objcls.
+
+:VAR      NAME=txt
+          CLASS=txtcls.
+
+:VAR      NAME=prm
+          CLASS=prmcls.
+.*====================================================================
+.* Define variable records and list definition
+.*====================================================================
+:VARRCD   NAME=header
+          VARS='lib'
+          NOGET='lib'.
+
+:VARRCD   NAME=detail
+          VARS='opt fil txt'
+          NOGET='fil txt'.
+
+:LISTDEF  NAME=detlst
+          VARS='opt fil txt'.
+.*=====================================================================
+.* Define function keys
+.*=====================================================================
+:KEYL     NAME=fkeys.
+
+:KEYI     KEY=enter
+          HELP=genhlp
+          ACTION=enter.
+
+:KEYI     KEY=f1
+          HELP=genhlp
+          ACTION=help.
+
+:KEYI     KEY=f3
+          HELP=genhlp
+          ACTION='EXIT SET'
+          VARUPD=no.F3=Exit
+
+:KEYI     KEY=f4
+          HELP=genhlp
+          ACTION=prompt.F4=Prompt
+
+:KEYI     KEY=f5
+          HELP=genhlp
+          ACTION='RETURN 5'
+          VARUPD=NO.F5=Refresh
+
+:KEYI     KEY=f9
+          HELP=genhlp
+          ACTION=retrieve.F9=Retrieve
+
+:KEYI     KEY=f12
+          HELP=genhlp
+          ACTION='CANCEL SET'
+          VARUPD=no.F12=Cancel
+
+:KEYI     KEY=help
+          HELP=genhlp
+          ACTION=help.
+
+:KEYI     KEY=pagedown
+          HELP=genhlp
+          ACTION=pagedown.
+
+:KEYI     KEY=pageup
+          HELP=genhlp
+          ACTION=pageup.
+
+:KEYI     KEY=print
+          HELP=genhlp
+          ACTION=print.
+
+:EKEYL.
+.*=====================================================================
+.* Define the panel
+.*=====================================================================
+:PANEL    NAME=wrkpf
+          HELP=genhlp
+          KEYL=fkeys
+          TOPSEP=space.Work with Physical Files
+
+:DATA     DEPTH=2.
+:DATACOL  WIDTH=16.
+:DATACOL  WIDTH=10.
+
+:DATAGRP  GRPSEP=qindent
+          HELP=genhlp
+          COMPACT.
+
+:DATAI    VAR=lib
+          USAGE=out.Library
+
+:EDATAGRP.
+:EDATA.
+.*=====================================================================
+.* Define the list
+.*=====================================================================
+:LIST     DEPTH=16
+          LISTDEF=detlst
+          MAXHEAD=1
+          ACTOR=uim
+          PARMS=prm.
+
+:TOPINST .Type options, press Enter.
+
+:LISTACT  ENTER='CMD DSPPFM FILE(&lib./&fil.) &prm.'
+          PROMPT='CMD ?DSPPFM FILE(&lib./&fil.) &prm.'
+          HELP=genhlp
+          OPTION=5.5=Display physical file member
+
+:LISTACT  ENTER='CMD DSPFD FILE(&lib./&fil.) &prm.'
+          PROMPT='CMD ?DSPFD FILE(&lib./&fil.) &prm.'
+          HELP=genhlp
+          OPTION=8.8=Display file description
+
+:LISTACT  ENTER='CMD DSPFFD FILE(&lib./&fil.) &prm.'
+          PROMPT='CMD ?DSPFFD FILE(&lib./&fil.) &prm.'
+          HELP=genhlp
+          OPTION=9.9=Display file field description
+
+:LISTACT  ENTER='CMD DSPDBR FILE(&lib./&fil.) &prm.'
+          PROMPT='CMD ?DSPDBR FILE(&lib./&fil.) &prm.'
+          HELP=genhlp
+          OPTION=10.10=Display data base relations
+
+:LISTCOL  VAR=opt
+          USAGE=inout
+          MAXWIDTH=3
+          HELP=genhlp.Opt
+
+:LISTCOL  VAR=fil
+          USAGE=out
+          MAXWIDTH=10
+          HELP=genhlp.File
+
+:LISTCOL  VAR=txt
+          USAGE=out
+          MAXWIDTH=50
+          HELP=genhlp.Text
+
+:LISTVIEW COLS='opt fil txt'.
+:ELIST.
+:CMDLINE  SIZE=short.Parameters or command
+:EPANEL.
+.*=====================================================================
+.* Define help
+.*=====================================================================
+:HELP     NAME=genhlp.
+:EHELP.
+:EPNLGRP.
