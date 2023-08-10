@@ -1,0 +1,167 @@
+/*============================================================================*/
+/* surcouche au proramme cvtrpgsrc                                            */
+/* pour garder le rapport d'analyse et le fichier récap                       */
+/*============================================================================*/
+             PGM        PARM(&FROMMBR &FROMFILLIB &TOFILLIB &TOMBR &REplace)
+
+/*----------------------------------------------------------------------------*/
+/*  Declare variables                                                         */
+/*----------------------------------------------------------------------------*/
+
+             /* Parameters */
+
+             DCL        VAR(&FROMFILLIB) TYPE(*CHAR) LEN(20)
+             DCL        VAR(&FROMMBR) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&TOFILLIB) TYPE(*CHAR) LEN(20)
+             DCL        VAR(&TOMBR) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&replace) TYPE(*CHAR) LEN(4)
+
+             /* Work Variables */
+
+             DCL        VAR(&FROMFIL) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&FROMLIB) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&TOFIL) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&TOLIB) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&FINMBR) TYPE(*LGL)
+/* gestion des erreurs */
+             INCLUDE    SRCMBR(ERREUR1) SRCFILE(GCOMPILE/QCLSRC)
+/*----------------------------------------------------------------------------*/
+/* Extract the component file names.                                          */
+/*----------------------------------------------------------------------------*/
+             CHGVAR     VAR(&FROMFIL) VALUE(%SST(&FROMFILLIB 1 10))
+             CHGVAR     VAR(&FROMLIB) VALUE(%SST(&FROMFILLIB 11 10))
+             CHGVAR     VAR(&TOFIL) VALUE(%SST(&TOFILLIB 1 10))
+             CHGVAR     VAR(&TOLIB) VALUE(%SST(&TOFILLIB 11 10))
+ /* traitement des paramétres */
+             IF         COND(&FROMLIB *EQ '*CURLIB') THEN(DO)
+                rtvjoba   curlib(&FROMLIB)
+             ENDDO
+if cond(&FROMlib = '*LIBL') then(do)
+             RTVOBJD    OBJ(*LIBL/&FROMFIL) OBJTYPE(*FILE) RTNLIB(&FROMLIB)
+enddo
+             IF         COND(&TOLIB *EQ '*FROMLIB') THEN(DO)
+                CHGVAR     VAR(&TOLIB) VALUE(&FROMLIB)
+             ENDDO
+             IF         COND(&TOLIB *EQ '*CURLIB') THEN(DO)
+                rtvjoba   curlib(&TOLIB)
+             ENDDO
+             if cond(&frommbr *ne '*ALL') then(do)
+             IF         COND(&tombr *EQ '*FROMMBR') THEN(DO)
+                chgvar &tombr &frommbr
+             ENDDO
+             enddo
+             IF cond(&fromlib = &tolib  *and     +
+                      &fromfil = &tofil *and     +
+                      &frommbr = &tombr      ) then(do)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('Le +
+                          fichier en entrée et en sortie doit +
+                          différent') MSGTYPE(*ESCAPE)
+                      enddo
+/* */
+             if cond(&frommbr *ne '*ALL') then(do)
+             CHKOBJ     OBJ(&FROMLIB/&FROMFIL) OBJTYPE(*FILE) +
+                          MBR(&FROMMBR)
+                          enddo
+                          else do
+             CHKOBJ     OBJ(&FROMLIB/&FROMFIL) OBJTYPE(*FILE)
+                          enddo
+             chkobj &tolib *lib
+             monmsg cpf9801 exec(do)
+             CRTLIB     LIB(&TOLIB) TEXT('Conversion RPGIV' *BCAT +
+                          &FROMLIB)
+             enddo
+             chkobj &tolib/&tofil *file
+/* Si remplacement demandé */
+             if cond(&frommbr *ne '*ALL') then(do)
+             IF         COND(&replace *EQ '*YES') THEN(DO)
+             CHKOBJ     OBJ(&TOLIB/&TOFIL) OBJTYPE(*FILE) MBR(&TOMBR)
+             monmsg cpf9815 exec(do)
+             goto inex
+             enddo
+/* suppresion du membre */
+             RMVM       FILE(&TOLIB/&TOFIL) MBR(&TOMBR)
+             enddo
+             inex:
+             enddo
+/* Création du fichier historique si inexistant */
+             CHKOBJ     OBJ(&TOLIB/QRNCVTLG) OBJTYPE(*FILE)
+             monmsg cpf9801 exec(do)
+             CPYF FROMFILE(QRPGLE/QARNCVTLG) TOFILE(&tolib/QRNCVTLG) +
+                  CRTFILE(*YES)
+             clrpfm  &tolib/QRNCVTLG
+             enddo
+/* Création du fichier des rapports             */
+             CHKOBJ     OBJ(&TOLIB/QLOGRPG4) OBJTYPE(*FILE)
+             monmsg cpf9801 exec(do)
+             CRTPF      FILE(&TOLIB/QLOGRPG4) RCDLEN(132) MBR(*NONE) +
+                          MAXMBRS(*NOMAX)
+             enddo
+ /* Conversion  1 membre */
+             IF         COND(&FROMMBR *ne '*ALL') THEN(DO)
+             CVTRPGSRC  FROMFILE(&FROMLIB/&FROMFIL) +
+                          FROMMBR(&FROMMBR) TOFILE(&TOLIB/&TOFIL) +
+                          TOMBR(&TOMBR) INSRTPL(*YES) +
+                          LOGFILE(&TOLIB/QRNCVTLG)
+ /* Suppression des caractères nuls sur les cartes ajoutées               */
+             RUNSQL     SQL('DROP   ALIAS QTEMP/SOURCE') COMMIT(*NONE)
+             monmsg sql0000
+             RUNSQL     SQL('CREATE ALIAS QTEMP/SOURCE FOR ' *BCAT +
+                          &TOLIB *TCAT '/' *TCAT &TOFIL *BCAT ' (' +
+                          *TCAT &FROMMBR *TCAT ')') COMMIT(*NONE)
+             monmsg sql0000
+             RUNSQL     SQL('UPDATE QTEMP/SOURCE   SET SRCDTA = +
+                          substr(srcdta, 1, 99)') COMMIT(*NONE)
+             monmsg sql0000
+             RUNSQL     SQL('DROP   ALIAS QTEMP/SOURCE') COMMIT(*NONE)
+             monmsg sql0000
+ /* Archivage log */
+             CPYSPLF    FILE(&FROMFIL) TOFILE(&TOLIB/QLOGRPG4) +
+                          SPLNBR(*LAST) TOMBR(&FROMMBR)
+             DLTSPLF    FILE(&FROMFIL) SPLNBR(*LAST)
+             enddo
+ /* traduction tous les membres */
+             else do
+ /* Lecture du premier membre */
+                   RTVMBRD    FILE(&FROMLIB/&FROMFIL) MBR(*FIRSTMBR) RTNMBR(&FROMMBR)
+                   MONMSG     MSGID(CPF0000) EXEC(do)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA(' Aucun +
+                          membre à traiter ') MSGTYPE(*ESCAPE)
+                   enddo
+                   DOwhile    COND(*not &finmbr)
+   /* si on a demandé le remplacement */
+             IF         COND(&replace *EQ '*YES') THEN(DO)
+             RMVM       FILE(&TOLIB/&TOFIL) MBR(&FROMMBR)
+             monmsg cpf0000
+             enddo
+   /* */
+             CVTRPGSRC  FROMFILE(&FROMLIB/&FROMFIL) +
+                          FROMMBR(&FROMMBR) TOFILE(&TOLIB/&TOFIL) +
+                          TOMBR(*FROMMBR) INSRTPL(*YES) +
+                          LOGFILE(&TOLIB/QRNCVTLG)
+ /* Suppression des caractères nuls sur les cartes ajoutées               */
+             RUNSQL     SQL('DROP   ALIAS QTEMP/SOURCE') COMMIT(*NONE)
+             monmsg sql0000
+             RUNSQL     SQL('CREATE ALIAS QTEMP/SOURCE FOR ' *BCAT +
+                          &TOLIB *TCAT '/' *TCAT &TOFIL *BCAT ' (' +
+                          *TCAT &FROMMBR *TCAT ')') COMMIT(*NONE)
+             monmsg sql0000
+             RUNSQL     SQL('UPDATE QTEMP/SOURCE   SET SRCDTA = +
+                          substr(srcdta, 1, 99)') COMMIT(*NONE)
+             monmsg sql0000
+             RUNSQL     SQL('DROP   ALIAS QTEMP/SOURCE') COMMIT(*NONE)
+             monmsg sql0000
+ /* Archivage log */
+             CPYSPLF    FILE(&FROMFIL) TOFILE(&TOLIB/QLOGRPG4) +
+                          SPLNBR(*LAST) TOMBR(&FROMMBR)
+             DLTSPLF    FILE(&FROMFIL) SPLNBR(*LAST)
+ /* lecture du membre suivant */
+                      RTVMBRD    FILE(&FROMLIB/&FROMFIL) MBR(&FROMMBR *NEXT) RTNMBR(&FROMMBR)
+                      MONMSG     MSGID(CPF3049) EXEC(leave)
+                      enddo
+             enddo
+/*============================================================================*/
+/* Standard error handling                                                    */
+/*============================================================================*/
+             INCLUDE    SRCMBR(ERREUR2) SRCFILE(GCOMPILE/QCLSRC)
+ ENDPGM:     ENDPGM
+/*============================================================================*/

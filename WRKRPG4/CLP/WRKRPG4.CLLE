@@ -1,0 +1,11 @@
+pgm &lib
+dcl &lib *char 10
+  INCLUDE    SRCMBR(ERREUR1) SRCFILE(GCOMPILE/QCLSRC)
+chkobj &lib/QRNCVTLG *file
+rmvlible &lib
+monmsg cpf0000
+             ADDLIBLE   LIB(&LIB) POSITION(*FIRST)
+monmsg cpf0000
+call WRKRPG4R (&lib)
+  INCLUDE    SRCMBR(ERREUR2) SRCFILE(GCOMPILE/QCLSRC)
+endpgm

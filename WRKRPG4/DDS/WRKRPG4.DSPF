@@ -1,0 +1,111 @@
+     A*%%TS  SD  20230810  163725  QSECOFR     REL-V7R4M0  5770-WDS
+     A*%%EC
+     A                                      DSPSIZ(27 132 *DS4)
+     A                                      REF(*LIBL/QRNCVTLG)
+     A                                      CA03(03)
+     A          R SFL01                     SFL
+     A*%%TS  SD  20230809  141923  PLB         REL-V7R4M0  5770-WDS
+     A            OPT01          1A  B  5  2VALUES(' ' '2' '4' '5' '8' '9')
+     A            LGFRFL    R        O  5  4REFFLD(QRNCVTFM/LGFRFL *LIBL/QRNCVT-
+     A                                      LG)
+     A  64                                  DSPATR(RI)
+     A            LGFRLB    R        O  5 15REFFLD(QRNCVTFM/LGFRLB *LIBL/QRNCVT-
+     A                                      LG)
+     A  64                                  DSPATR(RI)
+     A            LGFRMR    R        O  5 26REFFLD(QRNCVTFM/LGFRMR *LIBL/QRNCVT-
+     A                                      LG)
+     A  64                                  DSPATR(RI)
+     A            LGTOFL    R        O  5 50REFFLD(QRNCVTFM/LGTOFL *LIBL/QRNCVT-
+     A                                      LG)
+     A  64                                  DSPATR(RI)
+     A            LGTOLB    R        O  5 61REFFLD(QRNCVTFM/LGTOLB *LIBL/QRNCVT-
+     A                                      LG)
+     A  64                                  DSPATR(RI)
+     A            LGTOMR    R        O  5 72REFFLD(QRNCVTFM/LGTOMR *LIBL/QRNCVT-
+     A                                      LG)
+     A  64                                  DSPATR(RI)
+     A            LGSTAT    R        O  5 84REFFLD(QRNCVTFM/LGSTAT *LIBL/QRNCVT-
+     A                                      LG)
+     A  64                                  DSPATR(RI)
+     A            LGDATE    R        O  5 87REFFLD(QRNCVTFM/LGDATE *LIBL/QRNCVT-
+     A                                      LG)
+     A            LGTIME    R        O  5 95REFFLD(QRNCVTFM/LGTIME *LIBL/QRNCVT-
+     A                                      LG)
+     A            LGUSER    R        O  5102REFFLD(QRNCVTFM/LGUSER *LIBL/QRNCVT-
+     A                                      LG)
+     A            LGFRMT    R        O  5 38REFFLD(QRNCVTFM/LGFRMT *LIBL/QRNCVT-
+     A                                      LG)
+     A  64                                  DSPATR(RI)
+     A*========================================================================*
+     A          R CTL01                     SFLCTL(SFL01)
+     A*%%TS  SD  20230810  163725  QSECOFR     REL-V7R4M0  5770-WDS
+     A                                      SFLSIZ(0019)
+     A                                      SFLPAG(0018)
+     A                                      CA05(05)
+     A                                      OVERLAY
+     A  42                                  SFLDSP
+     A  41                                  SFLDSPCTL
+     A  40                                  SFLCLR
+     A  43                                  SFLEND(*MORE)
+     A            NUM01          4S 0H      SFLRCDNBR(CURSOR)
+     A*
+     A                                  1  2DATE
+     A                                      EDTCDE(Y)
+     A                                  1 70USER
+     A                                  2  2TIME
+     A                                  1 27'Gestion des conversions RPG4'
+     A                                      DSPATR(HI)
+     A                                  2 70SYSNAME
+     A                                  4  2'Opt Fichier  Biblio     Membre    -
+     A                                        Type        Fichier    Biblio    -
+     A                                       Membre      Sts date   heure  Util-
+     A                                      is'
+     A                                      DSPATR(HI)
+     A                                      DSPATR(UL)
+     A                                  2 27'Bibliothèque :'
+     A                                      DSPATR(HI)
+     A            P_LIB         10A  O  2 42DSPATR(HI)
+     A                                  3  2'2=Editer cible 4=Supprimer   5=Aff-
+     A                                      icher 8=Log 9=Editer source'
+      *========================================================================*
+     A          R FMT01
+     A                                 23  3'F3=Exit  F5=Réafficher'
+     A                                      COLOR(BLU)
+     A            £MSG          78A  O 24  2DSPATR(HI)
+     A*========================================================================*
+     A          R FMT02
+     A*%%TS  SD  20230725  110329  QSECOFR     REL-V7R4M0  5770-WDS
+     A                                      CA12(12)
+     A                                 23  3'F3=Exit  F12=Retours'
+     A                                      COLOR(BLU)
+     A            TEXTE         30A  O  2 25DSPATR(HI)
+     A            LGFRFL    R        O  7 49REFFLD(QRNCVTFM/LGFRFL *LIBL/QRNCVT-
+     A                                      LG)
+     A            LGFRLB    R        O  8 49REFFLD(QRNCVTFM/LGFRLB *LIBL/QRNCVT-
+     A                                      LG)
+     A            LGFRMR    R        O  9 49REFFLD(QRNCVTFM/LGFRMR *LIBL/QRNCVT-
+     A                                      LG)
+     A            LGTOFL    R        O 10 49REFFLD(QRNCVTFM/LGTOFL *LIBL/QRNCVT-
+     A                                      LG)
+     A            LGTOLB    R        O 11 49REFFLD(QRNCVTFM/LGTOLB *LIBL/QRNCVT-
+     A                                      LG)
+     A            LGTOMR    R        O 12 49REFFLD(QRNCVTFM/LGTOMR *LIBL/QRNCVT-
+     A                                      LG)
+     A            LGSTAT    R        O 13 49REFFLD(QRNCVTFM/LGSTAT *LIBL/QRNCVT-
+     A                                      LG)
+     A            LGDATE    R        O 14 49REFFLD(QRNCVTFM/LGDATE *LIBL/QRNCVT-
+     A                                      LG)
+     A            LGTIME    R        O 15 49REFFLD(QRNCVTFM/LGTIME *LIBL/QRNCVT-
+     A                                      LG)
+     A            LGUSER    R        O 16 49REFFLD(QRNCVTFM/LGUSER *LIBL/QRNCVT-
+     A                                      LG)
+     A                                  7 28'Fichier Origine....:'
+     A                                  8 28'Fiblio  Origine....:'
+     A                                  9 28'Membre  Origine....:'
+     A                                 10 28'Fichier Destination:'
+     A                                 11 28'Fiblio  Destination:'
+     A                                 12 28'Fiblio  Destination:'
+     A                                 13 28'Status ............:'
+     A                                 14 28'Date ..............:'
+     A                                 15 28'Heure .............:'
+     A                                 16 28'Utilisateur .......:'
