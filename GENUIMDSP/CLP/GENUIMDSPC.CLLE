@@ -1,0 +1,92 @@
+             PGM        PARM(&FILE &LIB &FILU &LIBU &MBRU  &FILD &LIBD +
+                          &MBRD &PLEIN)
+  /*-------------------------------------------------------------------*/
+  /* Ce programme génére les instructions à inclure sur un écran dds   */
+  /* Pour mettre en place de l'aide                                    */
+  /* Il génère aussi le source du panel de groupe qui correspond       */
+  /*-------------------------------------------------------------------*/
+  /* Paramètre */
+             DCL        &FILE *CHAR 10
+             DCL        &LIB  *CHAR 10
+             DCL        &FILU *CHAR 10
+             DCL        &LIBU *CHAR 10
+             DCL        &MBRU *CHAR 10
+             DCL        &FILD *CHAR 10
+             DCL        &LIBD *CHAR 10
+             DCL        &MBRD *CHAR 10
+             DCL        &PLEIN *CHAR 1
+  /* Variables de travail */
+             DCL        &ATTR *CHAR 10
+             DCL        &MSG  *CHAR 132
+             DCL        &txt  *CHAR 50
+             MONMSG     MSGID(CPF0000) EXEC(GOTO CMDLBL(ERR))
+             SNDMSG     (&LIBU *BCAT &LIBD *BCAT &LIB) TOUSR(*REQUESTER)
+  /* Traitement   des paramètres */
+             IF         COND(&MBRU = '*FILE') THEN(DO)
+                CHGVAR     &MBRU &FILE
+             ENDDO
+             IF         COND(&MBRD = '*FILE') THEN(DO)
+                CHGVAR     &MBRD &FILE
+             ENDDO
+             CHKOBJ     OBJ(&LIBU/&FILU) OBJTYPE(*FILE)
+             CHKOBJ     OBJ(&LIBD/&FILD) OBJTYPE(*FILE)
+             CHKOBJ     OBJ(&LIB/&FILE) OBJTYPE(*FILE)
+             RTVOBJD    OBJ(&LIB/&FILE) OBJTYPE(*FILE) OBJATR(&ATTR)
+             IF         COND(&ATTR *NE 'DSPF') THEN(DO)
+                SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('Le fichier +
+                             ' *CAT &FILE *CAT ' n''est pas un écran') +
+                             MSGTYPE(*ESCAPE)
+                MONMSG     MSGID(CPF0000)
+             ENDDO
+ /* Génération de la liste des zones du fichier ecran */
+             DSPFFD     FILE(&LIB/&FILE) OUTPUT(*OUTFILE) +
+                          OUTFILE(QTEMP/WADSPFFD)
+             CHKOBJ     OBJ(QTEMP/DDS) OBJTYPE(*FILE)
+             MONMSG     CPF9801 EXEC(DO)
+                CRTSRCPF   FILE(QTEMP/DDS) MBR(DDS) TEXT('Source DDS +
+                             clés DDS')
+                GOTO       SUITE1
+             ENDDO
+             CLRPFM     QTEMP/DDS DDS
+ SUITE1:
+             CHKOBJ     OBJ(QTEMP/UIM) OBJTYPE(*FILE)
+             MONMSG     CPF9801 EXEC(DO)
+                CRTSRCPF   FILE(QTEMP/UIM) MBR(UIM) TEXT('Source +
+                             UIM')
+                GOTO       SUITE2
+             ENDDO
+             CLRPFM     QTEMP/UIM UIM
+ SUITE2:
+ /* Appel du programme de generation des sources */
+ /* ce programme est en cobol                    */
+             CALL       GENUIMCBL (&FILE &PLEIN)
+ /* Source Panel de groupe */
+             RTVOBJD    OBJ(&LIB/&FILE) OBJTYPE(*FILE) TEXT(&TXT)
+             ADDPFM     FILE(&LIBU/&FILU) MBR(&MBRU)
+             monmsg cpf0000
+             CPYF       FROMFILE(QTEMP/UIM) TOFILE(&LIBU/&FILU) +
+                          FROMMBR(UIM) TOMBR(&MBRU) MBROPT(*replace) +
+                          FMTOPT(*MAP *DROP)
+             CHGPFM     FILE(&LIBU/&FILU) MBR(&MBRU) SRCTYPE(UIM) +
+                          TEXT(&txt)
+ /* source QDDSSRC pour définition mot clé */
+             ADDPFM     FILE(&LIBD/&FILD) MBR(&MBRD)
+             monmsg cpf0000
+             CPYF       FROMFILE(QTEMP/DDS) TOFILE(&LIBD/&FILD) +
+                          FROMMBR(DDS) TOMBR(&MBRD) MBROPT(*ADD) +
+                           FMTOPT(*MAP *DROP)
+             CHGPFM     FILE(&LIBD/&FILD) MBR(&MBRD) SRCTYPE(DSPF) +
+                          TEXT('A ajouter pour aide GENUIMDSP')
+             GOTO       CMDLBL(FIN)
+ /*----------------------------------------------------------------*/
+ /* Gestion des erreurs                                            */
+ /*----------------------------------------------------------------*/
+ ERR:
+             RCVMSG     MSGTYPE(*EXCP) RMV(*NO) MSG(&MSG)
+             MONMSG     MSGID(CPF0000)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA(&MSG) +
+                          MSGTYPE(*ESCAPE)
+             MONMSG     MSGID(CPF0000)
+ FIN:
+             ENDPGM
+

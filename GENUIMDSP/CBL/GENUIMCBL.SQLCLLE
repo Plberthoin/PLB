@@ -1,0 +1,304 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. GENUIMCBL.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       DATA DIVISION.
+       FILE SECTION.
+       WORKING-STORAGE SECTION.
+      *
+       01  SQL-TRANSFERT1.
+           06 SRCSEQ                PIC S9(4)V9(2) VALUE 1964.
+           06 SRCDAT                PIC S9(6)  VALUE 0 .
+           06 SRCDTA                PIC X(80).
+      *
+       01  SQL-TRANSFERT2.
+           06 WHFLDP                PIC S9(2).
+           06 WHFTYP                PIC X(1).
+           06 WHNAME                PIC X(10).
+           06 WHRLEN                PIC S9(5).
+           06 WHFLDI                PIC X(10).
+      *
+      * INCLUSION ZONE DE COMMUNICATION : SQLCA
+      *
+           EXEC SQL
+               INCLUDE SQLCA
+           END-EXEC.
+       77 WDATE                 PIC X(6).
+       77 ETOILE                PIC X(1).
+       LINKAGE SECTION.
+       77 NOM-FICHIER           PIC X(10).
+       77 PLEIN                 PIC X(1).
+      *77 TESTTAILLE            pic x(16785555) .
+       PROCEDURE DIVISION USING NOM-FICHIER PLEIN.
+      *
+      * POUR INDIQUER QUE LE FICHIER N'EST PAS JOURNALISÉ
+
+      *
+           EXEC SQL
+                SET OPTION COMMIT = *NONE
+           END-EXEC
+      *
+      * DECLARATION DU CURSEUR
+      *
+           EXEC SQL
+           DECLARE CURSEUR1 CURSOR FOR
+                SELECT  WHFLDP,
+                        WHFTYP,
+                        WHNAME,
+                        WHRLEN,
+                        WHFLDI
+                FROM WADSPFFD
+           END-EXEC
+      *
+           ACCEPT WDATE FROM DATE
+           MOVE WDATE TO SRCDAT
+      *
+      * ECRITURE ENTETE DE FICHIER
+      *
+           MOVE    SPACES    TO SRCDTA
+           MOVE   '.*'       TO SRCDTA
+           PERFORM ECR-TRT    THRU ECR-TRT-FIN
+      *
+           MOVE    SPACES    TO SRCDTA
+           MOVE   '.* GENERE PAR GENUIMDSP VERSION 1.2'       TO SRCDTA
+           PERFORM ECR-TRT    THRU ECR-TRT-FIN
+           MOVE    SPACES    TO SRCDTA
+           STRING '.* DATE : '       DELIMITED BY SIZE
+           WDATE                     DELIMITED BY SPACE
+           INTO SRCDTA
+           END-STRING
+           PERFORM ECR-TRT    THRU ECR-TRT-FIN
+      *
+           MOVE    SPACES    TO SRCDTA
+           MOVE   '.*'       TO SRCDTA
+           PERFORM ECR-TRT    THRU ECR-TRT-FIN
+      *
+           MOVE    SPACES    TO SRCDTA
+           MOVE   ':PNLGRP.' TO SRCDTA
+           PERFORM ECR-TRT    THRU ECR-TRT-FIN
+      *
+      *    ECRITURE ENTETE DDS
+      *
+           PERFORM ENTETE-DDS
+      *
+      *  GENERATION DE L'AIDE D'ENTETE
+      *
+           MOVE    SPACES    TO SRCDTA
+           STRING ':HELP NAME = '''  DELIMITED BY SIZE
+           NOM-FICHIER               DELIMITED BY SPACE
+           ''' .AIDE ('              DELIMITED BY SIZE
+           NOM-FICHIER               DELIMITED BY SPACE
+           ').'                      DELIMITED BY SIZE
+           INTO SRCDTA
+           END-STRING
+           PERFORM ECR-TRT    THRU ECR-TRT-FIN
+           MOVE    SPACES    TO SRCDTA
+           STRING ':XH3. AIDE '     DELIMITED BY SIZE
+           NOM-FICHIER              DELIMITED BY SPACE
+           '.'                      DELIMITED BY SIZE
+           INTO SRCDTA
+           END-STRING
+           PERFORM ECR-TRT    THRU ECR-TRT-FIN
+           MOVE    SPACES    TO SRCDTA
+           MOVE   ':P. ' TO SRCDTA
+           PERFORM ECR-TRT    THRU ECR-TRT-FIN
+           MOVE    SPACES    TO SRCDTA
+           MOVE   'CE PROGRAMME VOUS PERMET DE ...'
+           TO SRCDTA
+           PERFORM ECR-TRT    THRU ECR-TRT-FIN
+           MOVE    SPACES    TO SRCDTA
+           MOVE   ':EHELP.' TO SRCDTA
+           PERFORM ECR-TRT    THRU ECR-TRT-FIN
+      *
+      *  GENERATION DE L'AIDE DETAIL
+      *
+           EXEC SQL
+              OPEN CURSEUR1
+           END-EXEC
+           PERFORM UNTIL SQLCODE > 0
+           EXEC SQL
+             FETCH CURSEUR1
+             INTO      :WHFLDP,
+                       :WHFTYP,
+                       :WHNAME,
+                       :WHRLEN,
+                       :WHFLDI
+           END-EXEC
+           IF      SQLCODE  = 0
+      *
+           MOVE     WHFLDI     TO ETOILE
+      * TEST SI INDICATEUR
+           IF      ETOILE  NOT = '*'
+           PERFORM ZONE-DEBUT
+           PERFORM DETAIL-DDS
+           END-IF
+           END-IF
+           END-PERFORM
+      * FIN DU PANNEAU
+           MOVE    SPACES    TO SRCDTA
+           MOVE   ':EPNLGRP.' TO SRCDTA
+           PERFORM ECR-TRT    THRU ECR-TRT-FIN.
+       FIN-TRT.
+      *
+           STOP RUN.
+      *
+       FIN.
+       ZONE-DEBUT.
+           MOVE    SPACES    TO SRCDTA
+           STRING ':HELP NAME = '''  DELIMITED BY SIZE
+           NOM-FICHIER               DELIMITED BY SPACE
+           '/'                       DELIMITED BY SIZE
+           WHFLDI                    DELIMITED BY SPACE
+           ''' .AIDE ('              DELIMITED BY SIZE
+           WHFLDI                    DELIMITED BY SPACE
+           ').'                      DELIMITED BY SIZE
+           INTO SRCDTA
+           END-STRING
+           PERFORM ECR-TRT    THRU ECR-TRT-FIN
+           MOVE    SPACES    TO SRCDTA
+           STRING ':XH3. AIDE '     DELIMITED BY SIZE
+           WHFLDI                   DELIMITED BY SPACE
+           '.'                      DELIMITED BY SIZE
+           INTO SRCDTA
+           END-STRING
+           PERFORM ECR-TRT    THRU ECR-TRT-FIN
+           MOVE    SPACES    TO SRCDTA
+           MOVE   ':P. ' TO SRCDTA
+           PERFORM ECR-TRT    THRU ECR-TRT-FIN
+           MOVE    SPACES    TO SRCDTA
+           MOVE   'CETTE ZONE ...'
+           TO SRCDTA
+           PERFORM ECR-TRT    THRU ECR-TRT-FIN
+           MOVE    SPACES    TO SRCDTA
+           MOVE   ':EHELP.' TO SRCDTA
+           PERFORM ECR-TRT    THRU ECR-TRT-FIN.
+       ZONE-FIN.
+      *
+           PERFORM FIN-TRT    THRU FIN.
+      *
+      * SOUS PROGRAMME D'ECRITURE
+      *
+       ECR-TRT.
+           COMPUTE SRCSEQ  = SRCSEQ + 11
+           EXEC SQL
+           INSERT INTO UIM
+                             (SRCSEQ,
+                             SRCDAT,
+                             SRCDTA)
+                       VALUES(:SRCSEQ,
+                             :SRCDAT,
+                             :SRCDTA)
+           END-EXEC.
+       ECR-TRT-FIN.
+      *
+      * GENERATION AIDE NIVEAU ZONE
+      *
+       ENTETE-DDS.
+           MOVE    SPACES    TO SRCDTA
+           MOVE   '     A*'  TO SRCDTA
+           PERFORM DSP-TRT    THRU DSP-TRT-FIN
+           MOVE    SPACES    TO SRCDTA
+           MOVE   '     A* INFORMATION NIVEAU FICHIER'  TO SRCDTA
+           PERFORM DSP-TRT    THRU DSP-TRT-FIN
+           MOVE    SPACES    TO SRCDTA
+           MOVE   '     A*'  TO SRCDTA
+           PERFORM DSP-TRT    THRU DSP-TRT-FIN
+           MOVE    SPACES    TO SRCDTA
+           STRING
+           '     A                                      HLPTITLE(''AI'
+           DELIMITED BY SIZE
+           'DE '                    DELIMITED BY SIZE
+           NOM-FICHIER              DELIMITED BY SPACE
+           ''')'                    DELIMITED BY SIZE
+           INTO SRCDTA
+           END-STRING
+           PERFORM DSP-TRT    THRU DSP-TRT-FIN
+      *
+           MOVE    SPACES    TO SRCDTA
+           STRING
+           '     A                                      HLPPNLGRP('
+           DELIMITED BY SIZE
+           NOM-FICHIER              DELIMITED BY SPACE
+           ' '                      DELIMITED BY SIZE
+           NOM-FICHIER              DELIMITED BY SPACE
+           ')'                      DELIMITED BY SIZE
+           INTO SRCDTA
+           END-STRING
+           PERFORM DSP-TRT    THRU DSP-TRT-FIN
+      *  MODE PLEIN ECRAN
+           IF PLEIN = 'O'
+           MOVE    SPACES    TO SRCDTA
+           MOVE
+           '     A                                      HLPFULL'
+                             TO SRCDTA
+           PERFORM DSP-TRT    THRU DSP-TRT-FIN
+           END-IF
+      *
+           MOVE    SPACES    TO SRCDTA
+           MOVE
+           '     A                                      ALTHELP(CA01)'
+                             TO SRCDTA
+      *
+           PERFORM DSP-TRT    THRU DSP-TRT-FIN
+           MOVE    SPACES    TO SRCDTA
+           MOVE
+           '     A                                      HELP'
+                             TO SRCDTA
+           PERFORM DSP-TRT    THRU DSP-TRT-FIN
+           MOVE    SPACES    TO SRCDTA
+           MOVE   '     A*'  TO SRCDTA
+           PERFORM DSP-TRT    THRU DSP-TRT-FIN
+           MOVE    SPACES    TO SRCDTA
+           MOVE   '     A* INFORMATION NIVEAU FORMAT'  TO SRCDTA
+           PERFORM DSP-TRT    THRU DSP-TRT-FIN
+           MOVE    SPACES    TO SRCDTA
+           MOVE   '     A* AJOUTER A LA FIN DES MOTS CLES' TO SRCDTA
+           PERFORM DSP-TRT    THRU DSP-TRT-FIN
+           MOVE    SPACES    TO SRCDTA
+           MOVE   '     A*'  TO SRCDTA
+           PERFORM DSP-TRT    THRU DSP-TRT-FIN.
+      *
+      * GENERATION AIDE NIVEAU ZONE
+      *
+       DETAIL-DDS.
+           MOVE    SPACES    TO SRCDTA
+           MOVE   '     A*'  TO SRCDTA
+           PERFORM DSP-TRT    THRU DSP-TRT-FIN
+           MOVE    SPACES    TO SRCDTA
+           STRING
+           '     A          H                           HLPPNLGRP('''
+           DELIMITED BY SIZE
+           NOM-FICHIER              DELIMITED BY SPACE
+           '/'                      DELIMITED BY SIZE
+           WHFLDI                   DELIMITED BY SPACE
+           ''' '                     DELIMITED BY SIZE
+           NOM-FICHIER              DELIMITED BY SPACE
+           ')'                    DELIMITED BY SIZE
+           INTO SRCDTA
+           END-STRING
+           PERFORM DSP-TRT    THRU DSP-TRT-FIN.
+           MOVE    SPACES    TO SRCDTA
+           STRING
+           '     A                                      HLPARA(*FLD '
+                                    DELIMITED BY SIZE
+           WHFLDI                   DELIMITED BY SPACE
+           ')'                      DELIMITED BY SIZE
+                           INTO SRCDTA
+           PERFORM DSP-TRT    THRU DSP-TRT-FIN.
+      *
+      *  ECRITURE DANS FICHIER DDS
+      *
+       DSP-TRT.
+           COMPUTE SRCSEQ  = SRCSEQ + 14
+           EXEC SQL
+           INSERT INTO DDS
+                             (SRCSEQ,
+                             SRCDAT,
+                             SRCDTA)
+                       VALUES(:SRCSEQ,
+                             :SRCDAT,
+                             :SRCDTA)
+           END-EXEC.
+       DSP-TRT-FIN.
+
