@@ -1,3 +1,9 @@
+      * Ce programme génére
+      * les instructions à ajouter à un DSPF
+      * le squellette du panel de groupe correspondant
+      * PLB le 05/09/2023
+      * La ligne HLPPNLGRP pour les Zones longues
+      *  sur 2 lignes
        IDENTIFICATION DIVISION.
        PROGRAM-ID. GENUIMCBL.
        ENVIRONMENT DIVISION.
@@ -167,7 +173,7 @@
            MOVE   ':P. ' TO SRCDTA
            PERFORM ECR-TRT    THRU ECR-TRT-FIN
            MOVE    SPACES    TO SRCDTA
-           MOVE   'CETTE ZONE ...'
+           MOVE   'Cette zone ...'
            TO SRCDTA
            PERFORM ECR-TRT    THRU ECR-TRT-FIN
            MOVE    SPACES    TO SRCDTA
@@ -262,9 +268,11 @@
       * GENERATION AIDE NIVEAU ZONE
       *
        DETAIL-DDS.
+      * Ligne commentaire
            MOVE    SPACES    TO SRCDTA
            MOVE   '     A*'  TO SRCDTA
            PERFORM DSP-TRT    THRU DSP-TRT-FIN
+      * Ligne 1
            MOVE    SPACES    TO SRCDTA
            STRING
            '     A          H                           HLPPNLGRP('''
@@ -272,12 +280,21 @@
            NOM-FICHIER              DELIMITED BY SPACE
            '/'                      DELIMITED BY SIZE
            WHFLDI                   DELIMITED BY SPACE
-           ''' '                     DELIMITED BY SIZE
+           ''' +'                    DELIMITED BY SIZE
+           INTO SRCDTA
+           END-STRING
+           PERFORM DSP-TRT    THRU DSP-TRT-FIN.
+      * Ligne de continuation
+           MOVE    SPACES    TO SRCDTA
+           STRING
+           '     A                                      '
+           DELIMITED BY SIZE
            NOM-FICHIER              DELIMITED BY SPACE
            ')'                    DELIMITED BY SIZE
            INTO SRCDTA
            END-STRING
            PERFORM DSP-TRT    THRU DSP-TRT-FIN.
+      * Ecriture   de l'aide Zone
            MOVE    SPACES    TO SRCDTA
            STRING
            '     A                                      HLPARA(*FLD '
