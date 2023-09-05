@@ -1,9 +1,11 @@
       * Ce programme génére
-      * les instructions à ajouter à un DSPF
-      * le squellette du panel de groupe correspondant
+      * Les instructions à ajouter à un DSPF
+      * Le squellette du panel de groupe correspondant
       * PLB le 05/09/2023
       * La ligne HLPPNLGRP pour les Zones longues
-      *  sur 2 lignes
+      *  Sur 2 lignes
+      * Ajout identification du format
+      *
        IDENTIFICATION DIVISION.
        PROGRAM-ID. GENUIMCBL.
        ENVIRONMENT DIVISION.
@@ -32,14 +34,13 @@
            END-EXEC.
        77 WDATE                 PIC X(6).
        77 ETOILE                PIC X(1).
+       77 WHNAME_O              PIC X(10).
        LINKAGE SECTION.
        77 NOM-FICHIER           PIC X(10).
        77 PLEIN                 PIC X(1).
-      *77 TESTTAILLE            pic x(16785555) .
        PROCEDURE DIVISION USING NOM-FICHIER PLEIN.
       *
       * POUR INDIQUER QUE LE FICHIER N'EST PAS JOURNALISÉ
-
       *
            EXEC SQL
                 SET OPTION COMMIT = *NONE
@@ -110,7 +111,7 @@
            MOVE   ':P. ' TO SRCDTA
            PERFORM ECR-TRT    THRU ECR-TRT-FIN
            MOVE    SPACES    TO SRCDTA
-           MOVE   'CE PROGRAMME VOUS PERMET DE ...'
+           MOVE   'Ce programme vous permet de ...'
            TO SRCDTA
            PERFORM ECR-TRT    THRU ECR-TRT-FIN
            MOVE    SPACES    TO SRCDTA
@@ -132,7 +133,15 @@
                        :WHFLDI
            END-EXEC
            IF      SQLCODE  = 0
-      *
+      * Ajout nom de format
+           IF      WHNAME   NOT = WHNAME_O
+           MOVE    WHNAME  TO WHNAME_O
+           MOVE    SPACES    TO SRCDTA
+           STRING '     A* format : ' DELIMITED BY SIZE
+                   WHNAME_O DELIMITED BY SPACE
+           INTO SRCDTA
+           PERFORM DSP-TRT    THRU DSP-TRT-FIN
+           END-IF
            MOVE     WHFLDI     TO ETOILE
       * TEST SI INDICATEUR
            IF      ETOILE  NOT = '*'
