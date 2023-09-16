@@ -1,0 +1,7 @@
+PGM /*------------------------------------*/
+/* Supprime les messages de votre log     */
+/* Ne supprime pas les messages *PGMQ     */
+/*----------------------------------------*/
+             RMVMSG     PGMQ(*ALLINACT) CLEAR(*ALL)
+             RMVMSG     PGMQ(*EXT) CLEAR(*ALL)
+ENDPGM
