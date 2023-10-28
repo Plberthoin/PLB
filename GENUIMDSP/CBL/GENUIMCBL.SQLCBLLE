@@ -5,6 +5,8 @@
       * La ligne HLPPNLGRP pour les Zones longues
       *  Sur 2 lignes
       * Ajout identification du format
+      * PLB le 28/10/2023
+      * Supression des zones en double dans l'UIM
       *
        IDENTIFICATION DIVISION.
        PROGRAM-ID. GENUIMCBL.
@@ -32,6 +34,8 @@
            EXEC SQL
                INCLUDE SQLCA
            END-EXEC.
+       77 ZONEAIDE              PIC X(10).
+       77 WSQLCODE              PIC S9(9) BINARY.
        77 WDATE                 PIC X(6).
        77 ETOILE                PIC X(1).
        77 WHNAME_O              PIC X(10).
@@ -44,6 +48,17 @@
       *
            EXEC SQL
                 SET OPTION COMMIT = *NONE
+           END-EXEC
+      *
+      * CREATION TABLE DE LISTE DES ZONES
+      *
+           EXEC SQL
+           DROP   TABLE QTEMP/WZONE
+           END-EXEC
+      *
+           EXEC SQL
+           CREATE TABLE QTEMP/WZONE
+           (ZONEAIDE CHAR ( 10) NOT NULL WITH DEFAULT)
            END-EXEC
       *
       * DECLARATION DU CURSEUR
@@ -145,8 +160,24 @@
            MOVE     WHFLDI     TO ETOILE
       * TEST SI INDICATEUR
            IF      ETOILE  NOT = '*'
-           PERFORM ZONE-DEBUT
-           PERFORM DETAIL-DDS
+      * Controle si zone déjà existante
+           MOVE     WHFLDI     TO ZONEAIDE
+           EXEC SQL
+           SELECT ZONEAIDE into :ZONEAIDE from QTEMP/WZONE
+                 where ZONEAIDE = :ZONEAIDE
+           END-EXEC
+      * Sauvegarde du SQLCODE
+           MOVE  SQLCODE TO WSQLCODE
+      *
+           PERFORM DETAIL-DDS  THRU DETAIL-DDS
+           IF WSQLCODE = 100
+           PERFORM ZONE-DEBUT  THRU ZONE-DEBUT
+      * Ecriture de la zone traitée
+           EXEC SQL
+           insert  into  QTEMP/WZONE
+                   (ZONEAIDE) VALUES(:ZONEAIDE)
+           END-EXEC
+           END-IF
            END-IF
            END-IF
            END-PERFORM
