@@ -172,7 +172,7 @@
            END-STRING
            PERFORM ECR-TRT    THRU ECR-TRT-FIN
            MOVE    SPACES    TO SRCDTA
-           STRING ':XH3. AIDE '     DELIMITED BY SIZE
+           STRING ':XH3.AIDE '      DELIMITED BY SIZE
            WHFLDI                   DELIMITED BY SPACE
            '.'                      DELIMITED BY SIZE
            INTO SRCDTA
