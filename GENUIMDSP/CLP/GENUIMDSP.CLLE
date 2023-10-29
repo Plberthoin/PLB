@@ -1,27 +1,35 @@
-             PGM        PARM(&FILE &LIB &FILU &LIBU &MBRU  &FILD &LIBD +
-                          &MBRD &PLEIN)
+             PGM        PARM(&FILLIB &FILLIBU &MBRU  &FILLIBD +
+                          &MBRD &PLEIN &txtzon)
   /*-------------------------------------------------------------------*/
   /* Ce programme génére les instructions à inclure sur un écran dds   */
   /* Pour mettre en place de l'aide                                    */
   /* Il génère aussi le source du panel de groupe qui correspond       */
   /*-------------------------------------------------------------------*/
-  /* Paramètre */
+  /* Paramètres */
+             dcl        &fillib *char 20
+             dcl        &fillibu *char 20
+             DCL        &MBRU *CHAR 10
+             dcl        &fillibD *char 20
+             DCL        &MBRD *CHAR 10
+             DCL        &PLEIN *CHAR 1
+  /* Variables de travail */
              DCL        &FILE *CHAR 10
              DCL        &LIB  *CHAR 10
              DCL        &FILU *CHAR 10
              DCL        &LIBU *CHAR 10
-             DCL        &MBRU *CHAR 10
              DCL        &FILD *CHAR 10
              DCL        &LIBD *CHAR 10
-             DCL        &MBRD *CHAR 10
-             DCL        &PLEIN *CHAR 1
-  /* Variables de travail */
+             DCL        &txtzon *CHAR 50
+             DCL        &txt   *CHAR 50
              DCL        &ATTR *CHAR 10
-             DCL        &MSG  *CHAR 132
-             DCL        &txt  *CHAR 50
-             MONMSG     MSGID(CPF0000) EXEC(GOTO CMDLBL(ERR))
-             SNDMSG     (&LIBU *BCAT &LIBD *BCAT &LIB) TOUSR(*REQUESTER)
+             INCLUDE    SRCMBR(ERREUR1) SRCFILE(GCOMPILE/QCLSRC)
   /* Traitement   des paramètres */
+     chgvar &file %sst(&fillib  1 10)
+     chgvar &lib  %sst(&fillib 11 10)
+     chgvar &filu %sst(&fillibu  1 10)
+     chgvar &libu %sst(&fillibu 11 10)
+     chgvar &fild %sst(&fillibd  1 10)
+     chgvar &libd %sst(&fillibd 11 10)
              IF         COND(&MBRU = '*FILE') THEN(DO)
                 CHGVAR     &MBRU &FILE
              ENDDO
@@ -59,7 +67,7 @@
  SUITE2:
  /* Appel du programme de generation des sources */
  /* ce programme est en cobol                    */
-             CALL       GENUIMCBL (&FILE &PLEIN)
+             CALL       GENUIMCBL (&FILE &PLEIN &TXTZON)
  /* Source Panel de groupe */
              RTVOBJD    OBJ(&LIB/&FILE) OBJTYPE(*FILE) TEXT(&TXT)
              ADDPFM     FILE(&LIBU/&FILU) MBR(&MBRU)
@@ -77,16 +85,12 @@
                            FMTOPT(*MAP *DROP)
              CHGPFM     FILE(&LIBD/&FILD) MBR(&MBRD) SRCTYPE(DSPF) +
                           TEXT('A ajouter pour aide GENUIMDSP')
-             GOTO       CMDLBL(FIN)
+ /* message de fin */
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+                          MSGDTA('Squelette d''aide qénéré pour,' *BCAT +
+                          &FILE) MSGTYPE(*COMP)
  /*----------------------------------------------------------------*/
  /* Gestion des erreurs                                            */
  /*----------------------------------------------------------------*/
- ERR:
-             RCVMSG     MSGTYPE(*EXCP) RMV(*NO) MSG(&MSG)
-             MONMSG     MSGID(CPF0000)
-             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA(&MSG) +
-                          MSGTYPE(*ESCAPE)
-             MONMSG     MSGID(CPF0000)
- FIN:
-             ENDPGM
-
+             INCLUDE    SRCMBR(ERREUR2) SRCFILE(GCOMPILE/QCLSRC)
+ENDPGM

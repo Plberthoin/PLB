@@ -42,7 +42,8 @@
        LINKAGE SECTION.
        77 NOM-FICHIER           PIC X(10).
        77 PLEIN                 PIC X(1).
-       PROCEDURE DIVISION USING NOM-FICHIER PLEIN.
+       77 TXT-ZONE              PIC X(50).
+       PROCEDURE DIVISION USING NOM-FICHIER PLEIN TXT-ZONE .
       *
       * POUR INDIQUER QUE LE FICHIER N'EST PAS JOURNALISÉ
       *
@@ -212,9 +213,8 @@
            MOVE    SPACES    TO SRCDTA
            MOVE   ':P. ' TO SRCDTA
            PERFORM ECR-TRT    THRU ECR-TRT-FIN
-           MOVE    SPACES    TO SRCDTA
-           MOVE   'Cette zone ...'
-           TO SRCDTA
+           MOVE    SPACES     TO SRCDTA
+           MOVE    TXT-ZONE   TO SRCDTA
            PERFORM ECR-TRT    THRU ECR-TRT-FIN
            MOVE    SPACES    TO SRCDTA
            MOVE   ':EHELP.' TO SRCDTA
