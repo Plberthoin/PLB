@@ -1,0 +1,87 @@
+  /*-------------------------------------------------------------------*/
+  /* Ce programme génére un menu barre                                 */
+  /* source DDS                                                        */
+  /* source RPGLE                                                      */
+  /*-------------------------------------------------------------------*/
+             PGM        PARM(&FILLIBD &MBRD  &FILLIBR +
+                          &MBRR &menu1 &m1opt1 &m1opt2 &m1opt3  +
+                                &menu2 &m2opt1 &m2opt2 &m2opt3  )
+  /* Paramètres */
+             dcl        &fillibr *char 20
+             DCL        &MBRR *CHAR 10
+             dcl        &fillibD *char 20
+             DCL        &MBRD *CHAR 10
+             DCL        &menu1 *CHAR 10
+             dcl        &m1opt1 *char 10
+             dcl        &m1opt2 *char 10
+             dcl        &m1opt3 *char 10
+             DCL        &menu2 *CHAR 10
+             dcl        &m2opt1 *char 10
+             dcl        &m2opt2 *char 10
+             dcl        &m2opt3 *char 10
+  /* Variables de travail */
+             DCL        &FILr *CHAR 10
+             DCL        &LIBr *CHAR 10                            u
+             DCL        &FILD *CHAR 10
+             DCL        &LIBD *CHAR 10
+             DCL        &txt   *CHAR 50
+             INCLUDE    SRCMBR(ERREUR1) SRCFILE(GCOMPILE/QCLSRC)
+  /* Traitement   des paramètres */
+     chgvar &filr %sst(&fillibr  1 10)
+     chgvar &libr %sst(&fillibr 11 10)
+     chgvar &fild %sst(&fillibd  1 10)
+     chgvar &libd %sst(&fillibd 11 10)
+             IF         COND(&MBRR = '*FILE') THEN(DO)
+                CHGVAR     &MBRR &MBRD
+             ENDDO
+             IF         COND(&MBRD = '*FILE') THEN(DO)
+                CHGVAR     &MBRD &MBRR
+             ENDDO
+             CHKOBJ     OBJ(&LIBR/&FILR) OBJTYPE(*FILE)
+             CHKOBJ     OBJ(&LIBD/&FILD) OBJTYPE(*FILE)
+ /* Génération de la liste des zones du fichier ecran */
+             CHKOBJ     OBJ(QTEMP/DDS) OBJTYPE(*FILE)
+             MONMSG     CPF9801 EXEC(DO)
+                CRTSRCPF   FILE(QTEMP/DDS) MBR(DDS) TEXT('Source DDS +
+                             clés DDS')
+                GOTO       SUITE1
+             ENDDO
+             CLRPFM     QTEMP/DDS DDS
+ SUITE1:
+             CHKOBJ     OBJ(QTEMP/RPG) OBJTYPE(*FILE)
+             MONMSG     CPF9801 EXEC(DO)
+             CRTSRCPF   FILE(QTEMP/RPG) MBR(RPG) TEXT('Source RPG')
+                GOTO       SUITE2
+             ENDDO
+             CLRPFM     QTEMP/RPG RPG
+ SUITE2:
+ /* Appel du programme de generation des sources */
+ /* ce programme est en cobol                    */
+        call GENMNUBARR  (&MBRD &menu1 &m1opt1 &m1opt2 &m1opt3 +
+                          &menu2 &m2opt1 &m2opt2 &m2opt3 )
+ /* Source Panel de groupe */
+             ADDPFM     FILE(&LIBr/&FILr) MBR(&MBRr)
+             monmsg cpf0000
+             chgvar &txt ('Squelette généré par GENMNUBAR')
+             CPYF       FROMFILE(QTEMP/RPG) TOFILE(&LIBr/&FILr) +
+                          FROMMBR(RPG) TOMBR(&MBRR) MBROPT(*replace) +
+                          FMTOPT(*MAP *DROP)
+             CHGPFM     FILE(&LIBr/&FILr) MBR(&MBRr) SRCTYPE(RPGLE) +
+                          TEXT(&txt)
+ /* source QDDSSRC pour définition mot clé */
+             ADDPFM     FILE(&LIBD/&FILD) MBR(&MBRD)
+             monmsg cpf0000
+             CPYF       FROMFILE(QTEMP/DDS) TOFILE(&LIBD/&FILD) +
+                          FROMMBR(DDS) TOMBR(&MBRD) MBROPT(*ADD) +
+                           FMTOPT(*MAP *DROP)
+             CHGPFM     FILE(&LIBD/&FILD) MBR(&MBRD) SRCTYPE(DSPF) +
+                          TEXT('Squelette généré par GENMNUBAR')
+ /* message de fin */
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+                          MSGDTA('Squelette d''aide qénéré pour,' *BCAT +
+                          &mbrd) MSGTYPE(*COMP)
+ /*----------------------------------------------------------------*/
+ /* Gestion des erreurs                                            */
+ /*----------------------------------------------------------------*/
+             INCLUDE    SRCMBR(ERREUR2) SRCFILE(GCOMPILE/QCLSRC)
+ENDPGM
