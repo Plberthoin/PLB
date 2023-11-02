@@ -3,8 +3,8 @@
   /* source DDS                                                        */
   /* source RPGLE                                                      */
   /*-------------------------------------------------------------------*/
-             PGM        PARM(&FILLIBD &MBRD  &FILLIBR +
-                          &MBRR &menu1 &m1opt1 &m1opt2 &m1opt3  +
+             PGM        PARM(&MBRD  &FILLIBD &MBRR  &FILLIBR +
+                           &menu1 &m1opt1 &m1opt2 &m1opt3  +
                                 &menu2 &m2opt1 &m2opt2 &m2opt3  )
   /* Paramètres */
              dcl        &fillibr *char 20
@@ -31,11 +31,8 @@
      chgvar &libr %sst(&fillibr 11 10)
      chgvar &fild %sst(&fillibd  1 10)
      chgvar &libd %sst(&fillibd 11 10)
-             IF         COND(&MBRR = '*FILE') THEN(DO)
+             IF         COND(&MBRR = '*MBRDDS') THEN(DO)
                 CHGVAR     &MBRR &MBRD
-             ENDDO
-             IF         COND(&MBRD = '*FILE') THEN(DO)
-                CHGVAR     &MBRD &MBRR
              ENDDO
              CHKOBJ     OBJ(&LIBR/&FILR) OBJTYPE(*FILE)
              CHKOBJ     OBJ(&LIBD/&FILD) OBJTYPE(*FILE)
@@ -78,7 +75,7 @@
                           TEXT('Squelette généré par GENMNUBAR')
  /* message de fin */
              SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
-                          MSGDTA('Squelette d''aide qénéré pour,' *BCAT +
+                          MSGDTA('Squelette généré pour menu barre ,' *BCAT +
                           &mbrd) MSGTYPE(*COMP)
  /*----------------------------------------------------------------*/
  /* Gestion des erreurs                                            */
