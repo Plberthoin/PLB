@@ -22,7 +22,7 @@ Vous pourrez intégrer dans vos développements 5250
 
 *** Fin listes des sources
 
-Pre requis :
+Pré requis :
 
 Compilateur RPGLE
 Version V7R3 (à cause du full free)

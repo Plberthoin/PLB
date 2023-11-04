@@ -1,0 +1,147 @@
+     A*%%TS  SD  20231102  195814  QSECOFR     REL-V7R4M0  5770-WDS
+     A*%%EC
+     A                                      DSPSIZ(27 132 *DS4)
+     A                                      INDARA
+     A                                      PRINT
+     A          R BIDON                     ASSUME
+     A                                  1  2 ' '
+     A*-------------------------------------------------
+     A* CALENDRIER
+     A*-------------------------------------------------
+     A          R SFL01                     SFL
+     A            NUMLUN         2N 0O  9  3
+     A  51                                  DSPATR(HI)
+     A  61                                  DSPATR(RI)
+     A            NUMMAR         2N 0O  9 10
+     A  52                                  DSPATR(HI)
+     A  62                                  DSPATR(RI)
+     A            NUMMER         2N 0O  9 17
+     A  53                                  DSPATR(HI)
+     A  63                                  DSPATR(RI)
+     A            NUMJEU         2N 0O  9 24
+     A  54                                  DSPATR(HI)
+     A  64                                  DSPATR(RI)
+     A            NUMVEN         2N 0O  9 31
+     A  55                                  DSPATR(HI)
+     A  65                                  DSPATR(RI)
+     A            NUMSAM         2N 0O  9 38
+     A  56                                  DSPATR(HI)
+     A  66                                  DSPATR(RI)
+     A            NUMDIM         2N 0O  9 45
+     A  57                                  DSPATR(HI)
+     A  67                                  DSPATR(RI)
+     A*
+     A          R CTL01                     SFLCTL(SFL01)
+     A                                      MOUBTN(*ULP CF04)
+     A                                      RTNCSRLOC(*MOUSE &ROW &COL)
+     A                                      RTNCSRLOC(*RECNAME &CSRREC &CSRFLD)
+     A                                      CA12(12)
+     A                                      OVERLAY
+     A  42                                  SFLDSP
+     A  41                                  SFLDSPCTL
+     A  40                                  SFLCLR
+     A                                      SFLSIZ(7)
+     A                                      SFLPAG(6)
+     A                                      RMVWDW
+     A                                      WINDOW(FOOTER)
+     A                                      CF07(07)
+     A                                      CF08(08)
+     A                                      CF04(04)
+     A            RCD01          4S 0H      SFLRCDNBR(CURSOR)
+     A            CLE01          4S 0H
+     A                                  5  3'Cliquez sur une date pour la sélec-
+     A                                      tionner'
+     A                                      COLOR(BLU)
+     A                                  1 17'Sélection de date'
+     A                                  3  3'Mois :'
+     A                                  3 14'Année :'
+     A            INPUTMOIS      2M  B  3 10DSPATR(HI)
+     A            INPUTANNEE     4M  B  3 22DSPATR(HI)
+     A                                  8  3'Lun'
+     A                                  8 10'Mar'
+     A                                  8 17'Mer'
+     A                                  8 24'Jeu'
+     A                                  8 31'Ven'
+     A                                  8 38'Sam'
+     A                                  8 45'Dim'
+     A            TITREMOIS     15   O  7  3DSPATR(HI)
+     A            CSRREC        10A  H
+     A            CSRFLD        10A  H
+     A            ROW            3S 0H
+     A            COL            3S 0H
+     A            ERRORMSG      22   O  3 28COLOR(RED)
+     A          R FOOTER
+     A                                      WINDOW(4 15 17 50)
+     A*           F1B            2Y 0B 16  3PSHBTNFLD
+     A*                                     PSHBTNCHC(1 'F12=Ret.' CA12)
+     A*                                     PSHBTNCHC(2 'F7=Préc.' CF07)
+     A*                                     PSHBTNCHC(3 'F8=Suiv.' CF08)
+     A*                                     PSHBTNCHC(4 '>Enter' ENTER)
+     A                                 16  3'F12=Retour  F7=Mois précédent  F8=-
+     A                                      Mois suivant'
+     A                                      COLOR(BLU)
+     A*-------------------------------------------------
+     A* LISTE
+     A*-------------------------------------------------
+     A          R SFL02                     SFL
+     A*%%TS  SD  20231102  195814  QSECOFR     REL-V7R4M0  5770-WDS
+     A            ZONCTL02       1Y 0H      SFLCHCCTL
+     A            DET02         75A  O  3  5
+     A*
+     A*
+     A          R CTL02                     SFLCTL(SFL02)
+     A*%%TS  SD  20220123  171020  PLB         REL-V7R4M0  5770-WDS
+     A                                      SFLPAG(0009)
+     A                                      SFLSNGCHC(*SLTIND *AUTOSLT)
+     A                                      SFLSIZ(10)
+     A                                      WINDOW(FMT02)
+     A                                      CA12(12)
+     A                                      OVERLAY
+     A  42                                  SFLDSP
+     A  41                                  SFLDSPCTL
+     A  40                                  SFLCLR
+     A  43                                  SFLEND(*SCRBAR *SCRBAR)
+     A                                      RMVWDW
+     A            RCD02          4S 0H      SFLRCDNBR(CURSOR)
+     A            CLE02          4S 0H
+     A                                  2  2'Sélectionner'
+     A                                      DSPATR(HI)
+     A                                      COLOR(BLU)
+     A            TIT02         35A  O  1 25
+     A          R FMT02
+     A*%%TS  SD  20200814  164135  DT          REL-V7R4M0  5770-WDS
+     A                                      WINDOW(5 10 14 90)
+     A                                      OVERLAY
+     A* Déclaration du bas de page
+     A            F2B            2Y 0B 13  2PSHBTNFLD
+     A                                      PSHBTNCHC(1 'F12=>Annuler' CA12)
+     A                                      PSHBTNCHC(2 '>Enter' ENTER)
+     A*                                13  2'F12=Annuler'
+     A*                                     COLOR(BLU)
+     A*-------------------------------------------------
+     A* BOX
+     A*-------------------------------------------------
+     A          R FMT03
+     A                                      WINDOW(4 4 5 60)
+     A                                      RMVWDW
+     A            TEXTE         55A  O  2  3
+     A            TITRE         30   O  1 15DSPATR(HI)
+     A* Déclaration du bas de page
+     A            F3B            2Y 0B  4  2PSHBTNFLD
+     A                                      PSHBTNCHC(1 '>Enter' ENTER)
+     A*-------------------------------------------------
+     A* VALIDATION
+     A*-------------------------------------------------
+     A          R FMT04
+     A                                      CF10(10)
+     A                                      WINDOW(4 4 7 60)
+     A                                      RMVWDW
+     A            TEXTE1        55A  O  2  3
+     A            TEXTE2        55A  O  3  3
+     A            TEXTE3        55A  O  4  3
+     A            TITRE         30   O  1 15DSPATR(HI)
+     A* Déclaration du bas de page
+     A            F4B            2Y 0B  6  2PSHBTNFLD
+     A                                      PSHBTNCHC(1 'F12=>Annuler' CA12)
+     A                                      PSHBTNCHC(2 'F10=>Valider' CF10)
+     A                                      PSHBTNCHC(3 '>Enter' ENTER)

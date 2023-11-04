@@ -1,0 +1,23 @@
+PGM        PARM(&P_LIB) /*---------------------------------------*/
+/* Création de l'environnement NEW5250                     */
+/*---------------------------------------------------------*/
+DCL        VAR(&P_LIB) TYPE(*CHAR) LEN(10)
+DCL        VAR(&LIB) TYPE(*CHAR) LEN(10)
+/* traitement des paramétres */
+if cond(%parms() = 0) then(do)
+   RTVOBJD    OBJ(COMPILE) OBJTYPE(*PGM) RTNLIB(&LIB)
+ENDDO
+ELSE       CMD(DO)
+   CHGVAR     VAR(&LIB) VALUE(&P_LIB)
+ENDDO
+/* Du module SQLRPGLE */
+CRTSQLRPGI OBJ(&LIB/NEW5250) SRCFILE(&LIB/QRPGLESRC) SRCMBR(NEW5250) OBJTYPE(*MODULE) REPLACE(*YES)
+/* Création du programme de service */
+CRTSRVPGM  SRVPGM(&LIB/NEW5250) MODULE(&LIB/NEW5250) EXPORT(*SRCFILE)
+/* Création du programme de service */
+CHKOBJ     OBJ(&LIB/NEW5250) OBJTYPE(*BNDDIR)
+MONMSG     MSGID(CPF9801) EXEC(DO)
+   CRTBNDDIR  BNDDIR(&LIB/NEW5250)
+   ADDBNDDIRE BNDDIR(&LIB/NEW5250) OBJ((&LIB/NEW5250))
+ENDDO
+ENDPGM
