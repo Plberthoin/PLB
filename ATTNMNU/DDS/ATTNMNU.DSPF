@@ -1,0 +1,107 @@
+     A*%%TS  SD  20231112  215812  PLB         REL-V7R4M0  5770-WDS
+     A* Généré par GENMNUBAR
+     A* le  :2023-11-12
+     A* par : PLB
+     A*
+     A*%%EC
+     A                                      DSPSIZ(27 132 *DS4)
+     A                                      REF(*LIBL/ATTNMNUT ATTNMNUT)
+     A                                      MNUCNL(CA12)
+     A                                      CA03(03 'EXIT')
+     A                                      INDARA
+     A                                      HLPTITLE('AIDE ATTNMNU')
+     A                                      HLPPNLGRP(ATTNMNU ATTNMNU)
+     A                                      ALTHELP(CA01)
+     A                                      HELP
+     A* déclaration du menu
+     A          R MB                        MNUBAR
+     A            MNUFLD         2Y 0B  1  2
+     A                                      MNUBARCHC(1 TRAVAUX +
+     A                                                'TRAVAUX')
+     A                                      MNUBARCHC(2 FICHIERS +
+     A                                                'FICHIERS')
+     A                                      MNUBARSEP((*CHAR '_'))
+     A          R SFL01                     SFL
+     A            ZONCTL         1Y 0H      SFLCHCCTL
+     A*%%TS  SD  20231021  194839  PLB         REL-V7R4M0  5770-WDS
+     A            ATTNTXT   R        O  5 22
+     A            ATTNCMD   R        H
+     A            ATTNUSR   R        H
+     A* déclaration du menu dans le format
+     A          R CTL01                     SFLCTL(SFL01)
+     A*%%TS  SD  20231112  215812  PLB         REL-V7R4M0  5770-WDS
+     A                                      SFLPAG(0012)
+     A                                      MNUBARDSP(MB &MNUCHC &PULL)
+     A                                      CA05(05)
+     A                                      CA16(16)
+     A                                      SFLSNGCHC(*SLTIND *AUTOSLT)
+     A                                      OVERLAY
+     A  42                                  SFLDSP
+     A  41                                  SFLDSPCTL
+     A  40                                  SFLCLR
+     A  43                                  SFLEND(*SCRBAR *MORE)
+     A                                      SFLSIZ(&SFLSIZ)
+     A                                      SFLCSRRRN(&RRN01)
+     A                                  3 24'Menu utilisateur'
+     A            ATTNUSR   R        O  3 41
+     A            MNUCHC         2Y 0H
+     A            PULL           2S 0H
+     A            SFLSIZ         5S 0P
+     A            NUM01          4S 0H      SFLRCDNBR(CURSOR)
+     A            RRN01          5S 0H
+     A            CLE01          4S 0H
+     A* Déclaration du bas de page
+     A          R FMT01
+     A            F1B            2Y 0B 26  2PSHBTNFLD
+     A                                      PSHBTNCHC(1 'F3=E>xit' CA03)
+     A                                      PSHBTNCHC(2 'F5=>Recharger' CA05)
+     A                                      PSHBTNCHC(3 'F16=E>diter' CA16)
+     A                                      PSHBTNCHC(4 'E>nter' ENTER)
+     A* déclaration des options de menu
+     A          R TRAVAUX                      PULLDOWN
+     A            F1             2Y 0B  1 02SNGCHCFLD(*AUTOENT)
+     A                                      CHOICE(1 'WRKSPLF')
+     A                                      CHCCTL(1 &C11)
+     A                                      CHOICE(2 'WRKJOB')
+     A                                      CHCCTL(2 &C12)
+     A                                      CHOICE(3 'DSPJOBLOG')
+     A                                      CHCCTL(3 &C13)
+     A            C11            1Y 0H
+     A            C12            1Y 0H
+     A            C13            1Y 0H
+     A          R FICHIERS                     PULLDOWN
+     A            F1             2Y 0B  1 02SNGCHCFLD(*AUTOENT)
+     A                                      CHOICE(1 'WRKLNK')
+     A                                      CHCCTL(1 &C21)
+     A                                      CHOICE(2 'SNDSMTPEMM')
+     A                                      CHCCTL(2 &C22)
+     A                                      CHOICE(3 'STRSQL')
+     A                                      CHCCTL(3 &C23)
+     A            C21            1Y 0H
+     A            C22            1Y 0H
+     A            C23            1Y 0H
+     A* Ecran détail
+     A          R FMT02
+     A                                      CA12(12)
+     A                                      CF23(23)
+     A          H                           HLPPNLGRP('ATTNMNU/ATTNUSR' ATTNMNU)
+     A                                      HLPARA(*FLD ATTNUSR)
+     A*
+     A          H                           HLPPNLGRP('ATTNMNU/ATTNTXT' ATTNMNU)
+     A                                      HLPARA(*FLD ATTNTXT)
+     A*
+     A          H                           HLPPNLGRP('ATTNMNU/ATTNCMD' ATTNMNU)
+     A                                      HLPARA(*FLD ATTNCMD)
+     A*%%TS  SD  20231112  150830  PLB         REL-V7R4M0  5770-WDS
+     A                                  3 39'Définition Des Options'
+     A            ATTNUSR   R        O  5 30
+     A            ATTNTXT   R        B  6 30 CHECK(LC)
+     A            ATTNCMD   R        B  7 30 CHECK(LC)
+     A            F2B            2Y 0B 26  2PSHBTNFLD
+     A                                      PSHBTNCHC(1 'F3=>Exit' CA03)
+     A                                      PSHBTNCHC(2 'F12=>Retour' CA12)
+     A                                      PSHBTNCHC(3 'F23=>Suppr.' CA23)
+     A                                      PSHBTNCHC(4 'E>nter')
+     A                                  5  7'Utilisateur .........:'
+     A                                  6  7'Texte ...............:'
+     A                                  7  7'Commande ............:'

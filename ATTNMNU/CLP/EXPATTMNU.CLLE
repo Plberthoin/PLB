@@ -1,0 +1,41 @@
+PGM        PARM(&MNULIB &USR)
+  /*-------------------------------------------------------------------*/
+  /* Ce programme exporte un menu vers le fichier ATTNMNUT             */
+  /*-------------------------------------------------------------------*/
+  /* Paramètres */
+             dcl        &Mnulib *char 20
+             dcl        &usr    *char 10
+  /* Variables de travail */
+             DCL        &Mnu  *CHAR 10
+             DCL        &LIB  *CHAR 10
+             DCL        &SQL  *CHAR 512
+             INCLUDE    SRCMBR(ERREUR1) SRCFILE(GCOMPILE/QCLSRC)
+  /* Traitement   des paramètres */
+     chgvar &mnu  %sst(&mnulib  1 10)
+     chgvar &lib  %sst(&mnulib 11 10)
+     if (&usr = '*CURRENT') then(do)
+     rtvjoba user(&usr)
+     enddo
+  /* Controle                    */
+             CHKOBJ     OBJ(&USR) OBJTYPE(*USRPRF)
+             CHKOBJ     OBJ(&LIB/&MNU) OBJTYPE(*MSGF)
+  /* Conversion                  */
+             CHGVAR     VAR(&SQL) VALUE('insert into attnmnut +
+                          SELECT ''' *tcat &usr *tcat ''' , +
+                          substr(MSG_TEXT , 1, 100) , +
+                          substr(MSG_TEXT , 1, 30) FROM +
+                          QSYS2.MESSAGE_FILE_DATA WHERE +
+                          MESSAGE_FILE_LIBRARY = ''' *tcat &lib +
+                          *tcat ''' AND MESSAGE_FILE = ''' +
+                          *tcat &mnu *tcat '''')
+             RUNSQL     SQL(&SQL) COMMIT(*NONE)
+             monmsg SQL0000   exec(do)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+                          MSGDTA('Exportation menu,' *bcat &mnu +
+                          *bcat 'impossible') MSGTYPE(*ESCAPE)
+             enddo
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+                          MSGDTA('Exportation menu,' *bcat &mnu +
+                          *bcat 'effectué') MSGTYPE(*comp)
+             INCLUDE    SRCMBR(ERREUR2) SRCFILE(GCOMPILE/QCLSRC)
+endpgm

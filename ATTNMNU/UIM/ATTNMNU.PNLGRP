@@ -1,0 +1,112 @@
+.*
+.* GENERE PAR GENUIMDSP VERSION 1.2
+.* DATE : 231112
+.*
+:PNLGRP.
+:HELP NAME = 'ATTNMNU' .AIDE (ATTNMNU).
+:XH3.AIDE ATTNMNU.
+:P.
+Ce programme vous permet de gérer les options du menu ATTN
+ Chaque utilisateur peut gérer ses propres options elles sont
+ contenues ATTNMNUT
+:EHELP.
+:HELP NAME = 'ATTNMNU/MNUFLD' .AIDE (MNUFLD).
+:XH3.AIDE MNUFLD.
+:P.
+CETTE ZONE ...
+:EHELP.
+:HELP NAME = 'ATTNMNU/ZONCTL' .AIDE (ZONCTL).
+:XH3.AIDE ZONCTL.
+:P.
+CETTE ZONE ...
+:EHELP.
+:HELP NAME = 'ATTNMNU/MNUCHC' .AIDE (MNUCHC).
+:XH3.AIDE MNUCHC.
+:P.
+CETTE ZONE ...
+:EHELP.
+:HELP NAME = 'ATTNMNU/PULL' .AIDE (PULL).
+:XH3.AIDE PULL.
+:P.
+CETTE ZONE ...
+:EHELP.
+:HELP NAME = 'ATTNMNU/SFLSIZ' .AIDE (SFLSIZ).
+:XH3.AIDE SFLSIZ.
+:P.
+CETTE ZONE ...
+:EHELP.
+:HELP NAME = 'ATTNMNU/NUM01' .AIDE (NUM01).
+:XH3.AIDE NUM01.
+:P.
+CETTE ZONE ...
+:EHELP.
+:HELP NAME = 'ATTNMNU/RRN01' .AIDE (RRN01).
+:XH3.AIDE RRN01.
+:P.
+CETTE ZONE ...
+:EHELP.
+:HELP NAME = 'ATTNMNU/CLE01' .AIDE (CLE01).
+:XH3.AIDE CLE01.
+:P.
+CETTE ZONE ...
+:EHELP.
+:HELP NAME = 'ATTNMNU/C11' .AIDE (C11).
+:XH3.AIDE C11.
+:P.
+CETTE ZONE ...
+:EHELP.
+:HELP NAME = 'ATTNMNU/C12' .AIDE (C12).
+:XH3.AIDE C12.
+:P.
+CETTE ZONE ...
+:EHELP.
+:HELP NAME = 'ATTNMNU/C13' .AIDE (C13).
+:XH3.AIDE C13.
+:P.
+CETTE ZONE ...
+:EHELP.
+:HELP NAME = 'ATTNMNU/F1' .AIDE (F1).
+:XH3.AIDE F1.
+:P.
+CETTE ZONE ...
+:EHELP.
+:HELP NAME = 'ATTNMNU/C21' .AIDE (C21).
+:XH3.AIDE C21.
+:P.
+CETTE ZONE ...
+:EHELP.
+:HELP NAME = 'ATTNMNU/C22' .AIDE (C22).
+:XH3.AIDE C22.
+:P.
+CETTE ZONE ...
+:EHELP.
+:HELP NAME = 'ATTNMNU/C23' .AIDE (C23).
+:XH3.AIDE C23.
+:P.
+CETTE ZONE ...
+:EHELP.
+:HELP NAME = 'ATTNMNU/ATTNUSR' .AIDE (ATTNUSR).
+:XH3.AIDE ATTNUSR.
+:P.
+Cette zone contient l'utilisateur c'est un utilisateur IBMI
+ Vous ne pouvez pas changer cette zone, elle est renseigné avec
+ L'utilisateur en cours
+:EHELP.
+:HELP NAME = 'ATTNMNU/ATTNTXT' .AIDE (ATTNTXT).
+:XH3.AIDE ATTNTXT.
+:P.
+Cette zone contient le texte de 30 caractères qui apparaitra
+quand vous afficherez le menu ATTN
+:EHELP.
+:HELP NAME = 'ATTNMNU/ATTNCMD' .AIDE (ATTNCMD).
+:XH3.AIDE ATTNCMD.
+:P.
+Cette zone contient la commande à exécuter et vous pouvez demander
+ une invite en indiquant un ? en premier caractère.
+:EHELP.
+:HELP NAME = 'ATTNMNU/F2B' .AIDE (F2B).
+:XH3.AIDE F2B.
+:P.
+CETTE ZONE ...
+:EHELP.
+:EPNLGRP.
