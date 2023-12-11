@@ -2,14 +2,19 @@
 // Ce module comporte des éléments grapphiques à ajouter à vos écrans
 // Box
 // Validation
-// liste à cocher
+// Liste à cocher
 // Calendrier
+// Ligne de commande
 Ctl-Opt nomain;
 dcl-f NEW5250   WORKSTN USROPN
  SFILE(SFL01:CLE01)    // sous fichier calendrier
  SFILE(SFL02:CLE02)       // sous fichier liste
 indds(DS_Ind)  ;          // nommage des indicateurs
 /include DDS_IND ;
+// ligne de commande IBMi
+DCL-PR Exec_Ligne_Commande     EXTPGM('QUSCMDLN');
+END-PR;
+
 dcl-s nbparms packed(1);
 dcl-s id_jour packed(1);
 dcl-s nb_jours_now packed(2);
@@ -201,13 +206,15 @@ dcl-proc Affichage_Date  export ;
     date_entree date(*ISO) options(*NOPASS);
   End-Pi;
 
-  wdate_entree = date_entree;
-  wdate_sortie = date_sortie;
-
   Ouverture_ecran() ;
 
   // Gestion des paramètres
   nbparms = %parms;
+
+  wdate_sortie = date_sortie;
+  if nbparms = 2;
+     wdate_entree = date_entree;
+  endif;
 
   // Test de la date d'entrée
   test(e) wdate_entree;
@@ -220,7 +227,7 @@ dcl-proc Affichage_Date  export ;
   INIT_Date();
   CHAR_Date();
   AFFI_Date();
-
+  date_sortie = wdate_sortie;
   Fermeture_ecran() ;
 end-proc ;
 
@@ -228,7 +235,6 @@ dcl-proc INIT_Date;
   cle01 = 0;
   rcd01 = 1;
   SFLCLR = *on;
-  SFLDSP = *off;
   write(e) ctl01;
   clear sfl01;
   SFLCLR = *off;
@@ -508,3 +514,34 @@ dcl-proc DEFAULT_MONTH;
     INPUTANNEE = %char(%subdt(date_debut_now:*YEARS));
   endif;
 end-proc;
+//
+//  Exécution d'une commande
+//
+dcl-proc Ligne_Commande export ;
+  Dcl-Pi *n;
+    P_Status char(3);
+  End-Pi;
+dcl-s L_user char(10) ;
+// Récupération de l'utilisateur du job en cours
+exec sql
+SELECT X.JOB_USER into :L_User
+    FROM TABLE (
+            QSYS2.ACTIVE_JOB_INFO(JOB_NAME_FILTER => '*')
+        ) X   ;
+// Vérification Si inscrit à la liste QUSCMDLN
+//
+exec sql
+SELECT AUTHORIZATION_NAME into :L_User
+   FROM QSYS2.AUTHORIZATION_LIST_USER_INFO
+   WHERE AUTHORIZATION_LIST = 'QUSCMDLN'
+   and AUTHORIZATION_NAME = :L_User
+   ;
+if sqlcode = 0 ;
+  Exec_Ligne_Commande() ;
+  P_Status = 'OK' ;
+else ;
+  Affichage_Box('Erreur' : 'User non inscrit a QUSCMDLN') ;
+  P_Status = 'KO' ;
+endif;
+end-proc;
+

@@ -30,3 +30,7 @@ Dcl-PR Affichage_Date;
           *N    date(*ISO);
           *N    date(*ISO) options(*NOPASS);
 End-PR;
+// Execution ligne de commande
+Dcl-PR Ligne_Commande  ;
+          *N    Char(03) CONST;
+End-PR;
