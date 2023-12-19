@@ -1,0 +1,32 @@
+/*-------------------------------------------------------------*/
+/* Envoi statistique des volumes sur unité de bande            */
+/*-------------------------------------------------------------*/
+pgm (&devd &mail)
+Dcl &DevD *Char ( 10 )
+dcl &mail *char (50)
+Dcl &type   *Char ( 4 )
+dcl &sub     *char 100
+dcl &note    *char 100
+INCLUDE    SRCMBR(ERREUR1) SRCFILE(GCOMPILE/QCLSRC)
+             CHGJOB     CCSID(1147)
+             CHKOBJ     OBJ(&DEVd) OBJTYPE(*DEVD)
+/* Récupération type d'unité de la bande */
+call RTVDEVTYP  (&DevD  &type)
+             PRTERRLOG  TYPE(*VOLSTAT) OUTPUT(*PRINT) VOLTYPE(&TYPE) +
+                          VOLSTATTYP(*LIFETIME)
+             DLTF       FILE(QTEMP/W132)
+             monmsg CPF2100
+             CRTPF      FILE(QTEMP/W132) RCDLEN(132)
+             CPYSPLF    FILE(QPCSMPRT) TOFILE(QTEMP/W132) SPLNBR(*LAST)
+             dltsplf    FILE(QPCSMPRT)                    SPLNBR(*LAST)
+             CPYTOSTMF  +
+                          FROMMBR('/QSYS.LIB/QTEMP.LIB/W132.FILE/W132+
+                          .MBR') TOSTMF(statistiques_volumes.txt) +
+                          STMFOPT(*REPLACE) STMFCCSID(*PCASCII)
+             CHGVAR     VAR(&SUB) VALUE('Historiques des volumes +
+                          pour unité,'  *bcat &devd  )
+             CHGVAR     VAR(&note) VALUE('Ci-joint le fichier :')
+             SNDSMTPEMM RCP((&MAIL)) SUBJECT(&SUB) NOTE(&NOTE) +
+                          ATTACH((STATISTIQUES_VOLUMES.TXT))
+INCLUDE    SRCMBR(ERREUR2) SRCFILE(GCOMPILE/QCLSRC)
+endpgm

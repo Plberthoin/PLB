@@ -1,0 +1,22 @@
+/* --------------------------------------------------------------- */
+/* Récupération du type d'unité de bande                           */
+/* --------------------------------------------------------------- */
+PGM  parm(&devd &type)
+Dcl &DevD *Char ( 10 )
+Dcl &type   *Char ( 4 )
+/* Variables ----------------------------------------------------- */
+Dcl &RcvVar *Char ( 892 )
+Dcl &RcvVarLen *Char ( 4 ) ( X'0000037C' )
+Dcl &Format *Char ( 8 ) ( 'DEVD1500' )
+Dcl &APIError *Char ( 8 ) ( X'0000000000000000' )
+Dcl &type   *Char ( 4 )
+/* Lectures des informations ------------------------------------- */
+Call QDCRDEVD +
+( &RcvVar +
+&RcvVarLen +
+&Format +
+&DevD +
+&APIError )
+/* découpage type unité */
+ChgVar &type   ( %Sst( &RcvVar 109 4 ) )
+endpgm
