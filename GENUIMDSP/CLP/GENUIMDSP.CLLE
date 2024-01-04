@@ -75,7 +75,7 @@
              CPYF       FROMFILE(QTEMP/UIM) TOFILE(&LIBU/&FILU) +
                           FROMMBR(UIM) TOMBR(&MBRU) MBROPT(*replace) +
                           FMTOPT(*MAP *DROP)
-             CHGPFM     FILE(&LIBU/&FILU) MBR(&MBRU) SRCTYPE(UIM) +
+             CHGPFM     FILE(&LIBU/&FILU) MBR(&MBRU) SRCTYPE(PNLGRP) +
                           TEXT(&txt)
  /* source QDDSSRC pour définition mot clé */
              ADDPFM     FILE(&LIBD/&FILD) MBR(&MBRD)
