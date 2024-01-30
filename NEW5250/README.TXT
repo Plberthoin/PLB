@@ -17,7 +17,7 @@ Vous pourrez intégrer dans vos développements 5250
 ! RPG   ! NEW5250     ! SQLRPGLE   ! Source module New525O               !
 ! RPG   ! NEW5250INC  ! SQLRPGLE   ! Déclaration prototypages            !
 ! RPG   ! DDS_INC     ! SQLRPGLE   ! Déclaration des indicateurs         !
-! BND   ! NEW5250     ! BND        ! Source d'exportation des fonctions  !
+! SRV   ! NEW5250     ! BND        ! Source d'exportation des fonctions  !
 ! RPG   ! TNEW5250    ! SQLRPGLE   ! Programme Exemple à customiser      !
 
 *** Fin listes des sources
@@ -31,6 +31,7 @@ Installation :
 
 Vous devez restaurer, les sources sur votre système
 Compiler le DSPF
+vous devez avoir en ligne le fichier qsrvsrc qui contient le source BND
 Compiler le programme de génération COMPILE
 Lancer le prgramme COMPILE en indicant Votre bibliothèque de génération      
 

@@ -1,0 +1,11 @@
+/********************************************************************/
+/* Programme de service 5250                                        */
+/* Les fonctions à exporter                                         */
+/********************************************************************/
+             STRPGMEXP  PGMLVL(*CURRENT) SIGNATURE('NEW5250')
+  EXPORT SYMBOL('AFFICHAGE_BOX')
+  EXPORT SYMBOL('AFFICHAGE_VALID')
+  EXPORT SYMBOL('AFFICHAGE_LISTE')
+  EXPORT SYMBOL('AFFICHAGE_DATE')
+  EXPORT SYMBOL('LIGNE_COMMANDE')
+ENDPGMEXP
