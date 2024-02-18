@@ -1,0 +1,95 @@
+             PGM        PARM(&MSGLIB)
+/*---------------------------------------------------------------*/
+/* Ce programme génére un fichier message commandes pour un menu */
+/* pour le moment pas les commandes                              */
+/*---------------------------------------------------------------*/
+/* Paramètres */
+             dcl &msglib *char 20
+             DCL        VAR(&MSGF) TYPE(*CHAR) STG(*DEFINED) LEN(10) +
+                          DEFVAR(&MSGLIB 1) /* 10 */
+             DCL        VAR(&LIBM) TYPE(*CHAR) STG(*DEFINED) LEN(10) +
+                          DEFVAR(&MSGLIB 11)
+             DCL        VAR(&NUM) TYPE(*DEC) LEN(4)
+             DCL        VAR(&NUMA) TYPE(*CHAR) LEN(4)
+             dcl        &msg *char 132
+             dcl        &txt *char 30
+             dcl        &rac *char 3
+      chkobj  &libm/&msgf *msgf
+      monmsg cpf9801 exec(do)
+             CRTMSGF    MSGF(&LIBM/&MSGF) CCSID(*MSGD)
+      goto suite
+      enddo
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('Fichier +
+                          message déjà existant') MSGTYPE(*ESCAPE)
+      suite:
+      /* Génération des Textes de la structure   */
+      /* En francais                             */
+             ADDMSGD    MSGID(TXT0001) +
+                          MSGF(&LIBM/&MSGF) MSG('Votre société ici   ')
+             ADDMSGD    MSGID(TXT0002) MSGF(&LIBM/&MSGF) +
+                          MSG('Sélectionnez une option:')
+             ADDMSGD    MSGID(TXT0003) MSGF(&LIBM/&MSGF) +
+                          MSG('Paramètre et commande')
+             ADDMSGD    MSGID(TXT0004) MSGF(&LIBM/&MSGF) MSG('''Aide +
+                          sur l''utilisation du menu')
+             ADDMSGD    MSGID(TXT0005) MSGF(&LIBM/&MSGF) MSG('Sortie +
+                          de ce menu   ')
+             ADDMSGD    MSGID(TXT0006) MSGF(&LIBM/&MSGF) MSG('Liste +
+                          des commandes précédentes')
+             ADDMSGD    MSGID(TXT0007) MSGF(&LIBM/&MSGF) +
+                          MSG('Retours à la commande précédente')
+             ADDMSGD    MSGID(TXT0008) MSGF(&LIBM/&MSGF) +
+                          MSG('Touches supplémentaires')
+             ADDMSGD    MSGID(TXT0009) MSGF(&LIBM/&MSGF) +
+                          MSG('Soumettre une commande')
+             ADDMSGD    MSGID(TXT0010) MSGF(&LIBM/&MSGF) MSG('Aide +
+                          complémentaire sur l''affichage')
+             ADDMSGD    MSGID(TXT0011) MSGF(&LIBM/&MSGF) +
+                          MSG('Options suivantes')
+             ADDMSGD    MSGID(TXT0012) MSGF(&LIBM/&MSGF) +
+                          MSG('Options précédentes.')
+             ADDMSGD    MSGID(TXT0013) MSGF(&LIBM/&MSGF) +
+                          MSG('Impression des informations en cours')
+             ADDMSGD    MSGID(TXT0014) MSGF(&LIBM/&MSGF) MSG('Votre +
+                          titre - HELP')
+             ADDMSGD    MSGID(TXT0015) MSGF(&LIBM/&MSGF) MSG('Ce +
+                          menu vous permet de ')
+             ADDMSGD    MSGID(TXT0016) MSGF(&LIBM/&MSGF) +
+                          MSG('Comment utiliser ce menu')
+             ADDMSGD    MSGID(TXT0017) MSGF(&LIBM/&MSGF) +
+                          MSG('Selectionner une option, ou tapez +
+                          une commande et presser ENTER')
+             ADDMSGD    MSGID(TXT0018) MSGF(&LIBM/&MSGF) MSG('Pour +
+                          utiliser les commandes, vous pouvez +
+                          demander une invite par <F4>')
+             ADDMSGD    MSGID(TXT0019) MSGF(&LIBM/&MSGF) MSG('Vous +
+                          pouvez lancer un autre menu par GO')
+      /* Génération des commandes */
+   /* chgvar &num 0               */
+   /* chgvar &rac 'USR'           */
+   /* chgvar &txt 'Commande '     */
+   /* CALLSUBR SUBR(GENMSG)       */
+      /* Génération des options   */
+      chgvar &num 0
+      chgvar &rac 'OPT'
+      chgvar &txt 'Cette option,   '
+      CALLSUBR SUBR(GENMSG)
+      /* Génération des aides     */
+      chgvar &num 0
+      chgvar &rac 'HLP'
+      chgvar &txt 'Aide     '
+/*-------------------------------------------*/
+/* Sous programme de création de 10 messages */
+/*-------------------------------------------*/
+      CALLSUBR SUBR(GENMSG)
+             SUBR       SUBR(GENMSG)
+             DOUNTIL    COND(&NUM > 10)
+             chgvar &num  (&num + 1)
+             IF         COND(&NUM < 11) THEN(DO)
+             chgvar &numa &num
+             ADDMSGD    MSGID(&RAC *TCAT &NUMA) +
+                          MSGF(&LIBM/&MSGF) MSG(&TXT *BCAT &NUMA)
+             enddo
+             enddo
+             ENDSUBR
+ENDPGM
