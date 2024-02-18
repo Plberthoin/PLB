@@ -3,8 +3,7 @@
 .* Date :  2024-02-17
 .*---------------------------------------------------*
 .* vous devez saisir votre fichier message ici
-:PNLGRP SUBMSGF=MODELE
-        DFTMSGF=MODELE.
+:PNLGRP SUBMSGF=MODELE.
 :COPYR.
 (@) COPYRIGHT &msg(TXT0001).
 :VAR      NAME=ZMENU.
@@ -60,7 +59,7 @@ F24=More keys
           ENTER='MSG CPD9817 QCPFMSG'
           PANELID=ZMENU
           TOPSEP=SYSNAM.
-Votre titre
+&msg(TXT0020).
 :MENU     DEPTH='*'
           SCROLL=NO
           BOTSEP=SPACE.

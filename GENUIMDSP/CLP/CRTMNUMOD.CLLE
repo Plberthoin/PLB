@@ -64,6 +64,8 @@
                           demander une invite par <F4>')
              ADDMSGD    MSGID(TXT0019) MSGF(&LIBM/&MSGF) MSG('Vous +
                           pouvez lancer un autre menu par GO')
+             ADDMSGD    MSGID(TXT0020) MSGF(&LIBM/&MSGF) MSG('Votre +
+                          titre de menu')
       /* Génération des commandes */
    /* chgvar &num 0               */
    /* chgvar &rac 'USR'           */
@@ -78,15 +80,16 @@
       chgvar &num 0
       chgvar &rac 'HLP'
       chgvar &txt 'Aide     '
+      CALLSUBR SUBR(GENMSG)
 /*-------------------------------------------*/
 /* Sous programme de création de 10 messages */
 /*-------------------------------------------*/
-      CALLSUBR SUBR(GENMSG)
              SUBR       SUBR(GENMSG)
              DOUNTIL    COND(&NUM > 10)
              chgvar &num  (&num + 1)
              IF         COND(&NUM < 11) THEN(DO)
              chgvar &numa &num
+/* Ajout du message au fichier */
              ADDMSGD    MSGID(&RAC *TCAT &NUMA) +
                           MSGF(&LIBM/&MSGF) MSG(&TXT *BCAT &NUMA)
              enddo
