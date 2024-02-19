@@ -1,0 +1,36 @@
+pgm parm(&ecran &fmt) /*-------------------------------------*/
+/*  ce programme permet de tester l'affichage d'un format    */
+/*  Sans avoir de programme compilé                          */
+/*-----------------------------------------------------------*/
+dcl &ecran *char 10
+dcl &fmt   *char 10
+             INCLUDE    SRCMBR(ERREUR1) SRCFILE(GCOMPILE/QCLSRC)
+chkobj &ecran *file
+dltf FILE(QTEMP/WCLSRC)
+monmsg cpf0000
+  /* Génération du source du programme de test */
+             CRTSRCPF   FILE(QTEMP/WCLSRC) MBR(WCLSRC)
+             RUNSQL     SQL('INSERT INTO QTEMP/WCLSRC +
+                          VALUES(000100, 000000, ''PGM'')') +
+                          COMMIT(*NONE)
+             RUNSQL     SQL('INSERT INTO QTEMP/WCLSRC +
+                          VALUES(000200, 000000, ''DCLF +
+                          ' *bcat &ecran *tcat ''')') +
+                          COMMIT(*NONE)
+             RUNSQL     SQL('INSERT INTO QTEMP/WCLSRC +
+                          VALUES(000300, 000000, ''SNDRCVF +
+                          RCDFMT(' *tcat &fmt *tcat ')'')') +
+                          COMMIT(*NONE)
+             RUNSQL     SQL('INSERT INTO QTEMP/WCLSRC +
+                          VALUES(000400, 000000, ''ENDPGM'')') +
+                          COMMIT(*NONE)
+  /* Compilation du programme */
+             CRTBNDCL   PGM(QTEMP/AFFECRAN) SRCFILE(QTEMP/WCLSRC) +
+                          SRCMBR(WCLSRC)
+                          monmsg cpf0000 exec(do)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('Compilation +
+                          impossible') MSGTYPE(*ESCAPE)
+                          enddo
+             CALL   QTEMP/AFFECRAN
+INCLUDE    SRCMBR(ERREUR2) SRCFILE(GCOMPILE/QCLSRC)
+endpgm
