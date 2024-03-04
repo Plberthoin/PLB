@@ -1,0 +1,35 @@
+pgm &chaine  /*-----------------------------------------------*/
+/*                                                            */
+/* Ce programme cherche une chaine dans tous les membres      */
+/* des fichiers QRPG*                                         */
+/* il génère un fichier FNDSRC.TXT dans le répertoire courant */
+/* On utilise la commande unix GREP                           */
+/* http://manpagesfr.free.fr/man/man1/grep.1.html             */
+/*   -i pour ignorer la case                                  */
+/*   -b buméro de ligne dans le fichier <> SRCSEQ             */
+/*                                                            */
+/*------------------------------------------------------------*/
+/* Paramètres */
+dcl &chaine *char 10
+/* Variables de travail */
+dcl &qshcmd  *char 512
+dcl &date  *char 6
+dcl &time *char 6
+dcl &text  *char 50
+chgvar &qshcmd ('/usr/bin/grep -i -n "' *tcat &chaine *tcat +
+'" /QSYS.LIB/*.LIB/QRPG*.FILE/*.MBR  >  FNDSRC.txt')
+             STRQSH     CMD(&QSHCMD)
+             MONMSG     MSGID(CPF0000) EXEC(DO)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('Erreur +
+                          sur commande SH :' *BCAT &QSHCMD) +
+                          MSGTYPE(*ESCAPE)
+             enddo
+             rtvsysval qdate &date
+             rtvsysval qtime &time
+             chgvar &text (&date *bcat &time *bcat &chaine )
+             CHGATR     OBJ(FNDSRC.TXT) ATR(*TEXT) VALUE(*NONE) +
+                          TEXT(&TEXT)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('Fichier +
+                          FNDSRC.TXT généré dans votre répertoire') +
+                          MSGTYPE(*COMP)
+endpgm
