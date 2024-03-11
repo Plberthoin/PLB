@@ -21,6 +21,8 @@ Vous pourrez intégrer dans vos développements 5250
 ! RPG   ! DDS_INC     ! SQLRPGLE   ! Déclaration des indicateurs         !
 ! SRV   ! NEW5250     ! BND        ! Source d'exportation des fonctions  !
 ! RPG   ! TNEW5250    ! SQLRPGLE   ! Programme Exemple à customiser      !
+! CLP   ! TNEW5250C   ! CLLE       ! Programme Exemple à customiser      !
+
 
 *** Fin listes des sources
 
