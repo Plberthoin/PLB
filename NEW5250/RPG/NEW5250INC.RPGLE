@@ -7,6 +7,7 @@
 // DATE
 // Définition des prototypages de fonction
 // Affichage d'une box
+// extraction taille de l'écran
 Dcl-PR Affichage_Box;
           *N    Char(35) CONST;
           *N    Char(55) CONST;
@@ -33,4 +34,8 @@ End-PR;
 // Execution ligne de commande
 Dcl-PR Ligne_Commande  ;
           *N    Char(03) CONST;
+End-PR;
+// Extraction taille de l'écran
+ Dcl-PR   GetDevType  Char(10)    ;
+          *N    Char(10) Const;
 End-PR;

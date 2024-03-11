@@ -5,12 +5,20 @@
 Ctl-Opt DFTACTGRP(*NO) BNDDIR('NEW5250') ;
 // déclaration NEW5250
 /include NEW5250INC ;
+ dcl-ds *N PSDS;
+   JOB CHAR(10)  POS(244);
+ end-ds;
 // variables de travail
  DCL-S G_SqlStm Char(1024) ;
  DCL-S G_Result Char(45) ;
  DCL-S G_status Char(2) ;
  DCL-S Date1    Date(*iso);
- DCL-S wres     char(1);
+ DCL-S W_type   char(10) ;
+ //
+ //  Controle taille de l'écran
+ //
+ W_type = Getdevtype('*')   ;
+ dsply W_type ;
  //
  //  Exemple Box
  //

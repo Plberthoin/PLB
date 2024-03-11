@@ -1,0 +1,16 @@
+pgm
+/* exemple de programme avec utilisation du programme de service */
+/* New5250                                                       */
+/* déclaration du répertoire de liage                             */
+             DCLPRCOPT  DFTACTGRP(*NO) BNDDIR(NEW5250)
+/* déclaration des variables de travail                           */
+dcl &w_type *char 10
+/* controler la taille de l'écran focntion */
+             CALLPRC    PRC(GETDEVTYPE) PARM(('*' *BYREF (*CHAR 10))) +
+                          RTNVAL(&W_TYPE)
+sndusrmsg &w_type msgtype(*info)
+/* Affichage d'une fenêtre procédure       */
+             CALLPRC    PRC(AFFICHAGE_BOX) PARM(('Option DB' *BYREF +
+                          (*CHAR 30)) ('Mise à jour effectuée' +
+                          *BYREF (*CHAR 55)))
+endpgm

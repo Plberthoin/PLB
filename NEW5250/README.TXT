@@ -1,5 +1,5 @@
 *---------------------------------------------------------------------*
-* Ce logiciel permet d'utiliser des éléments Graphiques               *
+* Ce logiciel permet d'utiliser des éléments Graphiques 5250          *
 * Il s'utilise sous forme de Répertoire de liage                      *
 *---------------------------------------------------------------------*
 
@@ -7,7 +7,9 @@ Vous pourrez intégrer dans vos développements 5250
   Une box
   Un écran de validation
   Une liste à sélectionner
-  Un calendrier 
+  Un calendrier
+  Une ligne de commande avec gestion des droits
+  Un controle de la taille de l'écran
 
 *** Listes  des sources
 
@@ -40,7 +42,7 @@ Un programme de service plus un répertoire de liage qui sont les 2 élements util
  
 Utilisation :
 
-Pour les intégrer vous avez un exemple TNEW5250 qui montre 
+Pour les intégrer vous avez un exemple TNEW5250 et TNEW5250C qui montrent le liage en RPGLE et EN CLLE 
 le liage
 la déclaration des prototypages
 et l'utilisation des procédures 
