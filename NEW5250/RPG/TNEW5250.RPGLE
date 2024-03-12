@@ -14,6 +14,12 @@ Ctl-Opt DFTACTGRP(*NO) BNDDIR('NEW5250') ;
  DCL-S G_status Char(2) ;
  DCL-S Date1    Date(*iso);
  DCL-S W_type   char(10) ;
+ DCL-S W_typjob char(4) ;
+ //
+ //  Controle type du job
+ //
+ Getjobtype(w_typjob)   ;
+ dsply W_typjob ;
  //
  //  Controle taille de l'écran
  //

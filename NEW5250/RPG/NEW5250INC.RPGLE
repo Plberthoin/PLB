@@ -39,3 +39,7 @@ End-PR;
  Dcl-PR   GetDevType  Char(10)    ;
           *N    Char(10) Const;
 End-PR;
+// Extraction type de travail
+ Dcl-PR   GetjobType              ;
+          *N    Char(04) Const;
+End-PR;

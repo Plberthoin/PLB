@@ -5,6 +5,10 @@ pgm
              DCLPRCOPT  DFTACTGRP(*NO) BNDDIR(NEW5250)
 /* déclaration des variables de travail                           */
 dcl &w_type *char 10
+dcl &w_typjob *char 04
+/* Contrôler le type du travail */
+             CALLPRC    PRC(GETJOBTYPE) PARM((&W_TYPJOB *BYREF *DFT))
+sndusrmsg &w_typjob msgtype(*info)
 /* controler la taille de l'écran focntion */
              CALLPRC    PRC(GETDEVTYPE) PARM(('*' *BYREF (*CHAR 10))) +
                           RTNVAL(&W_TYPE)

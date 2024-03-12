@@ -10,6 +10,7 @@ Vous pourrez intégrer dans vos développements 5250
   Un calendrier
   Une ligne de commande avec gestion des droits
   Un controle de la taille de l'écran
+  Un controle du type du travail 
 
 *** Listes  des sources
 
@@ -22,6 +23,7 @@ Vous pourrez intégrer dans vos développements 5250
 ! SRV   ! NEW5250     ! BND        ! Source d'exportation des fonctions  !
 ! RPG   ! TNEW5250    ! SQLRPGLE   ! Programme Exemple à customiser      !
 ! CLP   ! TNEW5250C   ! CLLE       ! Programme Exemple à customiser      !
+! CLP   ! GETJOBTYPE  ! CLLE       ! Module Récupération Type de travail !
 
 
 *** Fin listes des sources

@@ -1,0 +1,17 @@
+pgm &type
+/* Ce module renvoi le type du travail  */
+/* *INT pour Interactif                 */
+/* *BCH pour Batch                      */
+/* Paramètres                           */
+dcl &type *char 4
+/* Variable de travail                  */
+dcl &wtype *char 1
+/* extraction du type                   */
+             RTVJOBA    TYPE(&wTYPE)
+if cond(&wtype = '1') then(do)
+chgvar &type '*INT'
+enddo
+else do
+chgvar &type '*BCH'
+enddo
+endpgm

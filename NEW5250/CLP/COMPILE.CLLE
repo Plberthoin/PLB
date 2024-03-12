@@ -10,10 +10,18 @@ ENDDO
 ELSE       CMD(DO)
    CHGVAR     VAR(&LIB) VALUE(&P_LIB)
 ENDDO
+/* Du module CLLE     */
+             CRTCLMOD   MODULE(&LIB/GETJOBTYPE) SRCFILE(&LIB/QCLSRC) +
+                          SRCMBR(GETJOBTYPE) REPLACE(*YES) +
+                          DBGVIEW(*SOURCE)
 /* Du module SQLRPGLE */
-CRTSQLRPGI OBJ(&LIB/NEW5250) SRCFILE(&LIB/QRPGLESRC) SRCMBR(NEW5250) OBJTYPE(*MODULE) REPLACE(*YES)
+             CRTSQLRPGI OBJ(&LIB/NEW5250) SRCFILE(&LIB/QRPGLESRC) +
+                          SRCMBR(NEW5250) OBJTYPE(*MODULE) +
+                          REPLACE(*YES)
 /* Création du programme de service */
-CRTSRVPGM  SRVPGM(&LIB/NEW5250) MODULE(&LIB/NEW5250) EXPORT(*SRCFILE)
+/* avec source de liage             */
+             CRTSRVPGM  SRVPGM(&LIB/NEW5250) MODULE(&LIB/NEW5250 +
+                          &LIB/GETJOBTYPE) EXPORT(*SRCFILE)
 /* Création du programme de service */
 CHKOBJ     OBJ(&LIB/NEW5250) OBJTYPE(*BNDDIR)
 MONMSG     MSGID(CPF9801) EXEC(DO)
