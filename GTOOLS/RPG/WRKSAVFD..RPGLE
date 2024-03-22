@@ -1,15 +1,18 @@
 **free
-// Modification le 04/08/2019
-// controle date paramètre en entrée
+// Ce programme permet de gérer les fichiers SAVF
+// Le 22 03 2024
+// Ajout WRKSAVF sur option 5
+//
       ctl-opt
       DFTACTGRP(*NO) ;
        dcl-f
-      WRKSAVF    WORKSTN  indds(DS_Ind)
+      WRKSAVFD   WORKSTN  indds(DS_Ind)
       SFILE(sfl01:cle01);
   // les paramètres recus
   //
   dcl-pi *N ;
-    P_LIB char(10);
+    P_LIB char(10);   // Bibliothèques
+    P_CONF char(04);  // confirmer suppression oui ou non
   end-pi ;
 
   // déclaration INDDS
@@ -23,23 +26,8 @@ END-DS;
 
       dcl-s cle01 PACKED(4 : 0) ;
       dcl-s maxcle01 PACKED(4 : 0) ;
-      dcl-s w_cle    char(20) ;
-      dcl-s commande CHAR(400) ;
       dcl-s error ind ;
-      dcl-pr  Exec_Cmd EXTPGM('QCMDEXC');
-      cde CHAR(200) CONST;
-      cdl PACKED(15 : 5) CONST;
-      end-pr;
-      DCL-PR  Touche_F4 EXTPGM('TOUCHE_F4');
-        p_Sql char(1024) ;
-        p_Titre char(35);
-        p_Ret    char(45);
-     END-PR;
-     dcl-s  w_Sql char(1024) ;
-     dcl-s w_Titre char(35);
-     dcl-s w_Ret    char(45);
-     dcl-s w_date   date;
-     dcl-s w_pos packed(3:0);
+      dcl-s found char(5) ;
        //
        // initialisation des options de compile sql
        //
@@ -51,9 +39,7 @@ END-DS;
                    DynUsrPrf = *User,
                    Datfmt    = *iso,
                    CloSqlCsr = *EndMod;
-        // init user        //
-                     w_cle  =  'GAIA_2017'  ;
-        //
+       //   Structure des programmes
                    Init_SFL()                     ;
                    Load_SFL()                     ;
                    Display_SFL()                  ;
@@ -77,13 +63,14 @@ END-DS;
    SELECT count(*) into :nbsavf
      FROM TABLE (QSYS2.OBJECT_STATISTICS(:P_LIB,'*FILE') ) AS X
    WHERE OBJATTRIBUTE = 'SAVF' ;
-          exec sql
+         EXEC SQL
              close curs01                         ;
          EXEC SQL
               declare curs01 cursor  for
    SELECT objname, objlib, ifnull(objtext, ' ') as objtext
      FROM TABLE (QSYS2.OBJECT_STATISTICS(:P_LIB,'*FILE') ) AS X
    WHERE OBJATTRIBUTE = 'SAVF'
+     OPTIMIZE FOR 17 ROWS
    ;
           exec sql
              open curs01                          ;
@@ -94,7 +81,7 @@ END-DS;
                 fetch
                   from curs01
                   into
-      :savf, :slib, :stext  ;
+                  :savf, :slib, :stext  ;
               if  sqlcode =  0                    ;
                   cle01 = Cle01 + 1                 ;
                   maxcle01 = Cle01    ;
@@ -141,14 +128,31 @@ END-DS;
                    exec sql
                    call qcmdexc('?chgsavf ' concat trim(:slib)
                    concat '/' concat trim(:savf));
-                   when opt01 = '4'                 ;
+                   when opt01 = '4'   ;
+                   if P_CONF  = '*YES'              ;
                    exec sql
-                   call qcmdexc('?dltf ' concat trim(:slib)
-                   concat '/' concat trim(:savf));
+                     call qcmdexc('?dltf ' concat trim(:slib)
+                     concat '/' concat trim(:savf));
+                   else ;
+                   exec sql
+                     call qcmdexc('dltf ' concat trim(:slib)
+                     concat '/' concat trim(:savf));
+                   endif ;
                    when opt01 = '5'                 ;
+     // si WRKSAVF présent
                    exec sql
-                   call qcmdexc('?dspsavf ' concat trim(:slib)
+   SELECT 'found' into :found
+     FROM TABLE (QSYS2.OBJECT_STATISTICS('*LIBL' , '*CMD') ) AS X
+   WHERE objname  = 'WRKSAVF' ;
+   if sqlcode = 0 ;
+                   exec sql
+                   call qcmdexc('WRKSAVF ' concat trim(:slib)
                    concat '/' concat trim(:savf));
+                   else ;
+                   exec sql
+                   call qcmdexc('DSPSAVF ' concat trim(:slib)
+                   concat '/' concat trim(:savf));
+  endif ;
                    when opt01 = '6'                 ;
                    exec sql
                    call qcmdexc('?clrsavf ' concat trim(:slib)

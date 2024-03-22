@@ -1,4 +1,4 @@
-     A*%%TS  SD  20200912  121946  QSECOFR     REL-V7R4M0  5770-WDS
+     A*%%TS  SD  20240322  084024  QSECOFR     REL-V7R4M0  5770-WDS
      A*%%EC
      A                                      DSPSIZ(24 80 *DS3)
      A                                      CA03(03)
@@ -11,7 +11,7 @@
      A            SLIB          10A  O  7 17
      A*
      A          R CTL01                     SFLCTL(SFL01)
-     A*%%TS  SD  20200912  121946  QSECOFR     REL-V7R4M0  5770-WDS
+     A*%%TS  SD  20240322  084024  QSECOFR     REL-V7R4M0  5770-WDS
      A                                      SFLSIZ(0017)
      A                                      SFLPAG(0016)
      A                                      CF05(05)
@@ -38,7 +38,7 @@
      A            P_LIB         10A  O  3 17
      A                                  4 20'4=Supprimer'
      A                                      COLOR(BLU)
-     A                                  4 37'4=Afficher '
+     A                                  4 37'5=Gérer    '
      A                                      COLOR(BLU)
      A                                  5 20'8=Afficher objet'
      A                                      COLOR(BLU)
@@ -49,6 +49,6 @@
      A                                  3 29'/'
      A            NBSAVF         6S 0O  3 32
      A          R FMT01
-     A*%%TS  SD  20190521  114537  QSECOFR     REL-V7R3M0  5770-WDS
+     A*%%TS  SD  20220715  154316  QSECOFR     REL-V7R4M0  5770-WDS
      A                                 23  3'F3=Quitter F5=Réafficher'
      A                                      COLOR(BLU)
