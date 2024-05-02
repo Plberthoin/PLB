@@ -1,0 +1,39 @@
+             PGM        PARM(&FROMfile &TOsavf &CRTFILE)
+/* Paramètres */
+             DCL        &FROMfile *CHAR 20
+             DCL        &TOsavf *CHAR 20
+             DCL        &CRTFILE *LGL
+/* */
+             DCL        &tsavf *CHAR 10
+             DCL        &tlib  *CHAR 10
+             DCL        &ffile *CHAR 10
+             DCL        &flib  *CHAR 10
+
+             INCLUDE    SRCMBR(ERREUR1) SRCFILE(GCOMPILE/QCLSRC)
+             MONMSG     MSGID(CPF0000) EXEC(GOTO ERREUR)
+                CHGVAR     &tsavf %SST(&tosavf 1 10)
+                CHGVAR     &tlib  %SST(&tosavf 11 10)
+                CHGVAR     &ffile %SST(&fromfile   1 10)
+                CHGVAR     &flib  %SST(&fromfile   11 10)
+             OVRSAVF    FILE(COPYOUT) TOFILE(&tLIB/&tSAVF) +
+                          OVRSCOPE(*JOB)
+             OVRDBF     FILE(COPYin ) TOFILE(&fLIB/&fFILE) +
+                          OVRSCOPE(*JOB)
+if cond(&crtfile     ) then(do)
+dltf FILE(&TLIB/&Tsavf)
+monmsg CPF2100
+if cond(&tlib = '*LIBL') then(do)
+chgvar &tlib '*CURLIB'
+enddo
+             CRTSAVF    FILE(&TLIB/&TSAVF) TEXT('Crée par CPYTOSAVF')
+enddo
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('Copie en +
+                          cours ...') TOPGMQ(*EXT) MSGTYPE(*STATUS)
+             CALL        CPYSAVFR
+             DLTOVR     FILE(COPYIN)
+             monmsg cpf0000
+             DLTOVR     FILE(COPYOUT)
+             monmsg cpf0000
+             SNDPGMMSG  MSG('Copie terminée') MSGTYPE(*COMP)
+             INCLUDE    SRCMBR(ERREUR2) SRCFILE(GCOMPILE/QCLSRC)
+ENDPGM
