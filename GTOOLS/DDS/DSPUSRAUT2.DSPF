@@ -1,0 +1,148 @@
+     A*%%TS  SD  20240607  140817  PLB         REL-V7R4M0  5770-WDS
+     A*%%EC
+     A                                      DSPSIZ(24 80 *DS3)
+     A                                      CA03(03)
+     A                                      CA07(07)
+     A  49                                  CA09(09)
+     A          R FMT01
+     A*%%TS  SD  20240607  140817  PLB         REL-V7R4M0  5770-WDS
+     A                                  1  3DATE
+     A                                      EDTCDE(Y)
+     A                                  1 70USER
+     A                                  2  3TIME
+     A                                  2 16'Affichage des droits'
+     A                                      DSPATR(HI)
+     A                                  2 70SYSNAME
+     A                                  2 37'd''un profil sur un objet'
+     A                                      DSPATR(HI)
+     A                                  4  1'Utilisateur :'
+     A            USER          10A  O  4 15DSPATR(HI)
+     A                                  4 26'------->'
+     A                                  4 35'Objet :'
+     A            OBJ           10A  O  4 43DSPATR(HI)
+     A                                  4 54'/'
+     A            LIB           10A  O  4 56DSPATR(HI)
+     A            TYPE          10A  O  4 68DSPATR(HI)
+     A                                  6 19'*----------*'
+     A                                  7 16'1'
+     A  41                                  DSPATR(HI)
+     A                                  7 19'!'
+     A                                  7 21'*ALLOBJ'
+     A  41                                  DSPATR(HI)
+     A                                  7 30'!'
+     A  41        DROIT1        10A  O  7 34DSPATR(HI)
+     A                                  7 53'Groupe       :'
+     A            GROUPE        10A  O  7 68
+     A                                  8  2'Utilisateur'
+     A                                  8 16'2'
+     A  42                                  DSPATR(HI)
+     A                                  8 19'!'
+     A                                  8 21'Objet'
+     A  42                                  DSPATR(HI)
+     A                                  8 30'!'
+     A  42        DROIT2        10A  O  8 34DSPATR(HI)
+     A                                  8 53'Propriétaire :'
+     A            OWNER         10A  O  8 68
+     A                                  9 16'3'
+     A  43                                  DSPATR(HI)
+     A                                  9 19'!'
+     A                                  9 21'Liste'
+     A  43                                  DSPATR(HI)
+     A                                  9 30'!'
+     A  43        DROIT3        10A  O  9 34DSPATR(HI)
+     A                                  9 53'Liste        :'
+     A            LISTE         10A  O  9 68
+     A                                 10 19'*----------*'
+     A                                 12 19'*----------*'
+     A                                 13 16'4'
+     A  44                                  DSPATR(HI)
+     A                                 13 19'!'
+     A                                 13 21'*ALLOBJ'
+     A  44                                  DSPATR(HI)
+     A                                 13 30'!'
+     A  44        DROIT4        10A  O 13 34DSPATR(HI)
+     A                                 14  2'Groupe'
+     A                                 14 16'5'
+     A  45                                  DSPATR(HI)
+     A                                 14 19'!'
+     A                                 14 21'Objet'
+     A  45                                  DSPATR(HI)
+     A                                 14 30'!'
+     A  45        DROIT5        10A  O 14 34DSPATR(HI)
+     A                                 15 16'6'
+     A  46                                  DSPATR(HI)
+     A                                 15 19'!'
+     A                                 15 21'Liste'
+     A  46                                  DSPATR(HI)
+     A                                 15 30'!'
+     A  46        DROIT6        10A  O 15 34DSPATR(HI)
+     A                                 16 19'*----------*'
+     A                                 18 19'*----------*'
+     A                                 19  2'*Public'
+     A                                 19 16'7'
+     A  47                                  DSPATR(HI)
+     A                                 19 19'!'
+     A                                 19 21'Objet'
+     A  47                                  DSPATR(HI)
+     A                                 19 30'!'
+     A  47        DROIT7        10A  O 19 34DSPATR(HI)
+     A                                 20 16'8'
+     A  48                                  DSPATR(HI)
+     A                                 20 19'!'
+     A                                 20 21'Liste'
+     A  48                                  DSPATR(HI)
+     A                                 20 30'!'
+     A  48        DROIT8        10A  O 20 34DSPATR(HI)
+     A                                 21 19'*----------*'
+     A                                 23  3'F3=Exit'
+     A                                      COLOR(BLU)
+     A                                 23 12'F7=Droit sur l''objet'
+     A                                      COLOR(BLU)
+     A  49                             23 34'F9=Droit sur la liste'
+     A                                      COLOR(BLU)
+     A                                  6 51'*---------------------------*'
+     A                                      DSPATR(RI)
+     A                                 10 51'*---------------------------*'
+     A                                      DSPATR(RI)
+     A                                  7 51'!'
+     A                                      DSPATR(RI)
+     A                                  8 51'!'
+     A                                      DSPATR(RI)
+     A                                  9 51':'
+     A                                      DSPATR(RI)
+     A                                  7 79'!'
+     A                                      DSPATR(RI)
+     A                                  8 79'!'
+     A                                      DSPATR(RI)
+     A                                  9 79'!'
+     A                                      DSPATR(RI)
+     A                                  7 32'!'
+     A                                      DSPATR(RI)
+     A                                  8 32'!'
+     A                                      DSPATR(RI)
+     A                                  9 32'!'
+     A                                      DSPATR(RI)
+     A                                 10 32'!'
+     A                                      DSPATR(RI)
+     A                                 11 32'!'
+     A                                      DSPATR(RI)
+     A                                 12 32'!'
+     A                                      DSPATR(RI)
+     A                                 13 32'!'
+     A                                      DSPATR(RI)
+     A                                 14 32'!'
+     A                                      DSPATR(RI)
+     A                                 15 32'!'
+     A                                      DSPATR(RI)
+     A                                 16 32'!'
+     A                                      DSPATR(RI)
+     A                                 17 32'!'
+     A                                      DSPATR(RI)
+     A                                 18 32'!'
+     A                                      DSPATR(RI)
+     A                                 19 32'!'
+     A                                      DSPATR(RI)
+     A                                 20 32'V'
+     A                                      DSPATR(RI)
+     A                                  6 32'V'
+     A                                      DSPATR(RI)
