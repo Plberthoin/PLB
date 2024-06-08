@@ -1,11 +1,18 @@
-     A*%%TS  SD  20240607  140817  PLB         REL-V7R4M0  5770-WDS
+     A*%%TS  SD  20240607  185343  QSECOFR     REL-V7R4M0  5770-WDS
      A*%%EC
      A                                      DSPSIZ(24 80 *DS3)
+     A                                      HLPTITLE('AIDE DSPUSRAUT2')
+     A                                      HLPPNLGRP(DSPUSRAUT2 DSPUSRAUT2)
+     A                                      ALTHELP(CA01)
+     A                                      HELP
      A                                      CA03(03)
      A                                      CA07(07)
      A  49                                  CA09(09)
      A          R FMT01
-     A*%%TS  SD  20240607  140817  PLB         REL-V7R4M0  5770-WDS
+     A          H                           HLPPNLGRP('DSPUSRAUT2/FMT01' +
+     A                                      DSPUSRAUT2)
+     A                                      HLPARA(*RCD )
+     A*%%TS  SD  20240607  185343  QSECOFR     REL-V7R4M0  5770-WDS
      A                                  1  3DATE
      A                                      EDTCDE(Y)
      A                                  1 70USER
@@ -34,6 +41,9 @@
      A                                  7 53'Groupe       :'
      A            GROUPE        10A  O  7 68
      A                                  8  2'Utilisateur'
+     A  41
+     AO 42
+     AO 43                                  DSPATR(HI)
      A                                  8 16'2'
      A  42                                  DSPATR(HI)
      A                                  8 19'!'
@@ -62,6 +72,9 @@
      A                                 13 30'!'
      A  44        DROIT4        10A  O 13 34DSPATR(HI)
      A                                 14  2'Groupe'
+     A  44
+     AO 45
+     AO 46                                  DSPATR(HI)
      A                                 14 16'5'
      A  45                                  DSPATR(HI)
      A                                 14 19'!'
@@ -79,6 +92,8 @@
      A                                 16 19'*----------*'
      A                                 18 19'*----------*'
      A                                 19  2'*Public'
+     A  47
+     AO 48                                  DSPATR(HI)
      A                                 19 16'7'
      A  47                                  DSPATR(HI)
      A                                 19 19'!'
@@ -124,7 +139,7 @@
      A                                      DSPATR(RI)
      A                                 10 32'!'
      A                                      DSPATR(RI)
-     A                                 11 32'!'
+     A                                 11 32'*'
      A                                      DSPATR(RI)
      A                                 12 32'!'
      A                                      DSPATR(RI)
@@ -136,13 +151,15 @@
      A                                      DSPATR(RI)
      A                                 16 32'!'
      A                                      DSPATR(RI)
-     A                                 17 32'!'
+     A                                 17 32'*'
      A                                      DSPATR(RI)
      A                                 18 32'!'
      A                                      DSPATR(RI)
      A                                 19 32'!'
      A                                      DSPATR(RI)
-     A                                 20 32'V'
+     A                                 20 32'!'
      A                                      DSPATR(RI)
-     A                                  6 32'V'
+     A                                  6 32'*'
+     A                                      DSPATR(RI)
+     A                                 21 32'V'
      A                                      DSPATR(RI)

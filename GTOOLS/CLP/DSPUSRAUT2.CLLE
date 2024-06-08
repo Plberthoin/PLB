@@ -77,14 +77,6 @@
                              *bcat 'est égal au nom de l''objet') MSGTYPE(*ESCAPE)
              ENDDO
 /*                                                                   */
-/*  1) Si profil *ALLOBJ                                             */
-/*                                                                   */
-             IF         COND(%SST(&SPC 1 10) *EQ '*ALLOBJ   ') THEN(DO)
-    chgvar   &dsp_in41  &on
-    chgvar   &dsp_droit1 '*ALL'
-                GOTO       CMDLBL(ENV)
-             ENDDO
-/*                                                                   */
 /*-------------------------------------------------------------------*/
 /*                                                                   */
 /*  Creation du fichier des droits spécifiques                       */
@@ -107,6 +99,14 @@
                           else do
    chgvar &dsp_liste '*NONE'
                           enddo
+/*                                                                   */
+/*  1) Si profil *ALLOBJ                                             */
+/*                                                                   */
+             IF         COND(%SST(&SPC 1 10) *EQ '*ALLOBJ   ') THEN(DO)
+    chgvar   &dsp_in41  &on
+    chgvar   &dsp_droit1 '*ALL'
+                GOTO       CMDLBL(ENV)
+             ENDDO
 /*                                                                   */
 /*-------------------------------------------------------------------*/
 /*                                                                   */

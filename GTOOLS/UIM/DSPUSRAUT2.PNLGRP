@@ -1,0 +1,43 @@
+.*
+.* GENERE PAR GENUIMDSP VERSION 1.2
+.* DATE : 240608
+.*
+:PNLGRP.
+:HELP NAME = 'DSPUSRAUT2' .AIDE (DSPUSRAUT2).
+:XH3.AIDE DSPUSRAUT2.
+:P.
+Ce programme vous permet de voir le droit obtenu par un profil
+et la méthode utilisée pour l'obtenir.
+:P.
+Cette méthode ne tient pas compte des droits additionels mis en
+ oeuvre par les groupes additionnels
+:P.
+Sur un applicatif vous devrez en plus regarder les adoptions de droits
+:EHELP.
+:HELP NAME = 'DSPUSRAUT2/FMT01' .AIDE (FMT01).
+:XH3.AIDE FMT01.
+:P.
+Voici les étapes que suit un profil qui tente d'accèder à un objet.
+ La recherche s'arrête à la première entrée correspondante
+:P.
+:OL.
+:LI. Profil *ALLOBJ
+:LI. Profil sur l'objet
+:LI. Profil sur la liste
+:LI. Profil de groupe *ALLOBJ
+:LI. Profil de groupe sur l'objet
+:LI. Profil de gtoupr sur la liste
+:LI. Public sur l'objet
+:LI. Public sur la liste
+:EOL.
+:P.
+Les touches de fonction vont vous permettre de voir le détail.
+ Par exemple quand vous avez des droits non standards marqués en USER DEF
+:P.
+:OL.
+:LI. F7 permet de voir les droits sur l'objet   (DSPOBJAUT)
+:LI. F9 permet de voir les droits sur la liste  (DSPAUTL)
+:EOL.
+:P. la touche F9 ne s'affiche que si l'objet est protégé par une liste.
+:EHELP.
+:EPNLGRP.
