@@ -1,0 +1,47 @@
+     A*%%TS  SD  20240909  164436  PLB         REL-V7R4M0  5770-WDS
+     A*%%EC
+     A                                      DSPSIZ(27 132 *DS4)
+     A                                      CA03(03)
+     A          R SFL01                     SFL
+     A*%%TS  SD  20240909  154335  PLB         REL-V7R4M0  5770-WDS
+     A            OPT01          1A  B  7  4VALUES('4' '2' ' ')
+     A            AUSER         10   O  7  6
+     A            ASERVER       50   O  7 17
+     A            AAUTH         50   O  7 68
+     A            APWD           3   O  7119
+     A*
+     A          R CTL01                     SFLCTL(SFL01)
+     A*%%TS  SD  20240909  164436  PLB         REL-V7R4M0  5770-WDS
+     A                                      SFLSIZ(0015)
+     A                                      SFLPAG(0014)
+     A                                      CF05(05)
+     A                                      CA06(06)
+     A                                      OVERLAY
+     A  42                                  SFLDSP
+     A  41                                  SFLDSPCTL
+     A  40                                  SFLCLR
+     A            NUM01          4S 0H      SFLRCDNBR(CURSOR)
+     A                                  1  2USER
+     A                                  1106DATE
+     A                                      EDTCDE(Y)
+     A                                  2  2SYSNAME
+     A                                  2106TIME
+     A                                  5  4'4=Supprimer 2=Modifier            -
+     A                                              '
+     A                                      COLOR(BLU)
+     A                                  6  4'  User       Server               -
+     A                                                                    Autho-
+     A                                      rization name                      -
+     A                                                 Pwd'
+     A                                      DSPATR(HI)
+     A                                  1 34'Gestion des postes authentificatio-
+     A                                      n serveur'
+     A                                      DSPATR(HI)
+     A                                  4  3'A partir de l''utilisateur :'
+     A                                      DSPATR(HI)
+     A            EUSER         10   B  4 32
+     A          R FMT01
+     A*%%TS  SD  20200813  110925  DT          REL-V7R4M0  5770-WDS
+     A                                 23  3'F3=Quitter  F5=Réafficher  F6=Crée-
+     A                                      r'
+     A                                      COLOR(BLU)

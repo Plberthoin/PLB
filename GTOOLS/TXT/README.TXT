@@ -12,4 +12,5 @@
   FNDSRC       Rechercher une chaine dans des fichiers sources
   TSTDSPF      tester l'affichage d'un format
   WRKOUTQIP    Gestion des REMOTE outq 
+  WRKSRVAUTE   Gestion des authentifications de serveurs
 *** Listes  des sources
