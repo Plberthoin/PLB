@@ -50,6 +50,15 @@
             *inlr=*on ;
              Return ;
          Endmon;
+   exec sql
+   select SYSTEM_VALUE into :retention from QSYS2.SYSTEM_VALUE_INFO
+    where SYSTEM_VALUE_NAME    = 'QRETSVRSEC'
+  ;
+  if retention = '1' ;
+    *in64 = *on ;
+  else    ;
+    *in64= *off ;
+  endif ;
         // init user        //
               w_cle  =  'GAIA_2017'  ;
               euser = ' '                         ;
@@ -129,6 +138,9 @@
                    Init_SFL()                     ;
                    Load_SFL()                     ;
                    Display_SFL()                  ;
+                   when *in08                       ;
+              exec sql
+              call qcmdexc('WRKRDBDIRE ' ) ;
                    when *in06                       ;
               exec sql
               call qcmdexc('?ADDSVRAUTE ' ) ;
@@ -139,6 +151,13 @@
               if opt01 = '2' ;
               exec sql
               call qcmdexc('?CHGSVRAUTE ' concat :auser concat ' ' concat :aserver) ;
+              opt01  = ' ' ;
+              update sfL01 ;
+              endif ;
+              if opt01 = '3' ;
+              exec sql
+              call qcmdexc('?ADDSVRAUTE USRPRF(' concat :auser concat ') SERVER('
+                 concat :aserver concat ') USRID(' concat :Aauth concat ')') ;
               opt01  = ' ' ;
               update sfL01 ;
               endif ;
