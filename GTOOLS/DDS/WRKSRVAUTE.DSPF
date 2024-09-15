@@ -1,4 +1,4 @@
-     A*%%TS  SD  20240910  171640  PLB         REL-V7R4M0  5770-WDS
+     A*%%TS  SD  20240914  195405  PLB         REL-V7R4M0  5770-WDS
      A*%%EC
      A                                      DSPSIZ(27 132 *DS4)
      A                                      CA03(03)
@@ -17,10 +17,12 @@
      A                                      CF05(05)
      A                                      CA06(06)
      A                                      CA08(08)
+     A                                      CA09(09)
      A                                      OVERLAY
      A  42                                  SFLDSP
      A  41                                  SFLDSPCTL
      A  40                                  SFLCLR
+     A  42                                  SFLEND(*MORE)
      A            NUM01          4S 0H      SFLRCDNBR(CURSOR)
      A                                  1  2USER
      A                                  1106DATE
@@ -49,7 +51,11 @@
      A N64                              2 88'*NO'
      A                                      DSPATR(RI)
      A          R FMT01
-     A*%%TS  SD  20240910  095624  PLB         REL-V7R4M0  5770-WDS
+     A*%%TS  SD  20240914  195405  PLB         REL-V7R4M0  5770-WDS
      A                                 23  3'F3=Quitter  F5=Réafficher  F6=Crée-
      A                                      r F8=Gestion des DB'
+     A                                      COLOR(BLU)
+     A  64                             23 58'F9=Désactiver la rétention'
+     A                                      COLOR(BLU)
+     A N64                             23 58'F9=Activer la rétention'
      A                                      COLOR(BLU)
