@@ -1,0 +1,61 @@
+pgm parm(&fromfile &toarcf &crtarcf &options)
+/*-------------------------------------------------------------------*/
+/* Ce programme permet d'ajouter un fichier à une archive existante  */
+/* Vous pouvez ajouter des options de la commande Zip                */
+/* Log dans stdout.log du répertoire en cours                        */
+/*       DSPF stdout.log                                             */
+/*-------------------------------------------------------------------*/
+dcl &fromfile *char 100  /* fichier à ajouter      */
+dcl &toarcf *char 100    /* archive                */
+dcl &crtarcf *char 4     /* Création de l'archive  */
+dcl &options *char 5     /* option de zip          */
+/**/
+dcl &qsh *char 256   /* Scripte à exécuter */
+dcl &wfil *char 100  /* fichier de log     */
+/* Test présence fichier à ajouter */
+MOV        OBJ(&fromfile) TOOBJ(&fromfile)
+MONMSG     MSGID(CPFA0A9) EXEC(DO)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+                          MSGDTA('Fichier, ' *BCAT &FROMFILE *BCAT +
+                          'inexistant') MSGTYPE(*ESCAPE)
+ENDDO
+/* Test présence fichier archive */
+if cond(&crtarcf = '*NO') then(do)
+MOV        OBJ(&toarcf  ) TOOBJ(&toarcf  )
+MONMSG     MSGID(CPFA0A9) EXEC(DO)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+                          MSGDTA('Fichier, ' *BCAT &TOARCF *BCAT +
+                          'inexistant') MSGTYPE(*ESCAPE)
+ENDDO
+enddo
+ /* Formatage variable execution qsh */
+ if cond(&options = '*NONE') then(do)
+             CHGVAR     VAR(&QSH) VALUE('zip' *BCAT &TOARCF *BCAT +
+                          &FROMFILE)
+enddo
+else do
+             CHGVAR     VAR(&QSH) VALUE('zip -' *TCAT &OPTIONS *BCAT +
+                          &TOARCF *BCAT &FROMFILE)
+enddo
+/* File for STDOUT           */
+             CHGVAR     VAR(&WFIL) VALUE('FILE=stdout.log')
+             ADDENVVAR  ENVVAR(QIBM_QSH_CMD_OUTPUT) VALUE(&WFIL)
+             MONMSG     MSGID(CPFA980) EXEC(DO)
+             CHGENVVAR  ENVVAR(QIBM_QSH_CMD_OUTPUT) VALUE(&WFIL)
+             ENDDO
+/* msg escape on error       */
+             ADDENVVAR  ENVVAR(QIBM_QSH_CMD_ESCAPE_MSG) VALUE('Y')
+             MONMSG     MSGID(CPFA980) EXEC(DO)
+             CHGENVVAR  ENVVAR(QIBM_QSH_CMD_ESCAPE_MSG) VALUE('Y')
+             ENDDO
+/* Excution QSH              */
+             STRQSH     CMD(&QSH)
+             monmsg qsh0000 exec(do)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('Ajout +
+                          fichier, ' *BCAT &FROMFILE *BCAT +
+                          'impossible') MSGTYPE(*ESCAPE)
+             enddo
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+                          MSGDTA('Fichier, ' *BCAT &FROMFILE *BCAT +
+                          'ajouté') MSGTYPE(*COMP)
+endpgm
