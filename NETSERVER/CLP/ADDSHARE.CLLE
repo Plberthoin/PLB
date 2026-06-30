@@ -1,0 +1,23 @@
+/*--------------------------------------*/
+/* Ajout d'un partage de netserver      */
+/*--------------------------------------*/
+PGM PARM(&SHARE &PATH &TEXT)
+DCL VAR(&SHARE) TYPE(*CHAR) LEN(12)
+DCL VAR(&PATH)  TYPE(*CHAR) LEN(256)
+DCL VAR(&TEXT)  TYPE(*CHAR) LEN(50)
+CALL PGM(QSYS/QZLSADFS) PARM(+
+   &SHARE +
+   &PATH  +
+   X'0000000E' +
+   X'00000000' +
+   &TEXT +
+   X'00000002' +
+   X'FFFFFFFF' +
+   X'00000000')
+MONMSG CPF0000 EXEC(DO)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('Ajout +
+                          partage impossible') MSGTYPE(*ESCAPE)
+ENDDO
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('Partage +
+                          ajouté') MSGTYPE(*COMP)
+ENDPGM
